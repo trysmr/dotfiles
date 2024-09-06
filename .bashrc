@@ -1,7 +1,8 @@
 #!/bin/bash
 
-PROMPT_COMMAND='PS1_CMD1=$(git branch --show-current 2>/dev/null)';
-PS1='\[\e[33m\]\u@\h: \[\e[32m\]\w\[\e[0m\[\e[31m(${PS1_CMD1})\[\e[0m\n\$ '
+source $HOME/.zsh/git-completion.bash
+source $HOME/.zsh/git-prompt.sh
+PS1='\[\e[33m\]\u@\h: \[\e[32m\]\w\[\e[0m\[\e[31m($(__git_ps1 " (%s)"))\[\e[0m\n\$ '
 
 # ls
 export LS_OPTIONS='--color=auto'
