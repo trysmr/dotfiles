@@ -25,10 +25,10 @@ zstyle ':completion:*' list-colors di=34 ln=35 ex=31 # 候補に色付け
 # Zshプラグイン
 # 履歴から補完
 # brew install zsh-autosuggestions
-source /usr/local/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+source $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 # シンタックスハイライト
 # brew install zsh-syntax-highlighting
-source /usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+source $(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
 # -----
 # Git
