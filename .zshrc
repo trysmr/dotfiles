@@ -61,12 +61,14 @@ setopt hist_no_store
 
 function history-all { history -E 1 }
 
+
 # -----
 # alias
 alias ls='ls -GF' # lsに色付けと種類の表示
 
 # -----
 # その他
+export GREP_OPTIONS='--color=always' # grepに色をつける
 setopt correct # typo検出
 setopt auto_cd # cdを自動に（ディレクトリ名だけでcd）
 function chpwd() { ls } # cd後に自動でls
@@ -75,6 +77,5 @@ setopt pushd_ignore_dups # pushdで重複を無視
 
 # -----
 # rbenv
-export PATH="$HOME/.rbenv/bin:$PATH"
-eval "$(rbenv init -)"
+eval "$(rbenv init - zsh)"
 
