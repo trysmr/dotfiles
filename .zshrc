@@ -62,7 +62,8 @@ setopt hist_no_store
 function history-all { history -E 1 }
 
 # -----
-# alias
+# ls
+export LSCOLORS=gxfxcxdxbxegedabagacad
 alias ls='ls -GF' # lsに色付けと種類の表示
 
 # -----
