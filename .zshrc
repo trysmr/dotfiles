@@ -1,3 +1,7 @@
+# ----
+# サウンド
+alias beep="afplay /System/Library/Sounds/Glass.aiff"
+
 # -----
 # 文字コード
 export LANG=ja_JP.UTF-8
