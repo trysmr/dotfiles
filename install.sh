@@ -8,6 +8,9 @@ for f in $dir/.??*; do
 
   # .configの場合はディレクトリを対象にする
   if [ $filename = ".config" ]; then
+    # .configディレクトリが存在しない場合は作成する
+    [ ! -d $HOME/.config ] && mkdir -p $HOME/.config
+
     for config in $dir/$filename/*; do
       configname=`basename $config`
       ln -snf $config $HOME/.config
