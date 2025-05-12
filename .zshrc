@@ -84,6 +84,10 @@ setopt pushd_ignore_dups # pushdで重複を無視
 # rbenv
 eval "$(rbenv init - zsh)"
 
+# -----
+# tfenv
+alias tfenv='GREP_OPTIONS="--color=never" tfenv'
+
 # The following lines have been added by Docker Desktop to enable Docker CLI completions.
 fpath=($HOME/.docker/completions $fpath)
 autoload -Uz compinit
