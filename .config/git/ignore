@@ -4,3 +4,6 @@ Gemfile.dev
 Gemfile.dev.lock
 .clinerules
 .clineignore
+.CLAUDE.md
+.CLAUDE.local.md
+**/.claude/settings.local.json
