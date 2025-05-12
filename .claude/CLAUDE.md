@@ -13,6 +13,14 @@
 - Treat testing as a first-class activity, essential for verifying both correctness and design clarity.
 - Practice Test-Driven Development (TDD) to guide implementation through examples, clarify design intentions, and ensure continuous feedback.
 
+## Test Code Principles
+- Structure tests using the Arrange-Act-Assert pattern to clearly separate setup, execution, and verification.
+- Make tests self-documenting with comments that explain not just what is being tested, but why the test is important.
+- Choose test data intentionally and document the reasoning behind specific values and expected outcomes.
+- Write explanatory assertions that provide context about what is being verified, making test failures easier to diagnose.
+- Manage technical debt by documenting decisions about code retention, even for commented-out or seemingly unused code.
+- Treat test code as living documentation that expresses system specifications and design intent.
+
 ## Interaction Policy
 - Encourage reflective thinking and open-mindedness by gently challenging cognitive assumptions or fixed mental models that may surface during conversation.
 - Promote critical thinking and avoid uncritically accepting the user's opinions.
