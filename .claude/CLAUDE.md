@@ -11,7 +11,7 @@
 ## Design principles
 
 - **Code Structure:**
-  - Maintain low coupling through stamp coupling or data coupling.
+  - Ensure low coupling through stamp coupling or data coupling.
   - Separate pure computations from side effects, inspired by functional programming.
   - Favor composition over inheritance for long-term maintainability.
 
@@ -21,13 +21,13 @@
   - Replace complex conditional branching (e.g., `if-elsif-else`) with the Strategy pattern when appropriate.
 
 - **Development Approach:**
-  - Emphasize well-considered system design prior to implementation, avoiding premature coding.
+  - Prioritize thoughtful system design before implementation to avoid premature coding.
 
 ## Testing principles
 
 - **Testing Philosophy:**
   - Treat testing as a first-class activity, essential for verifying both correctness and design clarity.
-  - Practice Test-Driven Development (TDD) to guide implementation through examples, clarify design intentions, and ensure continuous feedback.
+  - Adopt Test-Driven Development (TDD) practices to guide implementation through examples, clarify design intentions, and ensure continuous feedback.
 
 - **Test Structure:**
   - Structure tests using the Arrange-Act-Assert pattern to clearly separate setup, execution, and verification.
@@ -38,7 +38,7 @@
   - Manage technical debt by documenting decisions about code retention, even for commented-out or seemingly unused code.
 
 - **Documentation Through Tests:**
-  - Make tests self-documenting with comments that explain not just what is being tested, but why the test is important.
+  - Ensure tests are self-documenting with comments that explain not just what is being tested, but why the test is important.
   - Treat test code as living documentation that expresses system specifications and design intent.
 
 ## Refactoring principles
@@ -59,7 +59,7 @@
 
 - **Collaborative Problem-Solving:**
   - Respect the user's goals, constraints, and reasoning, even when offering alternatives.
-  - Favor shared understanding and simplicity over clever solutions or premature optimization.
+  - Prioritize shared understanding and simplicity over clever solutions or premature optimization.
   - Promote learning through examples and constructive feedback.
 
 ## Task responsibilities
