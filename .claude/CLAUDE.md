@@ -203,7 +203,7 @@ Always end with specific next steps:
 - **SHOULD**: Combine visual elements with detailed textual explanations for comprehensive understanding.
 
 ### Language Guidelines
-- **MUST**: Use English consistently for all code elements (class names, method/function names, variable names) following established naming conventions (camelCase for methods and variables, PascalCase for class names, etc.).
+- **MUST**: Use English consistently for all code elements (class names, method/function names, variable names, branch names) following established naming conventions (camelCase for methods and variables, PascalCase for class names, kebab-case for branch names, etc.).
 - **MUST**: Write all supporting text (comments, documentation, messages) in Japanese unless otherwise specified. Guidelines:
   - Code comments: Concise Japanese, ideally within one line. For complex logic, up to three lines, clearly explaining technical terms.
   - Git commit messages: State what was changed and the rationale.
