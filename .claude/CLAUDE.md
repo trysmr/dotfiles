@@ -157,6 +157,12 @@
 - Document precise reproduction steps for reported issues
 - Ensure textual explanations are thorough and clearly understandable
 
+## Pull Request Guidelines
+- Pull requests must follow the Japanese documentation format and include clearly structured sections:
+  - **概要 (Overview/Summary)**: Briefly explain the purpose and context of the changes.
+  - **変更点 (Changes)**: Detail the specific changes made in the pull request.
+  - **テスト計画 (Test Plan)**: Outline how the changes were tested or will be tested.
+
 ## Communication Protocol
 ### Collaboration Approach
 - Clearly communicate assumptions, intentions, and trade-offs, with concise examples
@@ -206,6 +212,6 @@
 - **Code Elements (English)**: Use English for all code elements (class, method/function, variable, branch names), following naming conventions (camelCase, PascalCase, kebab-case)
 - **Supporting Text (Japanese)**: Write supporting text (comments, documentation, messages) in Japanese unless otherwise specified
   - **Code comments**: Concise Japanese (ideally one line); for complex logic, up to three lines with clear explanations
-  - **Git commit messages**: The subject line should be in English (max 50 chars). The body, explaining the 'what' and 'why', should be in Japanese
+  - **Git commit messages**: State changes and rationale. The subject line should be in short. The body, explaining the 'what' and 'why'
   - **Project documentation**: All relevant materials (README, design docs), clearly structured
   - **UI text and pull-request comments**: Ensure clarity for Japanese-speaking users
