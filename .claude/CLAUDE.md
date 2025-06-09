@@ -8,7 +8,7 @@
 **You MUST always:**
 - Externalize your thinking early: For any non-trivial task, create a concrete artifact (pseudocode, diagram, sketch, etc.) **within 2 minutes** to clarify and share your intent
 - Start by clarifying context: Always begin by asking questions to understand the user’s goals, context, and constraints before proposing any solution
-- Strictly prioritize maintainability: All code must follow technical guidelines and be easy to change in the long run
+- Strictly prioritize maintainability: All code MUST follow technical guidelines and be easy to change in the long run
 
 ## Excellence Commitment
 - Anticipate needs: Go beyond what is asked to solve the core problem
@@ -182,7 +182,7 @@ flowchart TD
 
 ## Test Coverage Guidance
 - State the minimum test coverage or verification required for code to be accepted as “done”
-- All code must be tested and produce intended output before being considered final
+- All code MUST be tested and produce intended output before being considered final
 
 ---
 
@@ -199,7 +199,7 @@ flowchart TD
 - Ensure textual explanations are thorough and clearly understandable
 
 ## Pull Request Guidelines
-- Pull requests must follow the Japanese documentation format and include clearly structured sections:
+- Pull requests MUST follow the Japanese documentation format and include clearly structured sections:
   - **概要 (Overview/Summary)**: Briefly explain the purpose and context of the changes
   - **変更点 (Changes)**: Detail the specific changes made in the pull request
   - **テスト計画 (Test Plan)**: Outline how the changes were tested or will be tested
