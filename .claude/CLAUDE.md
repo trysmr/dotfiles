@@ -20,7 +20,8 @@
 ## Boundaries and Authorization
 - Only handle technical and software tasks within the project scope
 - Require explicit user authorization for any action affecting production or sensitive environments
-- Among the files in the active project, **never access or process the `.env` file, the `.git` directory, or any files or directories specified in `.gitignore`.**
+- **NEVER** access or process the `.env` file, the `.git` directory, or any files or directories specified in `.gitignore`
+- **NEVER** make changes to production or sensitive environments without explicit user authorization
 - Limit output to technical solutions; defer business, legal, and ethical decisions to the user
 
 ## Problem-Solving Philosophy
@@ -32,8 +33,7 @@
 - Embrace change: Expect to discover, remove, or reshape components as you learn more
 - Use initial implementations as catalysts for insight, not as final answers
 - For complex challenges, explore in parallel: Try multiple ideas or searches at once
-- Foster creativity and adaptability: Avoid rigidity and leave space for unexpected, serendipitous insights.
-
+- Foster creativity and adaptability: Avoid rigidity and leave space for unexpected, serendipitous insights
 
 ---
 
@@ -136,8 +136,15 @@ flowchart LR
 - Validate and sanitize all inputs to guard against injection and misuse
 - Separate authentication and authorization responsibilities
 - Store all sensitive information in environment variables or credential managers (never in code or config files)
+- **NEVER** store secrets or credentials in code or configuration files. Always use environment variables or secure stores
+- **NEVER** introduce hardcoded credentials, backdoors, or insecure defaults
+- **NEVER** include passwords, tokens, or secrets in code comments
+- **NEVER** log secrets, passwords, tokens, or personally identifiable information
+- **NEVER** output secrets or sensitive data via logs, errors, or API responses
 - Use exception types that carry contextual detail for debugging and alerting
 - Log errors with sufficient context—but avoid leaking sensitive information
+- **NEVER** ignore errors or exceptions without handling or logging them
+- **NEVER** use weak cryptography or outdated security practices
 
 ## Efficiency and Parallel Execution
 - Analyze and identify all possible parallelism at the start of task planning
@@ -164,11 +171,16 @@ flowchart LR
 | Explicit separation of pure/side-effect  | Mixing I/O and business logic together     |
 
 ## Security Checklist
-- [ ] Validate and sanitize all inputs
-- [ ] Clearly separate authentication (authN) and authorization (authZ)
-- [ ] Store sensitive credentials securely (env vars or credential managers)
-- [ ] Raise specific, context-rich exceptions
-- [ ] Log errors with context but never leak secrets
+- Validate and sanitize all inputs
+- Clearly separate authentication (authN) and authorization (authZ)
+- IMPORTANT: Store sensitive credentials securely (env vars or credential managers)
+- **NEVER** commit secrets, API keys, or credentials to version control (e.g., Git)
+- **NEVER** include passwords, tokens, or secrets in code comments
+- **NEVER** log or output secrets, passwords, tokens, or sensitive data
+- **NEVER** merge or deploy code that has not been reviewed and passed all required tests
+- **NEVER** use weak cryptography or outdated security practices
+- Raise specific, context-rich exceptions
+- Log errors with context but NEVER leak secrets
 
 ## Parallelism Decision Flow
 
@@ -183,6 +195,7 @@ flowchart TD
 ## Test Coverage Guidance
 - State the minimum test coverage or verification required for code to be accepted as “done”
 - All code MUST be tested and produce intended output before being considered final
+- **NEVER** skip pre-completion checks (linting, tests, review) before closing a task
 
 ---
 
