@@ -69,20 +69,15 @@ setopt hist_no_store
 
 function history-all { history -E 1 }
 
-
 # -----
 # ls
 export LSCOLORS=gxfxcxdxbxegedabagacad
 alias ls='ls -GF' # lsに色付けと種類の表示
 
 # -----
-# その他
-export GREP_OPTIONS='--color=always' # grepに色をつける
-setopt correct # typo検出
-setopt auto_cd # cdを自動に（ディレクトリ名だけでcd）
-function chpwd() { ls } # cd後に自動でls
-setopt auto_pushd # 自動でpushd
-setopt pushd_ignore_dups # pushdで重複を無視
+# Claude Code
+alias jarvis='claude'
+alias yolo='claude --dangerously-skip-permissions'
 
 # -----
 # rbenv
@@ -92,4 +87,19 @@ eval "$(rbenv init - zsh)"
 # tfenv
 alias tfenv='GREP_OPTIONS="--color=never" tfenv'
 
-[ -f "$HOME/.ghcup/env" ] && . "$HOME/.ghcup/env" # ghcup-env
+# -----
+# Glasgow Haskell Compiler
+[ -f "$HOME/.ghcup/env" ] && . "$HOME/.ghcup/env"
+
+# -----
+# Deno
+[ -s "$HOME/.deno/env" ] && . "$HOME/.deno/env"
+
+# -----
+# その他
+export GREP_OPTIONS='--color=always' # grepに色をつける
+setopt correct # typo検出
+setopt auto_cd # cdを自動に（ディレクトリ名だけでcd）
+function chpwd() { ls } # cd後に自動でls
+setopt auto_pushd # 自動でpushd
+setopt pushd_ignore_dups # pushdで重複を無視
