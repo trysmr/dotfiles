@@ -43,19 +43,8 @@
 
 ## Common Rules for Todo Management
 
-- **Task states**: Use only `"new"`, `"in_progress"`, `"in_review"`, and `"completed"` as task states.
-- **Workflow**: Advance tasks strictly in this order: `new → in_progress → in_review → completed`. If issues are found in review, return the task to `in_progress`.
-- **WIP Limit**: MUST mark only one task as `in_progress` at any time.
 - **Definition of Done**: A task is considered "done" only when implementation is complete, the code is reviewed and approved, and all required tests (automated, CI, etc.) have passed.
 - **Pre-completion checks**: Always apply linting and formatting, confirm that all tests pass, then commit and close the task.
-
-```mermaid
-flowchart LR
-    new -->|start| in_progress
-    in_progress -->|implementation done| in_review
-    in_review -->|review approved & tests pass| completed
-    in_review -->|needs fix| in_progress
-```
 
 ## Phase 1: Understand
 
