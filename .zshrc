@@ -1,3 +1,5 @@
+# zshrc設定
+
 # ----
 # サウンド
 alias beep="afplay /System/Library/Sounds/Glass.aiff"
@@ -21,7 +23,14 @@ export EDITOR=vi
 
 # -----
 # 補完機能を有効に
-autoload -Uz compinit && compinit
+# 24時間以内に生成されていれば再生成をスキップ
+autoload -Uz compinit
+if [[ -n ~/.zcompdump(#qN.mh+24) ]]; then
+    compinit -d ~/.zcompdump
+else
+    compinit -C -d ~/.zcompdump
+fi
+
 setopt auto_list # 一覧表示
 setopt auto_menu # タブで選択
 setopt list_types # 種類を表示
@@ -31,12 +40,21 @@ zstyle ':completion:*' list-colors di=34 ln=35 ex=31 # 候補に色付け
 
 # -----
 # Zshプラグイン
+if [[ -z "$BREW_PREFIX" ]]; then
+    export BREW_PREFIX="/opt/homebrew"
+fi
+
 # 履歴から補完
 # brew install zsh-autosuggestions
-source $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+if [[ -f "$BREW_PREFIX/share/zsh-autosuggestions/zsh-autosuggestions.zsh" ]]; then
+    source "$BREW_PREFIX/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
+fi
+
 # シンタックスハイライト
 # brew install zsh-syntax-highlighting
-source $(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+if [[ -f "$BREW_PREFIX/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" ]]; then
+    source "$BREW_PREFIX/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+fi
 
 # -----
 # Git
@@ -48,14 +66,31 @@ zstyle ':completion:*:*:git:*' script $HOME/.zsh/git-completion.bash
 fpath=($HOME/.zsh $fpath)
 
 # curl -o ~/.zsh/git-prompt.sh https://raw.githubusercontent.com/git/git/master/contrib/completion/git-prompt.sh
-source $HOME/.zsh/git-prompt.sh
-PS1='%F{yellow}%n@%m%f: %F{cyan}%~%f%B%F{red}$(__git_ps1 " (%s)")%f%b
+if [[ -f "$HOME/.zsh/git-prompt.sh" ]]; then
+    source "$HOME/.zsh/git-prompt.sh"
+    PS1='%F{yellow}%n@%m%f: %F{cyan}%~%f%B%F{red}$(__git_ps1 " (%s)")%f%b
 \$ '
+    
+    GIT_PS1_SHOWDIRTYSTATE=true # state
+    GIT_PS1_SHOWUNTRACKEDFILES=true # untracked
+    GIT_PS1_SHOWSTASHSTATE=true # stash
+    GIT_PS1_SHOWUPSTREAM=auto # upstream
+else
+    PS1='%F{yellow}%n@%m%f: %F{cyan}%~%f
+\$ '
+fi
 
-GIT_PS1_SHOWDIRTYSTATE=true # state
-GIT_PS1_SHOWUNTRACKEDFILES=true # untracked
-GIT_PS1_SHOWSTASHSTATE=true # stash
-GIT_PS1_SHOWUPSTREAM=auto # upstream
+# -----
+# rbenv
+rbenv() {
+    eval "$(command rbenv init - zsh)"
+    rbenv "$@"
+}
+
+# PATHに最小限のrbenv設定
+if [[ -d "$HOME/.rbenv/shims" ]]; then
+    export PATH="$HOME/.rbenv/shims:$PATH"
+fi
 
 # -----
 # 履歴
@@ -80,20 +115,34 @@ alias jarvis='claude'
 alias yolo='claude --dangerously-skip-permissions'
 
 # -----
-# rbenv
-eval "$(rbenv init - zsh)"
-
-# -----
 # tfenv
 alias tfenv='GREP_OPTIONS="--color=never" tfenv'
 
 # -----
 # Glasgow Haskell Compiler
-[ -f "$HOME/.ghcup/env" ] && . "$HOME/.ghcup/env"
+if [[ -f "$HOME/.ghcup/env" ]]; then
+    ghc() {
+        source "$HOME/.ghcup/env"
+        ghc "$@"
+    }
+    ghci() {
+        source "$HOME/.ghcup/env"
+        ghci "$@"
+    }
+    cabal() {
+        source "$HOME/.ghcup/env"
+        cabal "$@"
+    }
+fi
 
 # -----
 # Deno
-[ -s "$HOME/.deno/env" ] && . "$HOME/.deno/env"
+if [[ -s "$HOME/.deno/env" ]]; then
+    deno() {
+        source "$HOME/.deno/env"
+        deno "$@"
+    }
+fi
 
 # -----
 # その他
@@ -103,3 +152,4 @@ setopt auto_cd # cdを自動に（ディレクトリ名だけでcd）
 function chpwd() { ls } # cd後に自動でls
 setopt auto_pushd # 自動でpushd
 setopt pushd_ignore_dups # pushdで重複を無視
+
