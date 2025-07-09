@@ -1,0 +1,73 @@
+{
+  "includeCoAuthoredBy": false,
+  "permissions": {
+    "allow": [
+      "Bash(rg:*)",
+      "Bash(grep:*)",
+      "Bash(find:*)",
+      "Bash(cat:*)",
+      "Bash(ls:*)",
+      "Bash(git log:*)",
+      "Bash(git status:*)",
+      "Bash(git add:*)",
+      "Bash(docker compose exec app rails test)",
+      "Bash(docker compose exec app bin/rails test)",
+      "Bash(docker compose exec app bin/rails spec)",
+      "Bash(docker compose exec app bundle list:*",
+      "Bash(docker compose exec app bundle exec rubocop)",
+      "Bash(docker compose exec app bundle exec rubocop -a)",
+      "Bash(docker compose exec app bundle exec rspec:*)",
+      "Bash(docker compose exec app bin/rubocop)",
+      "Bash(docker compose exec app bin/brakeman)",
+      "Read(~/.zshrc)",
+      "Read(~/.claude/CLAUDE.md)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:docs.anthropic.com)"
+    ],
+    "deny": [
+      "Bash(sudo:*)",
+      "Bash(rm -rf:*)",
+      "Bash(git reset:*)",
+      "Bash(git rebase:*)",
+      "Read(.env.*)",
+      "Write(.env*)",
+      "Read(node_modules)",
+      "Read(node_modules/**)"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/log_tool_use.sh"
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/docker_rails_exec_check.sh",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/log_tool_use.sh"
+          }
+        ]
+      }
+    ]
+  },
+  "preferredNotifChannel": "terminal_bell"
+}

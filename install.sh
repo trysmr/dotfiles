@@ -8,6 +8,15 @@ dir="$(cd $(dirname $0) && pwd -P)"
 # CLAUDE.mdのシンボリックリンクを作成する
 ln -snf $dir/.claude/CLAUDE.md $HOME/.claude/CLAUDE.md
 
+# settings.jsonのシンボリックリンクを作成する
+ln -snf $dir/.claude/settings.json $HOME/.claude/settings.json
+
+# hooksディレクトリのシンボリックリンクを作成する
+ln -snf $dir/.claude/hooks $HOME/.claude/hooks
+
+# commandsディレクトリのシンボリックリンクを作成する
+ln -snf $dir/.claude/commands $HOME/.claude/commands
+
 for f in $dir/.??*; do
   filename=`basename $f`
   [[ `basename $f` = ".git" ]] && continue
