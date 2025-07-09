@@ -10,6 +10,7 @@
       "Bash(git log:*)",
       "Bash(git status:*)",
       "Bash(git add:*)",
+      "Bash(git push:*)",
       "Bash(docker compose exec app rails test)",
       "Bash(docker compose exec app bin/rails test)",
       "Bash(docker compose exec app bin/rails spec)",
