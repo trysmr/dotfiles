@@ -1,5 +1,9 @@
 # zshrc設定
 
+# ---
+# emacsモード
+bindkey -e
+
 # ----
 # サウンド
 alias beep="afplay /System/Library/Sounds/Glass.aiff"
