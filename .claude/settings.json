@@ -14,7 +14,7 @@
       "Bash(docker compose exec app rails test)",
       "Bash(docker compose exec app bin/rails test)",
       "Bash(docker compose exec app bin/rails spec)",
-      "Bash(docker compose exec app bundle list:*",
+      "Bash(docker compose exec app bundle list:*)",
       "Bash(docker compose exec app bundle exec rubocop)",
       "Bash(docker compose exec app bundle exec rubocop -a)",
       "Bash(docker compose exec app bundle exec rspec:*)",
