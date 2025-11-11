@@ -198,6 +198,49 @@ flowchart TD
     B -- No --> E[Process sequentially]
 ```
 
+## Code Documentation and Clarity
+
+### Explain "Why", Not Just "What"
+
+**Principle**: Comments should explain the reasoning behind the code, not just describe what it does.
+
+**Example:**
+```ruby
+# ❌ Bad: Only describes "what"
+# Return false if file is already deleted
+
+# ✅ Good: Explains "why" this situation occurs
+# During version deletion, content_type access triggers 404 after the original file is deleted
+# Deleted file versions don't need to be created, so return false
+```
+
+**Rationale**: Future developers (including yourself) need to understand **why the code exists** to make informed changes without breaking things.
+
+### Language Idioms and Simplicity
+
+**Principle**: Understand language features to write simpler, more idiomatic code.
+
+**Ruby Example - Implicit begin in methods:**
+```ruby
+# ❌ Redundant begin block
+def image?(new_file)
+  begin
+    # ...
+  rescue Aws::S3::Errors::NotFound
+    false
+  end
+end
+
+# ✅ Idiomatic Ruby (method definition is already a begin block)
+def image?(new_file)
+  # ...
+rescue Aws::S3::Errors::NotFound
+  false
+end
+```
+
+**Rationale**: Simplicity is a virtue. Remove unnecessary syntax by leveraging language features.
+
 ## Quality Assurance
 
 - All code must be **tested and produce intended output** before being considered final
