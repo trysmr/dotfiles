@@ -14,8 +14,8 @@ ln -snf $dir/.claude/settings.json $HOME/.claude/settings.json
 # hooksディレクトリのシンボリックリンクを作成する
 ln -snf $dir/.claude/hooks $HOME/.claude/hooks
 
-# commandsディレクトリのシンボリックリンクを作成する
-ln -snf $dir/.claude/commands $HOME/.claude/commands
+# skillsディレクトリのシンボリックリンクを作成する
+ln -snf $dir/.claude/skills $HOME/.claude/skills
 
 for f in $dir/.??*; do
   filename=`basename $f`
