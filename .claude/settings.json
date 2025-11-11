@@ -1,6 +1,7 @@
 {
   "includeCoAuthoredBy": false,
   "permissions": {
+    "defaultMode": "plan",
     "allow": [
       "Bash(rg:*)",
       "Bash(grep:*)",
@@ -82,10 +83,10 @@
       }
     ]
   },
-  "alwaysThinkingEnabled": false,
   "statusLine": {
     "type": "command",
     "command": "~/.claude/statusline.sh",
     "padding": 0
-  }
+  },
+  "alwaysThinkingEnabled": false
 }
