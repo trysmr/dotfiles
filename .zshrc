@@ -157,3 +157,4 @@ function chpwd() { ls } # cd後に自動でls
 setopt auto_pushd # 自動でpushd
 setopt pushd_ignore_dups # pushdで重複を無視
 
+export PATH="$HOME/.local/bin:$PATH"
