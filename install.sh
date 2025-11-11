@@ -17,6 +17,9 @@ ln -snf $dir/.claude/hooks $HOME/.claude/hooks
 # skillsディレクトリのシンボリックリンクを作成する
 ln -snf $dir/.claude/skills $HOME/.claude/skills
 
+# statusline.shのシンボリックリンクを作成する
+ln -snf $dir/.claude/statusline.sh $HOME/.claude/statusline.sh
+
 for f in $dir/.??*; do
   filename=`basename $f`
   [[ `basename $f` = ".git" ]] && continue
