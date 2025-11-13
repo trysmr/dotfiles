@@ -78,10 +78,23 @@ git diff --cached
 
 ### 6. ユーザー確認
 
-以下の情報をユーザーに提示し、コミットの許可を得てください：
+以下の git commit コマンド形式でユーザーに提示し、コミットの許可を得てください：
 
-- **ステージング済みファイル**: `git diff --cached --name-only` の出力
-- **コミットメッセージ案**: タイトルと詳細
+```bash
+git commit -m "$(cat <<'EOF'
+タイトル（1行、簡潔に変更内容を記述）
+
+- 変更内容の詳細1
+- 変更内容の詳細2
+- 変更内容の詳細3
+EOF
+)"
+```
+
+**変更ファイル**:
+- ファイル1
+- ファイル2
+- ...
 
 **重要**: ユーザーの許可なしにコミットを実行しないでください。
 
@@ -146,19 +159,18 @@ git diff --cached --name-only
 ```
 
 **ステップ3**: ユーザーに提示
-```
-以下の内容でコミットしてよろしいですか？
+```bash
+git commit -m "$(cat <<'EOF'
+申込書発行仕様書にビジネスフロー図を追加
 
-ステージング済みファイル:
-- docs/contact_relation_spec.md
-
-コミットメッセージ案:
-タイトル: 申込書発行仕様書にビジネスフロー図を追加
-
-詳細:
 - sequenceDiagramでビジネスフローを可視化
 - セクション番号を調整
+EOF
+)"
 ```
+
+**変更ファイル**:
+- docs/contact_relation_spec.md
 
 **ステップ4**: ユーザーの許可を待つ
 
@@ -191,20 +203,19 @@ git diff --cached --name-only
 ```
 
 **ステップ3**: ユーザーに提示
-```
-以下の内容でコミットしてよろしいですか？
+```bash
+git commit -m "$(cat <<'EOF'
+ユーザー検索機能を追加
 
-ステージング済みファイル:
-- app/controllers/users_controller.rb
-- app/views/users/index.html.erb
-
-コミットメッセージ案:
-タイトル: ユーザー検索機能を追加
-
-詳細:
 - 名前・メールアドレスでの検索に対応
 - ページネーション実装
+EOF
+)"
 ```
+
+**変更ファイル**:
+- app/controllers/users_controller.rb
+- app/views/users/index.html.erb
 
 **ステップ4**: ユーザーの許可を待つ
 
