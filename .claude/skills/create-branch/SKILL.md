@@ -64,7 +64,20 @@ git branch -a
 - テスト追加・修正 → `test/*`
 - 試行錯誤、一時的な作業 → `tmp/*`
 
-### 4. ブランチ作成
+### 4. ユーザー確認
+
+以下の git checkout コマンド形式でユーザーに提示し、ブランチ作成の許可を得てください：
+
+```bash
+git checkout -b feature/add-user-search
+```
+
+**分岐元ブランチ**: staging (または main)
+**判断根拠**: 新機能追加のため `feature/*` プレフィックスを使用
+
+**重要**: ユーザーの許可なしにブランチを作成しないでください。
+
+### 5. ブランチ作成
 
 **必要に応じて分岐元ブランチに移動**：
 ```bash
@@ -88,7 +101,7 @@ git checkout -b <branch-name>
 git branch -m <new-branch-name>
 ```
 
-### 5. 確認
+### 6. 確認
 
 ```bash
 git branch --show-current
@@ -103,6 +116,8 @@ git branch --show-current
 - [ ] 分岐元ブランチを正しく選択した（`staging`が存在する場合は`staging`、存在しない場合やhotfixの場合は`main`）
 - [ ] 作業内容に適したプレフィックスを選択した
 - [ ] kebab-case形式でブランチ名を決定した
+- [ ] ブランチ名と分岐元をユーザーに提示した
+- [ ] ユーザーの許可を得てからブランチを作成した
 - [ ] ブランチが正常に作成されたことを確認した
 
 ## よくある間違い
@@ -122,57 +137,102 @@ git branch --show-current
 ## 使用例
 
 ### 例1: 新機能開発の場合（stagingあり）
+
+**ステップ1**: ブランチ確認
+```bash
+git branch -a
+# staging が存在することを確認
 ```
-ユーザー: 「ユーザープロフィール機能を開発するブランチ作って」
-アシスタント:
-1. README.md読み込み
-2. git branch -aで確認（stagingが存在）
-3. git checkout staging（stagingに移動）
-4. ブランチ名決定: feature/add-user-profile
-5. git checkout -b feature/add-user-profile
-6. 確認
+
+**ステップ2**: ユーザーに提示
+```bash
+git checkout -b feature/add-user-profile
+```
+
+**分岐元ブランチ**: staging
+**判断根拠**: 新機能追加のため `feature/*` プレフィックスを使用
+
+**ステップ3**: ユーザーの許可を待つ
+
+**ステップ4**: 許可後にブランチ作成
+```bash
+git checkout staging
+git checkout -b feature/add-user-profile
 ```
 
 ### 例2: バグ修正の場合（stagingなし）
+
+**ステップ1**: ブランチ確認
+```bash
+git branch -a
+# staging が存在しないことを確認
 ```
-ユーザー: 「ログインエラーを修正するブランチ作成」
-アシスタント:
-1. README.md読み込み
-2. git branch -aで確認（stagingが存在しない）
-3. git checkout main（mainに移動）
-4. ブランチ名決定: bugfix/fix-login-error
-5. git checkout -b bugfix/fix-login-error
-6. 確認
+
+**ステップ2**: ユーザーに提示
+```bash
+git checkout -b bugfix/fix-login-error
+```
+
+**分岐元ブランチ**: main
+**判断根拠**: バグ修正のため `bugfix/*` プレフィックスを使用
+
+**ステップ3**: ユーザーの許可を待つ
+
+**ステップ4**: 許可後にブランチ作成
+```bash
+git checkout main
+git checkout -b bugfix/fix-login-error
 ```
 
 ### 例3: リファクタリングの場合（stagingあり）
+
+**ステップ1**: ブランチ確認
+```bash
+git branch -a
+# staging が存在することを確認
 ```
-ユーザー: 「データベースクエリを改善するブランチ」
-アシスタント:
-1. README.md読み込み
-2. git branch -aで確認（stagingが存在）
-3. git checkout staging（stagingに移動）
-4. ブランチ名決定: refactor/improve-database-queries
-5. git checkout -b refactor/improve-database-queries
-6. 確認
+
+**ステップ2**: ユーザーに提示
+```bash
+git checkout -b refactor/improve-database-queries
+```
+
+**分岐元ブランチ**: staging
+**判断根拠**: リファクタリングのため `refactor/*` プレフィックスを使用
+
+**ステップ3**: ユーザーの許可を待つ
+
+**ステップ4**: 許可後にブランチ作成
+```bash
+git checkout staging
+git checkout -b refactor/improve-database-queries
 ```
 
 ### 例4: 緊急修正の場合
+
+**ステップ1**: ブランチ確認
+```bash
+git branch -a
 ```
-ユーザー: 「セキュリティ問題の緊急修正ブランチ作って」
-アシスタント:
-1. README.md読み込み
-2. git branch -aで確認
-3. git checkout main（hotfixは常にmainから分岐）
-4. ブランチ名決定: hotfix/fix-security-issue
-5. git checkout -b hotfix/fix-security-issue
-6. 確認
+
+**ステップ2**: ユーザーに提示
+```bash
+git checkout -b hotfix/fix-security-issue
+```
+
+**分岐元ブランチ**: main
+**判断根拠**: 緊急修正のため `hotfix/*` プレフィックスを使用（hotfixは常にmainから分岐）
+
+**ステップ3**: ユーザーの許可を待つ
+
+**ステップ4**: 許可後にブランチ作成
+```bash
+git checkout main
+git checkout -b hotfix/fix-security-issue
 ```
 
 ## 注意事項
 
 - ブランチ作成前に必ず`git branch -a`で利用可能なブランチを確認してください
-- ブランチ作成後は、必要な変更を行ってからコミットしてください
-- 作業が完了したら`commit-and-pr`スキルを使用してPRを作成できます
 - `hotfix/*`ブランチは常に`main`から分岐し、`main`へマージします
 - その他のブランチは`staging`が存在する場合は`staging`から分岐し`staging`へマージ、存在しない場合は`main`から分岐し`main`へマージします

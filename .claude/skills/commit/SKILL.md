@@ -48,9 +48,9 @@ git diff
 ### 3. ブランチ名の決定
 
 変更内容に基づいて適切なブランチ名を決定：
-- プレフィックス: `feature/`, `bugfix/`, `refactor/`, `chore/`, `test/`, `hotfix/`, `docs/`
+- プレフィックス: `feature/`、`bugfix/`、`refactor/`、`chore/`、`test/`、`hotfix/`、`docs/`
 - kebab-case形式
-- 例: `bugfix/fix-login-error`, `feature/add-user-search`, `docs/update-api-spec`
+- 例: `bugfix/fix-login-error`、`feature/add-user-search`、`docs/update-api-spec`
 
 ### 4. ブランチ作成（新しいブランチの場合）
 
@@ -125,8 +125,6 @@ git push -u origin <branch-name>
 git push
 ```
 
-プロジェクトにはGit Hooksが設定されており、ブランチ名チェックとベースブランチの案内が表示されます。
-
 ## チェックリスト
 
 実行前に確認すべき項目：
@@ -161,26 +159,26 @@ git diff --cached --name-only
 **ステップ3**: ユーザーに提示
 ```bash
 git commit -m "$(cat <<'EOF'
-申込書発行仕様書にビジネスフロー図を追加
+[タイトル: 1行で簡潔に変更内容を記述]
 
-- sequenceDiagramでビジネスフローを可視化
-- セクション番号を調整
+- [変更内容の詳細1]
+- [変更内容の詳細2]
 EOF
 )"
 ```
 
 **変更ファイル**:
-- docs/contact_relation_spec.md
+- [ファイルパス]
 
 **ステップ4**: ユーザーの許可を待つ
 
 **ステップ5**: 許可後にコミット・プッシュ
 ```bash
 git commit -m "$(cat <<'EOF'
-申込書発行仕様書にビジネスフロー図を追加
+ユーザー検索機能を追加
 
-- sequenceDiagramでビジネスフローを可視化
-- セクション番号を調整
+- 名前・メールアドレスでの検索に対応
+- ページネーション実装
 EOF
 )"
 
@@ -198,24 +196,23 @@ git diff
 
 **ステップ2**: ステージングと確認
 ```bash
-git add app/controllers/users_controller.rb app/views/users/index.html.erb
+git add [ファイルパス]
 git diff --cached --name-only
 ```
 
 **ステップ3**: ユーザーに提示
 ```bash
 git commit -m "$(cat <<'EOF'
-ユーザー検索機能を追加
+[タイトル: 1行で簡潔に変更内容を記述]
 
-- 名前・メールアドレスでの検索に対応
-- ページネーション実装
+- [変更内容の詳細1]
+- [変更内容の詳細2]
 EOF
 )"
 ```
 
 **変更ファイル**:
-- app/controllers/users_controller.rb
-- app/views/users/index.html.erb
+- [ファイルパス]
 
 **ステップ4**: ユーザーの許可を待つ
 
@@ -231,3 +228,21 @@ EOF
 
 git push -u origin feature/add-user-search
 ```
+
+## よくある間違い
+
+❌ **間違い**: セキュリティ情報（`.env`、`credentials`等）を含めてコミット
+✅ **正解**: `.gitignore`に記載されたファイルは絶対にコミットしない
+
+❌ **間違い**: ユーザーの許可なしにコミットを実行
+✅ **正解**: 必ずコミットメッセージと変更ファイルをユーザーに提示してから実行
+
+❌ **間違い**: コミットメッセージが英語
+✅ **正解**: 日本語で明確に記述
+
+❌ **間違い**: `git add .`で全ファイルを無差別にステージング
+✅ **正解**: 必要なファイルのみを明示的に指定
+
+## 次のステップ
+
+コミット・プッシュ後にプルリクエストを作成する場合は、`pr`スキルを使用してください。
