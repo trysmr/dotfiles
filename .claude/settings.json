@@ -1,7 +1,6 @@
 {
   "includeCoAuthoredBy": false,
   "permissions": {
-    "defaultMode": "plan",
     "allow": [
       "Bash(rg:*)",
       "Bash(grep:*)",
@@ -47,7 +46,8 @@
       "Write(.env*)",
       "Read(node_modules)",
       "Read(node_modules/**)"
-    ]
+    ],
+    "defaultMode": "plan"
   },
   "hooks": {
     "PreToolUse": [
@@ -66,6 +66,11 @@
           {
             "type": "command",
             "command": "~/.claude/hooks/docker_rails_exec_check.sh",
+            "timeout": 10
+          },
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/git_chain_check.sh",
             "timeout": 10
           }
         ]
