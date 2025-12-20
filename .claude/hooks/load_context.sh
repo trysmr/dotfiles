@@ -1,7 +1,9 @@
 #!/bin/bash
 
 # 最後の実行時刻を保存し、一定時間経過後に再実行
-TIMESTAMP_FILE="/tmp/claude_context_timestamp_$$"
+# プロジェクトごとにキャッシュを分離（PWDのハッシュ値を使用）
+PROJECT_HASH=$(echo -n "$PWD" | md5 | cut -c1-8)
+TIMESTAMP_FILE="/tmp/claude_context_timestamp_${PROJECT_HASH}"
 RELOAD_INTERVAL=3600  # 1時間（3600秒）
 
 if [ -f "$TIMESTAMP_FILE" ]; then
