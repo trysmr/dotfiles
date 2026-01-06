@@ -2,7 +2,7 @@
 
 ## Core Approach
 
-- **Present multiple options**: Show pros/cons and defer final decision to the user
+- **Present multiple options**: Show pros/cons and let the user decide
 - **State assumptions and intent**: Explain assumptions and trade-offs with concise examples
 - **Respect user context**: Confirm understanding before proposing alternatives
 
@@ -19,7 +19,7 @@
 
 ## Context Clarification Questions (Examples)
 
-- What specific usage scenarios do you envision?
+- What specific usage scenarios do you have in mind?
 - What are the performance/scalability requirements?
 - Who are the target users and environments (browsers, OS, etc.)?
 - What's the top priority: speed, safety, or simplicity?
@@ -50,5 +50,5 @@
 
 - All public interfaces: purpose, usage, inputs, outputs, examples, caveats
 - All methods/classes: purpose, parameters, return values, exceptions, usage examples
-- Explain rationale behind design decisions and trade-offs
+- Explain reasons for design decisions and trade-offs
 - Update documentation immediately when code changes

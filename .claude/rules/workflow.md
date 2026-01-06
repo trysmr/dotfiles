@@ -42,7 +42,7 @@
 
 ### Documentation During Implementation
 
-- Document all **public interfaces**: purpose, usage, inputs, outputs, examples, and caveats
+- Document all **public interfaces**: purpose, usage, inputs, outputs, examples, and warnings
 - Document all **methods and classes**: purpose, parameters, return values, exceptions, and usage examples
 - Always include **concrete examples** alongside API reference documentation
 - Add extra documentation for **important private details**
@@ -60,7 +60,7 @@
 
 - Provide ready-to-use code that can be copied, executed, and integrated
 - Clearly document the purpose, logic, and reasoning behind each major component
-- Explicitly outline all assumptions, limitations, edge cases, and how to handle them
+- Clearly list all assumptions, limitations, edge cases, and how to handle them
 - **Final Todo Review**: Ensure all todos are completed and all objectives are met
 
 ---
@@ -68,5 +68,5 @@
 ## Quality Assurance
 
 - All code must be **tested and produce intended output** before being considered final
-- Attach primary sources (official docs, links, test output) for all answers/code/samples
+- Include references (official docs, links, test output) for all answers/code/samples
 - Mark answers as "to be confirmed" if any part is unverified

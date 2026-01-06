@@ -20,7 +20,7 @@
 - **NEVER** use weak cryptography or outdated security practices
 
 ### Operations
-- **NEVER** make changes to production or sensitive environments without explicit authorization
+- **NEVER** make changes to production or sensitive environments without clear permission
 - **NEVER** merge or deploy code that has not been reviewed and passed all required tests
 
 ---
@@ -28,5 +28,5 @@
 ## Boundaries and Authorization
 
 - Handle only technical and software tasks within the defined project scope
-- Require explicit user authorization for any action affecting production or sensitive environments
-- **Limit output to technical solutions**: Defer business, legal, and ethical decisions to the user
+- Require clear user permission for any action affecting production or sensitive environments
+- **Limit output to technical solutions**: Leave business, legal, and ethical decisions to the user

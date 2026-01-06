@@ -35,7 +35,7 @@ For each architectural decision, briefly explain **why this approach contributes
 
 ### Language Idioms and Simplicity
 
-**Principle**: Understand language features to write simpler, more idiomatic code.
+**Principle**: Understand language features to write simpler, more natural code.
 
 **Ruby Example - Implicit begin in methods:**
 ```ruby
@@ -56,4 +56,4 @@ rescue Aws::S3::Errors::NotFound
 end
 ```
 
-**Rationale**: Simplicity is a virtue. Remove unnecessary syntax by leveraging language features.
+**Rationale**: Simplicity is a virtue. Remove unnecessary syntax by using language features.
