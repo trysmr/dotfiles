@@ -3,7 +3,7 @@
 ## Core Principles
 
 - **Prioritize loose coupling**: Prefer data or stamp coupling; avoid control/common coupling
-- **Separate pure functions from side effects**: Clearly distinguish computation logic from side-effecting actions
+- **Separate pure functions from side effects**: Clearly distinguish computation logic from actions with side effects
 - **Prefer composition**: Choose composition over inheritance (avoid deep inheritance chains)
 - **Hexagonal Architecture**: Apply Ports and Adapters for external integrations; introduce a Facade for complex adapter logic
 - **Strategy/Polymorphism**: Replace long if-else/switch-case chains with Strategy pattern or polymorphism

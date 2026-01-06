@@ -12,7 +12,7 @@
 
 - Ask clarifying questions whenever requirements or constraints are unclear
 - Gather all relevant context: user goals, usage scenarios, environments, and constraints
-- Systematically investigate the full impact radius of any error or change
+- Check all affected areas of any error or change
 - **Todo Creation**: Create initial high-level todos that capture all main requirements and objectives
 
 ---
@@ -23,7 +23,7 @@
 - **MUST USE DIAGRAMS** for system architecture, data flows, or component interactions (e.g., Mermaid, PlantUML, draw.io)
 - Outline key components, responsibilities, interactions, and data flows
 - Explain how your design addresses user goals and constraints
-- Identify risks and limitations, and propose mitigation strategies
+- Identify risks and limitations, and propose ways to reduce them
 - **Todo Refinement**: Break down high-level todos into actionable tasks; identify dependencies and opportunities for parallel execution
 
 ---
@@ -38,15 +38,15 @@
 - Write test cases before implementation and verify that the tests **fail initially**
 - Clearly define expected behaviors through your tests
 - After confirming test failures, implement only the **minimal code required** to pass the test
-- Alternate iteratively between writing tests and implementation, continuously confirming that all tests pass
+- Switch back and forth between writing tests and implementation, confirming all tests pass
 
 ### Documentation During Implementation
 
 - Document all **public interfaces**: purpose, usage, inputs, outputs, examples, and caveats
 - Document all **methods and classes**: purpose, parameters, return values, exceptions, and usage examples
 - Always include **concrete examples** alongside API reference documentation
-- Provide supplemental documentation for **important private details**
-- Explain the **rationale behind design decisions** and trade-offs
+- Add extra documentation for **important private details**
+- Explain the **reasons for design choices** and trade-offs
 - Update documentation **immediately** when code changes
 
 ### Todo Updates
