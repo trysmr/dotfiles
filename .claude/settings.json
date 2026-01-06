@@ -42,6 +42,9 @@
       "WebFetch(domain:github.com)",
       "WebFetch(domain:docs.anthropic.com)"
     ],
+    "ask": [
+      "Bash(git commit:*)"
+    ],
     "deny": [
       "Bash(sudo:*)",
       "Bash(rm -rf:*)",

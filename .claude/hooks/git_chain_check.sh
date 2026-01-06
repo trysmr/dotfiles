@@ -86,8 +86,15 @@ if [[ -n "$normalized_git_cmd" ]]; then
   done <<< "$allowed_git_commands"
 fi
 
-# 許可されたgitコマンドの場合、チェーンをブロック
+# 許可されたgitコマンドの場合、追加のチェックを実行
 if [ "$is_allowed_git" = true ]; then
+  # -Cオプションの使用を禁止
+  if [[ "$command" =~ git[[:space:]]+-C[[:space:]=] ]]; then
+    echo "-Cオプションは禁止されています。現在のディレクトリでgitコマンドを実行してください。" >&2
+    exit 2
+  fi
+
+  # チェーンをブロック
   if [[ "$command" =~ \&\& ]] || [[ "$command" =~ \; ]]; then
     echo "gitコマンドを他のコマンドとチェーンで実行することは許可されていません。コマンドは個別に実行してください。" >&2
     exit 2
