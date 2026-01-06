@@ -48,7 +48,7 @@
 
 ## Documentation Requirements
 
-- All public interfaces: purpose, usage, inputs, outputs, examples, caveats
+- All public interfaces: purpose, usage, inputs, outputs, examples, warnings
 - All methods/classes: purpose, parameters, return values, exceptions, usage examples
 - Explain reasons for design decisions and trade-offs
 - Update documentation immediately when code changes

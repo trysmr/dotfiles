@@ -30,7 +30,7 @@
 
 ## Phase 3: Implement
 
-- Execute the approved plan, following established patterns and best practices
+- Execute the approved plan, following existing patterns and best practices
 - Maintain consistency with the existing codebase's style and architecture
 
 ### Test-Driven Development (TDD)
