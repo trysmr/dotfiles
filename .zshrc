@@ -114,11 +114,6 @@ export LSCOLORS=gxfxcxdxbxegedabagacad
 alias ls='ls -GF' # lsに色付けと種類の表示
 
 # -----
-# Claude Code
-alias jarvis='claude'
-alias yolo='claude --dangerously-skip-permissions'
-
-# -----
 # tfenv
 alias tfenv='GREP_OPTIONS="--color=never" tfenv'
 
@@ -147,6 +142,10 @@ if [[ -s "$HOME/.deno/env" ]]; then
         deno "$@"
     }
 fi
+
+# -----
+# zoxide
+eval "$(zoxide init zsh)"
 
 # -----
 # その他
