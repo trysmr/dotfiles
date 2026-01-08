@@ -54,7 +54,8 @@
       "Read(node_modules)",
       "Read(node_modules/**)"
     ],
-    "defaultMode": "plan"
+    "defaultMode": "plan",
+    "disableBypassPermissionsMode": "disable"
   },
   "hooks": {
     "PreToolUse": [
