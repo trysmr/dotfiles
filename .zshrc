@@ -145,7 +145,14 @@ fi
 
 # -----
 # zoxide
-eval "$(zoxide init zsh)"
+# brew install zoxide
+if command -v zoxide &> /dev/null; then
+    z() {
+        unfunction z
+        eval "$(zoxide init zsh)"
+        z "$@"
+    }
+fi
 
 # -----
 # その他
