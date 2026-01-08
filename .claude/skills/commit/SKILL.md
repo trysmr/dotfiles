@@ -1,7 +1,9 @@
 ---
 name: commit
 description: Git変更をコミットしてリモートにプッシュ。「コミット」「コミットして」「pushして」「変更を保存して」と言われた時、またはバグ修正・新機能・リファクタリング完了後に使用
-allowed-tools: Read, Bash
+allowed-tools:
+  - Read
+  - Bash
 ---
 
 # Commit Workflow

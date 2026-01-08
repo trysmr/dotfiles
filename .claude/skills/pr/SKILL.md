@@ -1,7 +1,9 @@
 ---
 name: pr
 description: プロジェクトのブランチ戦略に従ってプルリクエストを作成。「PR」「プルリク」「PRを作って」「プルリク作って」「プルリクお願い」「プルリクエストを作成」「レビュー依頼して」などと言われた時、またはコミット済みの変更をマージする準備ができた時に使用
-allowed-tools: Read, Bash
+allowed-tools:
+  - Read
+  - Bash
 ---
 
 # Pull Request Creation Workflow

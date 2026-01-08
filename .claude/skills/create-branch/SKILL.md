@@ -1,7 +1,9 @@
 ---
 name: create-branch
 description: プロジェクトのブランチ命名規則に従ってGitブランチを作成。「ブランチお願い」「ブランチを作って」「ブランチ作って」「ブランチを切って」「新しいブランチで作業」などと言われた時、または新しい作業・機能開発・バグ修正を開始する前に使用
-allowed-tools: Read, Bash
+allowed-tools:
+  - Read
+  - Bash
 ---
 
 # Create Branch

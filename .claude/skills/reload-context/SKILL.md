@@ -1,7 +1,9 @@
 ---
 name: reload-context
 description: ユーザーメモリ、プロジェクトメモリ、READMEを再読み込み。「コンテキストを再読み込み」「設定をリロード」「CLAUDE.mdを読み直して」と言われた時、またはclear後にコンテキストを復元したい時に使用
-allowed-tools: Read, Bash
+allowed-tools:
+  - Read
+  - Bash
 ---
 
 # Reload Context

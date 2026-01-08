@@ -1,7 +1,10 @@
 ---
 name: recent-changes-review
 description: 最近のコミットをセキュリティ・パフォーマンス・保守性の観点からレビュー。「最近の変更をレビュー」「今日のコミットを確認」「コードレビューして」と言われた時に使用
-allowed-tools: Bash, Read, Grep
+allowed-tools:
+  - Bash
+  - Read
+  - Grep
 ---
 
 # Recent Changes Review
