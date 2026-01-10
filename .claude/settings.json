@@ -88,7 +88,7 @@
     ],
     "SessionStart": [
       {
-        "matcher": "startup|resume|clear",
+        "matcher": "resume|clear",
         "hooks": [
           {
             "type": "command",
@@ -103,5 +103,5 @@
     "command": "~/.claude/statusline.sh",
     "padding": 0
   },
-  "model": "opus"
+  "model": "opusplan"
 }
