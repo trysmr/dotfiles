@@ -147,11 +147,57 @@ fi
 # zoxide
 # brew install zoxide
 if command -v zoxide &> /dev/null; then
-    z() {
-        unfunction z
-        eval "$(zoxide init zsh)"
-        z "$@"
+    cd() {
+        unfunction cd
+        eval "$(zoxide init zsh --cmd cd)"
+        cd "$@"
     }
+fi
+
+# -----
+# fzf
+# brew install fzf
+if command -v fzf &> /dev/null; then
+    # カスタム関数は起動時にロード（gb, repos などをすぐに使えるように）
+    [[ -f "$HOME/.zsh/fzf-functions.zsh" ]] && source "$HOME/.zsh/fzf-functions.zsh"
+
+    # fzf の設定を遅延ロード（初回キーバインド使用時にロード）
+    __fzf_init() {
+        unfunction __fzf_init
+
+        # 環境変数設定をロード
+        [[ -f "$HOME/.zsh/fzf.zsh" ]] && source "$HOME/.zsh/fzf.zsh"
+
+        # Homebrew の fzf shell integration をロード
+        if [[ -f "$BREW_PREFIX/opt/fzf/shell/key-bindings.zsh" ]]; then
+            source "$BREW_PREFIX/opt/fzf/shell/key-bindings.zsh"
+        fi
+        if [[ -f "$BREW_PREFIX/opt/fzf/shell/completion.zsh" ]]; then
+            source "$BREW_PREFIX/opt/fzf/shell/completion.zsh"
+        fi
+    }
+
+    # キーバインド使用時に初回ロード
+    fzf-file-widget() {
+        __fzf_init
+        zle fzf-file-widget
+    }
+    fzf-cd-widget() {
+        __fzf_init
+        zle fzf-cd-widget
+    }
+    fzf-history-widget() {
+        __fzf_init
+        zle fzf-history-widget
+    }
+
+    zle -N fzf-file-widget
+    zle -N fzf-cd-widget
+    zle -N fzf-history-widget
+
+    bindkey '^T' fzf-file-widget
+    bindkey '\ec' fzf-cd-widget
+    bindkey '^R' fzf-history-widget
 fi
 
 # -----
