@@ -1,5 +1,4 @@
 {
-  "language": "japanese",
   "respectGitignore": true,
   "includeCoAuthoredBy": false,
   "permissions": {
@@ -43,9 +42,6 @@
       "WebFetch(domain:github.com)",
       "WebFetch(domain:docs.anthropic.com)"
     ],
-    "ask": [
-      "Bash(git commit:*)"
-    ],
     "deny": [
       "Bash(sudo:*)",
       "Bash(rm -rf:*)",
@@ -56,9 +52,13 @@
       "Read(node_modules)",
       "Read(node_modules/**)"
     ],
+    "ask": [
+      "Bash(git commit:*)"
+    ],
     "defaultMode": "plan",
     "disableBypassPermissionsMode": "disable"
   },
+  "model": "opusplan",
   "hooks": {
     "PreToolUse": [
       {
@@ -103,5 +103,5 @@
     "command": "~/.claude/statusline.sh",
     "padding": 0
   },
-  "model": "opusplan"
+  "language": "japanese"
 }
