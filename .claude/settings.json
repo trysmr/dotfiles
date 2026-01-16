@@ -58,6 +58,7 @@
     "defaultMode": "plan",
     "disableBypassPermissionsMode": "disable"
   },
+  "model": "opus",
   "hooks": {
     "PreToolUse": [
       {
