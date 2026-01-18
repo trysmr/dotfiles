@@ -41,35 +41,6 @@ if git rev-parse --git-dir > /dev/null 2>&1; then
     GIT_INFO="${GIT_INFO}${LAST_COMMIT}"
 fi
 
-# Docker/環境情報
-ENV_INFO=""
-if [ -f "docker-compose.yml" ] || [ -f "compose.yml" ]; then
-    # Dockerコンテナの状態をチェック
-    if command -v docker > /dev/null 2>&1; then
-        RUNNING=$(docker compose ps --quiet 2>/dev/null | wc -l | xargs)
-        if [ "$RUNNING" -gt 0 ] 2>/dev/null; then
-            ENV_INFO=" | 🐳 running"
-        else
-            ENV_INFO=" | 🐳 stopped"
-        fi
-    else
-        ENV_INFO=" | 🐳"
-    fi
-elif [ -f "Gemfile" ]; then
-    # Railsプロジェクト
-    if grep -q "rails" Gemfile 2>/dev/null; then
-        ENV_INFO=" | 💎 rails"
-    else
-        ENV_INFO=" | 💎 ruby"
-    fi
-elif [ -f "package.json" ]; then
-    # Node.jsプロジェクト
-    ENV_INFO=" | 📦 node"
-elif [ -f "pyproject.toml" ] || [ -f "requirements.txt" ]; then
-    # Pythonプロジェクト
-    ENV_INFO=" | 🐍 python"
-fi
-
 # コンテキスト使用率
 CONTEXT_INFO=""
 CONTEXT_SIZE=$(echo "$input" | jq -r '.context_window.context_window_size' 2>/dev/null)
@@ -93,4 +64,4 @@ if [ -n "$TOTAL_COST" ] && [ "$TOTAL_COST" != "null" ]; then
     COST_INFO=" | 💰 \$$(printf "%.4f" "$TOTAL_COST")"
 fi
 
-echo "[$MODEL] 📁 ${DIR_NAME}${GIT_INFO}${ENV_INFO}${CONTEXT_INFO}${COST_INFO}"
+echo "$MODEL | 📁 ${DIR_NAME}${GIT_INFO}${CONTEXT_INFO}${COST_INFO}"
