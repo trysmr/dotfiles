@@ -1,9 +1,7 @@
 #!/bin/bash
 
-# Read JSON input from stdin
 input=$(cat)
 
-# Extract values using jq
 MODEL=$(echo "$input" | jq -r '.model.display_name' 2>/dev/null)
 CURRENT_DIR=$(echo "$input" | jq -r '.workspace.current_dir' 2>/dev/null)
 DIR_NAME=""
@@ -21,19 +19,18 @@ if git rev-parse --git-dir > /dev/null 2>&1; then
     UNSTAGED=$(git diff --name-only 2>/dev/null | wc -l | xargs)
     UNTRACKED=$(git ls-files --others --exclude-standard 2>/dev/null | wc -l | xargs)
 
-    CHANGES=""
-    [ "$STAGED" -gt 0 ] && CHANGES="${CHANGES}+${STAGED}"
-    [ "$UNSTAGED" -gt 0 ] && CHANGES="${CHANGES} ~${UNSTAGED}"
-    [ "$UNTRACKED" -gt 0 ] && CHANGES="${CHANGES} ?${UNTRACKED}"
+    CHANGES="${CHANGES}+${STAGED}"
+    CHANGES="${CHANGES},~${UNSTAGED}"
+    CHANGES="${CHANGES},?${UNTRACKED}"
 
     if [ -n "$CHANGES" ]; then
-        GIT_INFO=" | ⎇ ${BRANCH} (${CHANGES})"
+        GIT_INFO="${BRANCH} (${CHANGES})"
     else
-        GIT_INFO=" | ⎇ ${BRANCH}"
+        GIT_INFO="${BRANCH}"
     fi
 fi
 
-# コンテキスト使用率
+# コンテキスト
 CONTEXT_INFO=""
 CONTEXT_SIZE=$(echo "$input" | jq -r '.context_window.context_window_size' 2>/dev/null)
 USAGE=$(echo "$input" | jq '.context_window.current_usage' 2>/dev/null)
@@ -56,5 +53,12 @@ if [ -n "$TOTAL_COST" ] && [ "$TOTAL_COST" != "null" ]; then
     COST_INFO="\$$(printf "%.4f" "$TOTAL_COST")"
 fi
 
-echo "Model: $MODEL | Cwd: ${DIR_NAME} | ${GIT_INFO}"
-echo "Ctx: ${CONTEXT_INFO} | Cost: ${COST_INFO}"
+RED_BOLD='\033[1;31m'
+GREEN='\033[32m'
+YELLOW='\033[33m'
+BLUE_BOLD='\033[1;34m'
+MAGENTA_BOLD='\033[1;35m'
+CYAN='\033[1;36m'
+RESET='\033[0m'
+
+echo -e "[${BLUE_BOLD}${MODEL}${RESET}] ${CYAN}${DIR_NAME}${RESET} | ${RED_BOLD}${GIT_INFO}${RESET} | ${GREEN}${CONTEXT_INFO}${RESET} | ${YELLOW}${COST_INFO}${RESET}"
