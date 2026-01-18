@@ -26,19 +26,11 @@ if git rev-parse --git-dir > /dev/null 2>&1; then
     [ "$UNSTAGED" -gt 0 ] && CHANGES="${CHANGES} ~${UNSTAGED}"
     [ "$UNTRACKED" -gt 0 ] && CHANGES="${CHANGES} ?${UNTRACKED}"
 
-    # 前回のコミット時刻
-    LAST_COMMIT=""
-    if git log -1 --format=%cr > /dev/null 2>&1; then
-        LAST_COMMIT_TIME=$(git log -1 --format=%cr 2>/dev/null)
-        LAST_COMMIT=" | ⏰ ${LAST_COMMIT_TIME}"
-    fi
-
     if [ -n "$CHANGES" ]; then
-        GIT_INFO=" | 🌿 ${BRANCH} (${CHANGES})"
+        GIT_INFO=" | ⎇ ${BRANCH} (${CHANGES})"
     else
-        GIT_INFO=" | 🌿 ${BRANCH}"
+        GIT_INFO=" | ⎇ ${BRANCH}"
     fi
-    GIT_INFO="${GIT_INFO}${LAST_COMMIT}"
 fi
 
 # コンテキスト使用率
