@@ -45,15 +45,16 @@ if [ "$USAGE" != "null" ] && [ -n "$CONTEXT_SIZE" ] && [ "$CONTEXT_SIZE" != "nul
     CACHE_READ=$(echo "$USAGE" | jq -r '.cache_read_input_tokens // 0' 2>/dev/null)
     CURRENT_TOKENS=$((INPUT_TOKENS + CACHE_CREATE + CACHE_READ))
     PERCENT_USED=$((CURRENT_TOKENS * 100 / CONTEXT_SIZE))
-    CONTEXT_INFO=" | 📊 ${PERCENT_USED}%"
+    CONTEXT_INFO="${PERCENT_USED}%"
 fi
 
-# API費用
+# コスト
 COST_INFO=""
 TOTAL_COST=$(echo "$input" | jq -r '.cost.total_cost_usd' 2>/dev/null)
 if [ -n "$TOTAL_COST" ] && [ "$TOTAL_COST" != "null" ]; then
     # 小数点以下4桁まで表示
-    COST_INFO=" | 💰 \$$(printf "%.4f" "$TOTAL_COST")"
+    COST_INFO="\$$(printf "%.4f" "$TOTAL_COST")"
 fi
 
-echo "$MODEL | 📁 ${DIR_NAME}${GIT_INFO}${CONTEXT_INFO}${COST_INFO}"
+echo "Model: $MODEL | Cwd: ${DIR_NAME} | ${GIT_INFO}"
+echo "Ctx: ${CONTEXT_INFO} | Cost: ${COST_INFO}"
