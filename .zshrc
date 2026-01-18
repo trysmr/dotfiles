@@ -1,5 +1,21 @@
 # zshrc設定
 
+# -----
+# tmux自動起動
+# ログインシェル起動時にtmuxセッションを開始またはアタッチ
+if command -v tmux &> /dev/null && [[ -z "$TMUX" && -z "$VIM" && -z "$CLAUDE" && "$TERM_PROGRAM" != "vscode" && $- == *l* ]] ; then
+  sessions=$(tmux list-sessions -F "#{session_name}: #{session_windows} windows" 2>/dev/null)
+
+  if [[ -z "$sessions" ]]; then
+    tmux new-session -s default
+  else
+    selected_session=$(echo "$sessions" | fzf --select-1 | cut -d: -f1)
+    if [[ -n "$selected_session" ]]; then
+      tmux attach-session -t "$selected_session"
+    fi
+  fi
+fi
+
 # ---
 # emacsモード
 bindkey -e
