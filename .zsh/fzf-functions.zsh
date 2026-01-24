@@ -144,3 +144,33 @@ if command -v zoxide &> /dev/null; then
   # cd を zoxide に置き換えた場合、cdi が自動で使えるようになる
   alias zi='cdi'
 fi
+
+# =============================================================================
+# tmux 連携関数
+# =============================================================================
+
+# tmux セッションを選択して削除
+fzf-tmux-kill-session() {
+  local sessions
+  sessions=$(tmux list-sessions -F "#{session_name}: #{session_windows} windows (created #{session_created_string})" 2>/dev/null)
+
+  if [[ -z "$sessions" ]]; then
+    echo "⚠️  tmux セッションがありません"
+    return 1
+  fi
+
+  local selected
+  selected=$(echo "$sessions" |
+    fzf --multi \
+        --height=60% \
+        --header='🗑️  削除するセッションを選択（Tab: 複数選択）| Enter: 削除' |
+    cut -d: -f1)
+
+  if [[ -n "$selected" ]]; then
+    echo "$selected" | while read -r session; do
+      tmux kill-session -t "$session"
+      echo "✓ セッションを削除しました: $session"
+    done
+  fi
+}
+alias tks='fzf-tmux-kill-session'
