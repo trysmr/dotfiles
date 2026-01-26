@@ -1,10 +1,10 @@
 # zshrc設定
 
 # -----
-# tmux自動起動
-# ログインシェル起動時に新しいtmuxセッションを作成
-if command -v tmux &> /dev/null && [[ -z "$TMUX" && -z "$VIM" && -z "$CLAUDE" && "$TERM_PROGRAM" != "vscode" && $- == *l* ]] ; then
-  tmux new-session -s "session-$(date +%Y%m%d-%H%M%S)"
+# zellij自動起動
+# ログインシェル起動時にzellijを起動（セッション管理はzellij側で行う）
+if command -v zellij &> /dev/null && [[ -z "$ZELLIJ" && -z "$VIM" && -z "$CLAUDE" && "$TERM_PROGRAM" != "vscode" && $- == *l* ]] ; then
+  zellij attach --create main
 fi
 
 # ---

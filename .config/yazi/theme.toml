@@ -1,0 +1,161 @@
+# yaziテーマ設定 - Tokyo Night風
+
+[manager]
+# カーソル行
+cwd = { fg = "#7aa2f7" }
+
+# ホバー行（選択中）
+hovered = { fg = "#1a1b26", bg = "#7aa2f7", bold = true }
+preview_hovered = { underline = true }
+
+# 選択されたファイル
+selected = { fg = "#9ece6a", reversed = true }
+
+# ボーダー
+border_symbol = "│"
+border_style = { fg = "#3b4261" }
+
+[status]
+# ステータスバー
+separator_open = ""
+separator_close = ""
+separator_style = { fg = "#7aa2f7", bg = "#1a1b26" }
+
+# モード表示
+mode_normal = { fg = "#1a1b26", bg = "#7aa2f7", bold = true }
+mode_select = { fg = "#1a1b26", bg = "#9ece6a", bold = true }
+mode_unset = { fg = "#1a1b26", bg = "#f7768e", bold = true }
+
+# プログレス
+progress_label = { fg = "#c0caf5", bold = true }
+progress_normal = { fg = "#7aa2f7", bg = "#3b4261" }
+progress_error = { fg = "#f7768e", bg = "#3b4261" }
+
+# パーミッション
+permissions_t = { fg = "#7aa2f7" }
+permissions_r = { fg = "#e0af68" }
+permissions_w = { fg = "#f7768e" }
+permissions_x = { fg = "#9ece6a" }
+permissions_s = { fg = "#bb9af7" }
+
+[input]
+border = { fg = "#7aa2f7" }
+title = { fg = "#c0caf5" }
+value = { fg = "#c0caf5" }
+selected = { reversed = true }
+
+[select]
+border = { fg = "#7aa2f7" }
+active = { fg = "#9ece6a", bold = true }
+inactive = { fg = "#565f89" }
+
+[tasks]
+border = { fg = "#7aa2f7" }
+title = { fg = "#c0caf5" }
+hovered = { underline = true }
+
+[which]
+# which-keyスタイルのヒント
+mask = { bg = "#1a1b26" }
+cand = { fg = "#7dcfff" }
+rest = { fg = "#565f89" }
+desc = { fg = "#bb9af7" }
+separator = " → "
+separator_style = { fg = "#3b4261" }
+
+[help]
+on = { fg = "#9ece6a" }
+run = { fg = "#bb9af7" }
+desc = { fg = "#c0caf5" }
+hovered = { bg = "#3b4261", bold = true }
+footer = { fg = "#565f89", bg = "#1a1b26" }
+
+[filetype]
+rules = [
+    # メディア
+    { mime = "image/*", fg = "#bb9af7" },
+    { mime = "video/*", fg = "#e0af68" },
+    { mime = "audio/*", fg = "#9ece6a" },
+
+    # ドキュメント
+    { mime = "application/pdf", fg = "#f7768e" },
+    { mime = "application/zip", fg = "#7dcfff" },
+    { mime = "application/gzip", fg = "#7dcfff" },
+    { mime = "application/x-tar", fg = "#7dcfff" },
+    { mime = "application/x-bzip2", fg = "#7dcfff" },
+    { mime = "application/x-7z-compressed", fg = "#7dcfff" },
+    { mime = "application/x-rar", fg = "#7dcfff" },
+
+    # テキスト
+    { mime = "text/*", fg = "#c0caf5" },
+    { mime = "application/json", fg = "#e0af68" },
+    { mime = "application/javascript", fg = "#e0af68" },
+
+    # 実行可能
+    { mime = "application/x-executable", fg = "#9ece6a" },
+    { mime = "application/x-sharedlib", fg = "#9ece6a" },
+
+    # 特殊ファイル
+    { name = "*.md", fg = "#7aa2f7" },
+    { name = "*.lua", fg = "#7aa2f7" },
+    { name = "*.sh", fg = "#9ece6a" },
+    { name = "*.toml", fg = "#e0af68" },
+    { name = "*.yaml", fg = "#e0af68" },
+    { name = "*.yml", fg = "#e0af68" },
+    { name = "*.json", fg = "#e0af68" },
+    { name = ".gitignore", fg = "#565f89" },
+    { name = ".git*", fg = "#565f89" },
+    { name = "Makefile", fg = "#9ece6a" },
+    { name = "Dockerfile", fg = "#7dcfff" },
+]
+
+[icon]
+# アイコン設定（nerd-fontsが必要）
+rules = [
+    # ディレクトリ
+    { name = ".git", text = "" },
+    { name = ".config", text = "" },
+    { name = "node_modules", text = "" },
+    { name = "Desktop", text = "" },
+    { name = "Documents", text = "" },
+    { name = "Downloads", text = "" },
+    { name = "Music", text = "" },
+    { name = "Pictures", text = "" },
+    { name = "Videos", text = "" },
+
+    # ファイル拡張子
+    { name = "*.lua", text = "" },
+    { name = "*.sh", text = "" },
+    { name = "*.zsh", text = "" },
+    { name = "*.bash", text = "" },
+    { name = "*.fish", text = "" },
+    { name = "*.md", text = "" },
+    { name = "*.json", text = "" },
+    { name = "*.toml", text = "" },
+    { name = "*.yaml", text = "" },
+    { name = "*.yml", text = "" },
+    { name = "*.vim", text = "" },
+    { name = "*.git*", text = "" },
+    { name = "*.rs", text = "" },
+    { name = "*.go", text = "" },
+    { name = "*.py", text = "" },
+    { name = "*.js", text = "" },
+    { name = "*.ts", text = "" },
+    { name = "*.tsx", text = "" },
+    { name = "*.jsx", text = "" },
+    { name = "*.rb", text = "" },
+    { name = "*.pdf", text = "" },
+    { name = "*.zip", text = "" },
+    { name = "*.tar", text = "" },
+    { name = "*.gz", text = "" },
+    { name = "*.png", text = "" },
+    { name = "*.jpg", text = "" },
+    { name = "*.jpeg", text = "" },
+    { name = "*.gif", text = "" },
+    { name = "*.svg", text = "" },
+    { name = "*.mp3", text = "" },
+    { name = "*.mp4", text = "" },
+    { name = "*.mov", text = "" },
+    { name = "Dockerfile", text = "" },
+    { name = "Makefile", text = "" },
+]

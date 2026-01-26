@@ -47,6 +47,7 @@ return {
         { "<leader>s", group = "Session" },
         { "<leader>t", group = "Terminal" },
         { "<leader>d", desc = "Diagnostic float" },
+        { "<leader>y", desc = "Yazi" },
       })
     end,
   },

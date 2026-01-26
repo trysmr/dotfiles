@@ -1,0 +1,133 @@
+# yaziキーマップ設定
+# デフォルトのVim風キーバインドを基本とし、追加カスタマイズ
+
+[manager]
+keymap = [
+    # 終了
+    { on = ["q"], run = "quit", desc = "Quit" },
+    { on = ["Q"], run = "quit --no-cwd-file", desc = "Quit without cd" },
+    { on = ["<Esc>"], run = "escape", desc = "Cancel/Escape" },
+
+    # 移動（Vim風）
+    { on = ["j"], run = "arrow 1", desc = "Move down" },
+    { on = ["k"], run = "arrow -1", desc = "Move up" },
+    { on = ["h"], run = "leave", desc = "Go to parent" },
+    { on = ["l"], run = "enter", desc = "Enter directory / Open file" },
+
+    # 高速移動
+    { on = ["g", "g"], run = "arrow -99999999", desc = "Go to top" },
+    { on = ["G"], run = "arrow 99999999", desc = "Go to bottom" },
+    { on = ["<C-u>"], run = "arrow -50%", desc = "Half page up" },
+    { on = ["<C-d>"], run = "arrow 50%", desc = "Half page down" },
+
+    # ジャンプ
+    { on = ["~"], run = "cd ~", desc = "Go to home" },
+    { on = ["-"], run = "cd -", desc = "Go to previous" },
+
+    # 選択
+    { on = ["<Space>"], run = ["select --state=none", "arrow 1"], desc = "Toggle select" },
+    { on = ["v"], run = "visual_mode", desc = "Visual mode" },
+    { on = ["V"], run = "visual_mode --unset", desc = "Visual mode (unset)" },
+    { on = ["<C-a>"], run = "select_all --state=true", desc = "Select all" },
+    { on = ["<C-r>"], run = "select_all --state=none", desc = "Invert selection" },
+
+    # ファイル操作
+    { on = ["o"], run = "open", desc = "Open file" },
+    { on = ["O"], run = "open --interactive", desc = "Open with..." },
+    { on = ["<Enter>"], run = "open", desc = "Open file" },
+    { on = ["y"], run = "yank", desc = "Yank (copy)" },
+    { on = ["x"], run = "yank --cut", desc = "Cut" },
+    { on = ["p"], run = "paste", desc = "Paste" },
+    { on = ["P"], run = "paste --force", desc = "Paste (overwrite)" },
+    { on = ["d"], run = "remove", desc = "Delete to trash" },
+    { on = ["D"], run = "remove --permanently", desc = "Delete permanently" },
+
+    # 新規作成
+    { on = ["a"], run = "create", desc = "Create file/directory" },
+    { on = ["r"], run = "rename --cursor=before_ext", desc = "Rename" },
+
+    # 検索
+    { on = ["/"], run = "search fd", desc = "Search (fd)" },
+    { on = ["?"], run = "search rg", desc = "Search content (rg)" },
+    { on = ["n"], run = "search_next", desc = "Next search result" },
+    { on = ["N"], run = "search_prev", desc = "Previous search result" },
+
+    # フィルタ
+    { on = ["f"], run = "filter --smart", desc = "Filter files" },
+
+    # ソート
+    { on = ["s", "m"], run = "sort modified --reverse", desc = "Sort by modified" },
+    { on = ["s", "n"], run = "sort natural", desc = "Sort by name" },
+    { on = ["s", "s"], run = "sort size --reverse", desc = "Sort by size" },
+    { on = ["s", "e"], run = "sort extension", desc = "Sort by extension" },
+
+    # 表示切替
+    { on = ["."], run = "hidden toggle", desc = "Toggle hidden files" },
+
+    # シェル
+    { on = [":"], run = "shell --interactive", desc = "Run shell command" },
+    { on = ["!"], run = "shell --block --interactive", desc = "Run shell command (block)" },
+
+    # ヘルプ
+    { on = ["g", "?"], run = "help", desc = "Show help" },
+
+    # タブ
+    { on = ["t"], run = "tab_create --current", desc = "New tab" },
+    { on = ["1"], run = "tab_switch 0", desc = "Switch to tab 1" },
+    { on = ["2"], run = "tab_switch 1", desc = "Switch to tab 2" },
+    { on = ["3"], run = "tab_switch 2", desc = "Switch to tab 3" },
+    { on = ["["], run = "tab_switch -1 --relative", desc = "Previous tab" },
+    { on = ["]"], run = "tab_switch 1 --relative", desc = "Next tab" },
+
+    # プレビュー
+    { on = ["<Tab>"], run = "preview_files", desc = "Preview files" },
+
+    # ブックマーク
+    { on = ["m"], run = "linemode size", desc = "Show file size" },
+    { on = ["M"], run = "linemode none", desc = "Hide linemode" },
+]
+
+[tasks]
+keymap = [
+    { on = ["<Esc>"], run = "close", desc = "Close tasks" },
+    { on = ["q"], run = "close", desc = "Close tasks" },
+    { on = ["j"], run = "arrow 1", desc = "Move down" },
+    { on = ["k"], run = "arrow -1", desc = "Move up" },
+    { on = ["<Enter>"], run = "inspect", desc = "Inspect task" },
+    { on = ["x"], run = "cancel", desc = "Cancel task" },
+]
+
+[select]
+keymap = [
+    { on = ["<Esc>"], run = "close", desc = "Cancel" },
+    { on = ["q"], run = "close", desc = "Cancel" },
+    { on = ["<Enter>"], run = "close --submit", desc = "Confirm" },
+    { on = ["j"], run = "arrow 1", desc = "Move down" },
+    { on = ["k"], run = "arrow -1", desc = "Move up" },
+]
+
+[input]
+keymap = [
+    { on = ["<Esc>"], run = "close", desc = "Cancel" },
+    { on = ["<Enter>"], run = "close --submit", desc = "Confirm" },
+
+    # Emacs風編集
+    { on = ["<C-a>"], run = "move -999", desc = "Move to start" },
+    { on = ["<C-e>"], run = "move 999", desc = "Move to end" },
+    { on = ["<C-b>"], run = "move -1", desc = "Move left" },
+    { on = ["<C-f>"], run = "move 1", desc = "Move right" },
+    { on = ["<C-h>"], run = "backspace", desc = "Backspace" },
+    { on = ["<C-d>"], run = "delete", desc = "Delete" },
+    { on = ["<C-u>"], run = "kill bol", desc = "Kill to start" },
+    { on = ["<C-k>"], run = "kill eol", desc = "Kill to end" },
+    { on = ["<C-w>"], run = "kill backward", desc = "Kill word backward" },
+]
+
+[help]
+keymap = [
+    { on = ["<Esc>"], run = "escape", desc = "Clear/Cancel" },
+    { on = ["q"], run = "close", desc = "Close help" },
+    { on = ["j"], run = "arrow 1", desc = "Move down" },
+    { on = ["k"], run = "arrow -1", desc = "Move up" },
+    { on = ["/"], run = "filter", desc = "Filter" },
+]

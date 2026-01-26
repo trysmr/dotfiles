@@ -1,0 +1,83 @@
+# yazi基本設定
+
+[manager]
+# 隠しファイルを表示
+show_hidden = true
+
+# 自然順ソート（ファイル名の数字を考慮）
+sort_by = "natural"
+
+# ディレクトリを先に表示
+sort_dir_first = true
+
+# 逆順ソート無効
+sort_reverse = false
+
+# シンボリックリンクの実体を表示
+show_symlink = true
+
+# 選択時にプレビューを表示
+linemode = "size"
+
+[preview]
+# プレビュー最大幅
+max_width = 1000
+
+# プレビュー最大高さ
+max_height = 1000
+
+# 画像プレビューにkittyプロトコルを使用（iTerm2, WezTermなどでも動作）
+image_filter = "triangle"
+
+# 画像キャッシュを有効化
+cache_dir = ""
+
+[opener]
+# テキストファイルをNeovimで開く
+edit = [
+    { run = 'nvim "$@"', block = true, for = "unix" }
+]
+
+# フォルダを開く
+open = [
+    { run = 'open "$@"', desc = "Open with default app", for = "macos" }
+]
+
+# 画像ビューアで開く
+reveal = [
+    { run = 'open -R "$@"', desc = "Reveal in Finder", for = "macos" }
+]
+
+[open]
+# ファイルタイプごとのデフォルトオープナー
+rules = [
+    # テキスト系ファイル
+    { name = "*.md", use = "edit" },
+    { name = "*.txt", use = "edit" },
+    { name = "*.lua", use = "edit" },
+    { name = "*.sh", use = "edit" },
+    { name = "*.json", use = "edit" },
+    { name = "*.toml", use = "edit" },
+    { name = "*.yaml", use = "edit" },
+    { name = "*.yml", use = "edit" },
+
+    # デフォルト：mimeタイプで判定
+    { mime = "text/*", use = "edit" },
+    { mime = "image/*", use = "open" },
+    { mime = "video/*", use = "open" },
+    { mime = "audio/*", use = "open" },
+    { mime = "application/pdf", use = "open" },
+]
+
+[tasks]
+# 最大同時実行タスク数
+micro_workers = 10
+macro_workers = 25
+
+# 画像デコード用ワーカー数
+image_alloc = 536870912  # 512MB
+image_bound = [0, 0]
+
+[log]
+# ログ出力有効化（デバッグ用）
+enabled = false
