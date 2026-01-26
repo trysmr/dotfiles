@@ -2,9 +2,9 @@
 
 # -----
 # zellij自動起動
-# ログインシェル起動時にzellijを起動（セッション管理はzellij側で行う）
+# ログインシェル起動時にzellijを起動（常に新規セッション）
 if command -v zellij &> /dev/null && [[ -z "$ZELLIJ" && -z "$VIM" && -z "$CLAUDE" && "$TERM_PROGRAM" != "vscode" && $- == *l* ]] ; then
-  zellij attach --create main
+  zellij
 fi
 
 # ---
@@ -68,27 +68,18 @@ if [[ -f "$BREW_PREFIX/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 fi
 
 # -----
-# Git
-# 補完
+# Git補完
 # mkdir ~/.zsh
 # curl -o ~/.zsh/git-completion.bash https://raw.githubusercontent.com/git/git/master/contrib/completion/git-completion.bash
 # curl -o ~/.zsh/_git https://raw.githubusercontent.com/git/git/master/contrib/completion/git-completion.zsh
 zstyle ':completion:*:*:git:*' script $HOME/.zsh/git-completion.bash
 fpath=($HOME/.zsh $fpath)
 
-# curl -o ~/.zsh/git-prompt.sh https://raw.githubusercontent.com/git/git/master/contrib/completion/git-prompt.sh
-if [[ -f "$HOME/.zsh/git-prompt.sh" ]]; then
-    source "$HOME/.zsh/git-prompt.sh"
-    PS1='%F{yellow}%n@%m%f: %F{cyan}%~%f%B%F{red}$(__git_ps1 " (%s)")%f%b
-\$ '
-    
-    GIT_PS1_SHOWDIRTYSTATE=true # state
-    GIT_PS1_SHOWUNTRACKEDFILES=true # untracked
-    GIT_PS1_SHOWSTASHSTATE=true # stash
-    GIT_PS1_SHOWUPSTREAM=auto # upstream
-else
-    PS1='%F{yellow}%n@%m%f: %F{cyan}%~%f
-\$ '
+# -----
+# starship（プロンプト）
+# brew install starship
+if command -v starship &> /dev/null; then
+    eval "$(starship init zsh)"
 fi
 
 # -----
@@ -116,9 +107,17 @@ setopt hist_no_store
 function history-all { history -E 1 }
 
 # -----
-# ls
-export LSCOLORS=gxfxcxdxbxegedabagacad
-alias ls='ls -GF' # lsに色付けと種類の表示
+# eza（lsの代替）
+# brew install eza
+if command -v eza &> /dev/null; then
+    alias ls='eza --icons --git'
+    alias ll='eza --icons --git -la'
+    alias lt='eza --icons --git --tree --level=2'
+else
+    # ezaがない場合はデフォルトのls
+    export LSCOLORS=gxfxcxdxbxegedabagacad
+    alias ls='ls -GF'
+fi
 
 # -----
 # tfenv

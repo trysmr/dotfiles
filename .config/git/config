@@ -1,0 +1,52 @@
+# Git設定
+
+[core]
+    # deltaをページャーとして使用
+    pager = delta
+
+[interactive]
+    diffFilter = delta --color-only
+
+[delta]
+    # 機能セット
+    features = decorations
+
+    # 行番号を表示
+    line-numbers = true
+
+    # side-by-side表示（横幅が狭い場合は自動で縦表示に切り替え）
+    side-by-side = true
+
+    # シンタックスハイライト
+    syntax-theme = TwoDark
+
+    # ナビゲーション（n/Nで差分間を移動）
+    navigate = true
+
+    # 行内の変更をハイライト
+    inline-hint-style = syntax
+
+[delta "decorations"]
+    # ファイルヘッダー
+    file-style = yellow bold
+    file-decoration-style = yellow ul
+
+    # ハンクヘッダー
+    hunk-header-style = cyan
+    hunk-header-decoration-style = cyan box
+
+    # 追加行
+    plus-style = syntax "#003300"
+    plus-emph-style = syntax "#006600"
+
+    # 削除行
+    minus-style = syntax "#330000"
+    minus-emph-style = syntax "#660000"
+
+[merge]
+    # マージ時のコンフリクト表示を詳細に
+    conflictstyle = diff3
+
+[diff]
+    # 移動した行を検出
+    colorMoved = default
