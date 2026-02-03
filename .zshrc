@@ -194,7 +194,7 @@ fi
 
 # -----
 # その他
-export GREP_OPTIONS='--color=always' # grepに色をつける
+alias grep='grep --color=auto' # grepに色をつける
 setopt correct # typo検出
 setopt auto_cd # cdを自動に（ディレクトリ名だけでcd）
 function chpwd() { ls } # cd後に自動でls
