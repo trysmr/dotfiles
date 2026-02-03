@@ -50,9 +50,3 @@
 [diff]
     # 移動した行を検出
     colorMoved = default
-
-# ローカル設定（ユーザー情報等）を読み込む
-# config.localは.gitignore対象のため、各環境で個別に作成する
-# 例: git config --file ~/.config/git/config.local user.name "Your Name"
-[include]
-    path = config.local
