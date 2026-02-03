@@ -1,12 +1,5 @@
 # zshrc設定
 
-# -----
-# zellij自動起動
-# ログインシェル起動時にzellijを起動（常に新規セッション）
-if command -v zellij &> /dev/null && [[ -z "$ZELLIJ" && -z "$VIM" && -z "$CLAUDE" && "$TERM_PROGRAM" != "vscode" && $- == *l* ]] ; then
-  zellij
-fi
-
 # ---
 # emacsモード
 bindkey -e
