@@ -27,12 +27,13 @@ export EDITOR=vi
 
 # -----
 # 補完機能を有効に
-# 24時間以内に生成されていれば再生成をスキップ
+# .zcompdumpが24時間以上前のものなら再生成、そうでなければキャッシュを使用
+# (#qN.mh+24) = 24時間以上前に変更されたファイルにマッチ
 autoload -Uz compinit
 if [[ -n ~/.zcompdump(#qN.mh+24) ]]; then
-    compinit -d ~/.zcompdump
+    compinit -d ~/.zcompdump           # 古いので再生成
 else
-    compinit -C -d ~/.zcompdump
+    compinit -C -d ~/.zcompdump        # 新しいのでキャッシュ使用
 fi
 
 setopt auto_list # 一覧表示
@@ -89,7 +90,7 @@ fi
 
 # -----
 # 履歴
-export HISTSIZE=1000 # メモリに保存される履歴の件数
+export HISTSIZE=10000 # メモリに保存される履歴の件数（SAVEHISTと同じに）
 export SAVEHIST=10000 # 履歴ファイルに保存される履歴の件数
 setopt share_history
 setopt append_history

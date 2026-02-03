@@ -1,7 +1,7 @@
 -- Ruby言語固有の設定
--- LSP共通設定はlsp.luaで行う
+-- LSP設定はlsp.luaで一元管理
 
--- Rubyファイルのインデント設定（起動時に即座に登録）
+-- Rubyファイルのインデント設定
 vim.api.nvim_create_autocmd("FileType", {
   group = vim.api.nvim_create_augroup("RubyIndent", { clear = true }),
   pattern = { "ruby", "eruby" },
@@ -21,21 +21,5 @@ vim.api.nvim_create_autocmd("BufWritePre", {
   end,
 })
 
-return {
-  -- ruby_lsp設定
-  {
-    "neovim/nvim-lspconfig",
-    ft = { "ruby", "eruby" },
-    config = function()
-      vim.lsp.config.ruby_lsp = {
-        cmd = { "ruby-lsp" },
-        filetypes = { "ruby", "eruby" },
-        root_markers = { "Gemfile", ".git" },
-        init_options = {
-          formatter = "auto",
-        },
-      }
-      vim.lsp.enable("ruby_lsp")
-    end,
-  },
-}
+-- プラグインなし（autocmdのみ）
+return {}

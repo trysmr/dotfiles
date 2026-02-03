@@ -1,7 +1,7 @@
 -- Go言語固有の設定
--- LSP共通設定はlsp.luaで行う
+-- LSP設定はlsp.luaで一元管理
 
--- Goファイルのインデント設定（起動時に即座に登録）
+-- Goファイルのインデント設定
 vim.api.nvim_create_autocmd("FileType", {
   group = vim.api.nvim_create_augroup("GoIndent", { clear = true }),
   pattern = { "go", "gomod", "gowork" },
@@ -21,25 +21,5 @@ vim.api.nvim_create_autocmd("BufWritePre", {
   end,
 })
 
-return {
-  -- gopls設定
-  {
-    "neovim/nvim-lspconfig",
-    ft = { "go", "gomod", "gowork", "gotmpl" },
-    config = function()
-      vim.lsp.config.gopls = {
-        cmd = { "gopls" },
-        filetypes = { "go", "gomod", "gowork", "gotmpl" },
-        root_markers = { "go.mod", "go.work", ".git" },
-        settings = {
-          gopls = {
-            analyses = { unusedparams = true },
-            staticcheck = true,
-            gofumpt = true, -- より厳格なフォーマット
-          },
-        },
-      }
-      vim.lsp.enable("gopls")
-    end,
-  },
-}
+-- プラグインなし（autocmdのみ）
+return {}

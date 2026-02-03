@@ -1,3 +1,4 @@
 /.config/karabiner/automatic_backups/*
+/.config/git/config.local
 /.claude/settings.local.json
 **/.DS_Store

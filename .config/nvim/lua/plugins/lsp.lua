@@ -8,6 +8,8 @@ return {
     "williamboman/mason-lspconfig.nvim",
   },
   config = function()
+    local lspconfig = require("lspconfig")
+
     -- Mason: LSPサーバーのパッケージマネージャー
     require("mason").setup()
     require("mason-lspconfig").setup({
@@ -16,6 +18,48 @@ return {
         "gopls",     -- Go
         "ruby_lsp",  -- Ruby
         "lua_ls",    -- Lua（Neovim設定編集用）
+      },
+      -- LSPサーバーごとの設定
+      handlers = {
+        -- デフォルトハンドラー（設定なしのLSPサーバー用）
+        function(server_name)
+          lspconfig[server_name].setup({})
+        end,
+
+        -- Go (gopls)
+        ["gopls"] = function()
+          lspconfig.gopls.setup({
+            settings = {
+              gopls = {
+                analyses = { unusedparams = true },
+                staticcheck = true,
+                gofumpt = true, -- より厳格なフォーマット
+              },
+            },
+          })
+        end,
+
+        -- Ruby (ruby_lsp)
+        ["ruby_lsp"] = function()
+          lspconfig.ruby_lsp.setup({
+            init_options = {
+              formatter = "auto",
+            },
+          })
+        end,
+
+        -- Lua (lua_ls)
+        ["lua_ls"] = function()
+          lspconfig.lua_ls.setup({
+            settings = {
+              Lua = {
+                diagnostics = {
+                  globals = { "vim" }, -- Neovim組み込みのvimグローバルを認識
+                },
+              },
+            },
+          })
+        end,
       },
     })
 
