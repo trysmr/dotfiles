@@ -100,17 +100,10 @@ setopt hist_no_store
 function history-all { history -E 1 }
 
 # -----
-# eza（lsの代替）
-# brew install eza
-if command -v eza &> /dev/null; then
-    alias ls='eza --icons --git'
-    alias ll='eza --icons --git -la'
-    alias lt='eza --icons --git --tree --level=2'
-else
-    # ezaがない場合はデフォルトのls
-    export LSCOLORS=gxfxcxdxbxegedabagacad
-    alias ls='ls -GF'
-fi
+# ls
+export LSCOLORS=gxfxcxdxbxegedabagacad
+alias ls='ls -GF'
+alias ll='ls -la'
 
 # -----
 # tfenv
