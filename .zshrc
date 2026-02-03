@@ -55,12 +55,6 @@ if [[ -f "$BREW_PREFIX/share/zsh-autosuggestions/zsh-autosuggestions.zsh" ]]; th
     source "$BREW_PREFIX/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
 fi
 
-# シンタックスハイライト
-# brew install zsh-syntax-highlighting
-if [[ -f "$BREW_PREFIX/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" ]]; then
-    source "$BREW_PREFIX/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
-fi
-
 # -----
 # Git補完
 # mkdir ~/.zsh
@@ -96,6 +90,7 @@ setopt share_history
 setopt append_history
 setopt hist_ignore_dups
 setopt hist_ignore_all_dups
+setopt hist_ignore_space # 先頭スペースで履歴に残さない（機密コマンド用）
 setopt hist_no_store
 
 function history-all { history -E 1 }
@@ -201,5 +196,12 @@ setopt auto_cd # cdを自動に（ディレクトリ名だけでcd）
 function chpwd() { ls } # cd後に自動でls
 setopt auto_pushd # 自動でpushd
 setopt pushd_ignore_dups # pushdで重複を無視
+
+# -----
+# シンタックスハイライト（他の設定を読み込んだ後に適用）
+# brew install zsh-syntax-highlighting
+if [[ -f "$BREW_PREFIX/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" ]]; then
+    source "$BREW_PREFIX/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+fi
 
 export PATH="$HOME/.local/bin:$PATH"
