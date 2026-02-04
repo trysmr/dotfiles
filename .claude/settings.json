@@ -39,6 +39,7 @@
       "Skill(pr)",
       "Skill(code-search)",
       "Skill(plan-feature)",
+      "Skill(codex-review)",
       "WebFetch(domain:github.com)",
       "WebFetch(domain:docs.anthropic.com)"
     ],
