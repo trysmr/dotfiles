@@ -1,12 +1,18 @@
 #!/bin/bash
 
+# --force が指定された場合はTTLチェックをスキップ
+FORCE_RELOAD=false
+if [ "${1:-}" = "--force" ]; then
+  FORCE_RELOAD=true
+fi
+
 # 最後の実行時刻を保存し、一定時間経過後に再実行
 # プロジェクトごとにキャッシュを分離（PWDのハッシュ値を使用）
 PROJECT_HASH=$(echo -n "$PWD" | md5 | cut -c1-8)
 TIMESTAMP_FILE="/tmp/claude_context_timestamp_${PROJECT_HASH}"
 RELOAD_INTERVAL=3600  # 1時間（3600秒）
 
-if [ -f "$TIMESTAMP_FILE" ]; then
+if [ "$FORCE_RELOAD" != "true" ] && [ -f "$TIMESTAMP_FILE" ]; then
   LAST_TIME=$(cat "$TIMESTAMP_FILE")
   CURRENT_TIME=$(date +%s)
   ELAPSED=$((CURRENT_TIME - LAST_TIME))

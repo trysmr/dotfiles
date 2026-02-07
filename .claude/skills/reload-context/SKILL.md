@@ -1,6 +1,6 @@
 ---
 name: reload-context
-description: ユーザーメモリ、プロジェクトメモリ、READMEを再読み込み。「コンテキストを再読み込み」「設定をリロード」「CLAUDE.mdを読み直して」と言われた時、またはclear後にコンテキストを復元したい時に使用
+description: ユーザーメモリ、プロジェクトメモリ、READMEを再読み込み。「コンテキストを再読み込み」「設定をリロード」「CLAUDE.mdを読み直して」と言われた時、またはclear/compact後にコンテキストを復元したい時に使用
 allowed-tools:
   - Read
   - Bash
@@ -12,7 +12,9 @@ allowed-tools:
 
 ## 仕組み
 
-通常、コンテキストは`load_context.sh`フックにより1時間キャッシュされます。このスキルはキャッシュを削除することで、ファイル編集後すぐに変更を反映させます。
+通常、コンテキストは`load_context.sh`フックにより1時間キャッシュされます。
+ただし`SessionStart`の`resume|clear|compact`では`load_context.sh --force`が実行され、キャッシュを無視して即時再読み込みされます。
+このスキルはキャッシュを削除することで、ファイル編集後すぐに変更を反映させます。
 
 ## 実行手順
 
@@ -83,7 +85,7 @@ Read README.md
 5. すべての内容を整形して表示
 ```
 
-### 例2: clear後にコンテキストを確認したい
+### 例2: clear/compact後にコンテキストを確認したい
 ```
 ユーザー: 「/reload-context」
 アシスタント:
@@ -98,4 +100,5 @@ Read README.md
 
 - ファイルが存在しない場合は、その旨を通知します
 - `.claude/rules/*.md`はClaude Codeが自動的に読み込むため、このスキルでは表示しません
+- `resume|clear|compact`ではフックにより強制再読み込み（`--force`）が実行されます
 - キャッシュクリアにより、次回ツール実行時に`load_context.sh`が再実行されます

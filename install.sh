@@ -36,6 +36,24 @@ safe_symlink "$dir/.claude/skills" "$HOME/.claude/skills"
 # statusline.shのシンボリックリンクを作成する
 safe_symlink "$dir/.claude/statusline.sh" "$HOME/.claude/statusline.sh"
 
+# .codexディレクトリを作成
+mkdir -p "$HOME/.codex"
+
+# AGENTS.mdのシンボリックリンクを作成する
+safe_symlink "$dir/.claude/CLAUDE.md" "$HOME/.codex/AGENTS.md"
+
+# Codex USERスコープのskillsディレクトリを作成
+mkdir -p "$HOME/.agents/skills"
+
+# Claude CodeのスキルをCodex USERスコープへ連携する
+for skill_dir in "$dir/.claude/skills"/*; do
+  [[ -d "$skill_dir" ]] || continue
+  skill_name="$(basename "$skill_dir")"
+  [[ "$skill_name" = .* ]] && continue
+  [[ -f "$skill_dir/SKILL.md" ]] || continue
+  safe_symlink "$skill_dir" "$HOME/.agents/skills/$skill_name"
+done
+
 for f in "$dir"/.??*; do
   filename="$(basename "$f")"
   [[ "$filename" = ".git" ]] && continue

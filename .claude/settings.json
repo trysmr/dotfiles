@@ -89,11 +89,11 @@
     ],
     "SessionStart": [
       {
-        "matcher": "resume|clear",
+        "matcher": "resume|clear|compact",
         "hooks": [
           {
             "type": "command",
-            "command": "~/.claude/hooks/load_context.sh"
+            "command": "~/.claude/hooks/load_context.sh --force"
           }
         ]
       }
