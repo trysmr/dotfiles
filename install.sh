@@ -82,8 +82,9 @@ if command -v git &> /dev/null && command -v curl &> /dev/null; then
   # タグが存在するか確認（Apple Gitなどは存在しない場合あり）
   if curl -fsSL --head "${GIT_COMPLETION_URL}/git-completion.bash" &> /dev/null; then
     if curl -fsSL -o "$HOME/.zsh/git-completion.bash" "${GIT_COMPLETION_URL}/git-completion.bash" && \
-       curl -fsSL -o "$HOME/.zsh/_git" "${GIT_COMPLETION_URL}/git-completion.zsh"; then
-      echo "Git completion files downloaded for v${GIT_VERSION}"
+       curl -fsSL -o "$HOME/.zsh/_git" "${GIT_COMPLETION_URL}/git-completion.zsh" && \
+       curl -fsSL -o "$HOME/.zsh/git-prompt.sh" "${GIT_COMPLETION_URL}/git-prompt.sh"; then
+      echo "Git completion and prompt files downloaded for v${GIT_VERSION}"
     else
       echo "Warning: Failed to download git completion files, skipping..."
     fi
