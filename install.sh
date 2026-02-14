@@ -42,6 +42,36 @@ mkdir -p "$HOME/.codex"
 # AGENTS.mdのシンボリックリンクを作成する
 safe_symlink "$dir/.claude/CLAUDE.md" "$HOME/.codex/AGENTS.md"
 
+# .copilotディレクトリを作成
+mkdir -p "$HOME/.copilot"
+
+# copilot-instructions.mdのシンボリックリンクを作成する
+safe_symlink "$dir/.claude/CLAUDE.md" "$HOME/.copilot/copilot-instructions.md"
+
+# Copilot USERスコープのskillsディレクトリを作成
+mkdir -p "$HOME/.copilot/skills"
+
+# Claude CodeのスキルをCopilot USERスコープへ連携する
+for skill_dir in "$dir/.claude/skills"/*; do
+  [[ -d "$skill_dir" ]] || continue
+  skill_name="$(basename "$skill_dir")"
+  [[ "$skill_name" = .* ]] && continue
+  [[ -f "$skill_dir/SKILL.md" ]] || continue
+  safe_symlink "$skill_dir" "$HOME/.copilot/skills/$skill_name"
+done
+
+# Copilot USERスコープのhooksディレクトリを作成
+mkdir -p "$HOME/.copilot/hooks"
+
+# Claude CodeのhooksをCopilot USERスコープへ連携する
+for hook_script in "$dir/.claude/hooks"/*; do
+  [[ -f "$hook_script" ]] || continue
+  safe_symlink "$hook_script" "$HOME/.copilot/hooks/$(basename "$hook_script")"
+done
+
+# Copilot用hooks設定ファイルを配置する（各プロジェクトの .github/hooks から参照可能）
+safe_symlink "$dir/.github/hooks/claude-compatible.json" "$HOME/.copilot/hooks/claude-compatible.json"
+
 # Codex USERスコープのskillsディレクトリを作成
 mkdir -p "$HOME/.agents/skills"
 

@@ -4,7 +4,25 @@
 # 許可リストのgitコマンドが && や ; と組み合わせて実行されることを防ぐ
 
 input=$(cat)
-command=$(echo "$input" | jq -r '.tool_input.command')
+is_copilot=$(echo "$input" | jq -r 'has("toolName")')
+command=$(echo "$input" | jq -r '
+  (
+    .toolArgs? | fromjson? | .command?
+  ) // .toolInput.command? // .tool_input.command? // ""
+')
+
+deny() {
+  local message="$1"
+
+  if [ "$is_copilot" = "true" ]; then
+    jq -nc --arg msg "$message" \
+      '{"permissionDecision":"deny","permissionDecisionReason":$msg}'
+    exit 0
+  fi
+
+  echo "$message" >&2
+  exit 2
+}
 
 # settings.jsonからgit関連の許可パターンを動的に取得
 SETTINGS_FILE="$HOME/.claude/settings.json"
@@ -90,14 +108,12 @@ fi
 if [ "$is_allowed_git" = true ]; then
   # -Cオプションの使用を禁止
   if [[ "$command" =~ git[[:space:]]+-C[[:space:]=] ]]; then
-    echo "-Cオプションは禁止されています。現在のディレクトリでgitコマンドを実行してください。" >&2
-    exit 2
+    deny "-Cオプションは禁止されています。現在のディレクトリでgitコマンドを実行してください。"
   fi
 
   # チェーンをブロック
   if [[ "$command" =~ \&\& ]] || [[ "$command" =~ \; ]]; then
-    echo "gitコマンドを他のコマンドとチェーンで実行することは許可されていません。コマンドは個別に実行してください。" >&2
-    exit 2
+    deny "gitコマンドを他のコマンドとチェーンで実行することは許可されていません。コマンドは個別に実行してください。"
   fi
 fi
 

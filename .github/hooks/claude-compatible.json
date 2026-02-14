@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "hooks": [
+    {
+      "type": "preToolUse",
+      "description": "Apply Claude-compatible shell safety checks for Bash tool calls.",
+      "matcher": "Bash",
+      "hooks": [
+        {
+          "type": "command",
+          "command": "$HOME/.copilot/hooks/git_chain_check.sh"
+        },
+        {
+          "type": "command",
+          "command": "$HOME/.copilot/hooks/docker_rails_exec_check.sh"
+        }
+      ]
+    }
+  ]
+}
