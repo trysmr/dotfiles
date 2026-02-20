@@ -3,6 +3,10 @@
 input=$(cat)
 
 MODEL=$(echo "$input" | jq -r '.model.display_name' 2>/dev/null)
+SESSION_ID=$(echo "$input" | jq -r '.session_id' 2>/dev/null)
+if [ "$SESSION_ID" = "null" ] || [ -z "$SESSION_ID" ]; then
+    SESSION_ID=""
+fi
 CURRENT_DIR=$(echo "$input" | jq -r '.workspace.current_dir' 2>/dev/null)
 DIR_NAME=""
 if [ -n "$CURRENT_DIR" ] && [ "$CURRENT_DIR" != "null" ]; then
@@ -61,4 +65,4 @@ MAGENTA_BOLD='\033[1;35m'
 CYAN='\033[1;36m'
 RESET='\033[0m'
 
-echo -e "[${BLUE_BOLD}${MODEL}${RESET}] ${CYAN}${DIR_NAME}${RESET} | ${RED_BOLD}${GIT_INFO}${RESET} | ${GREEN}${CONTEXT_INFO}${RESET} | ${YELLOW}${COST_INFO}${RESET}"
+echo -e "[${BLUE_BOLD}${MODEL}${RESET}] ${CYAN}${DIR_NAME}${RESET} | ${RED_BOLD}${GIT_INFO}${RESET} | ${GREEN}${CONTEXT_INFO}${RESET} | ${YELLOW}${COST_INFO}${RESET} | ${MAGENTA_BOLD}${SESSION_ID}${RESET}"
