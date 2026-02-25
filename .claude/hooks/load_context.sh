@@ -8,9 +8,9 @@ fi
 
 # 最後の実行時刻を保存し、一定時間経過後に再実行
 # プロジェクトごとにキャッシュを分離（PWDのハッシュ値を使用）
-PROJECT_HASH=$(echo -n "$PWD" | md5 | cut -c1-8)
+PROJECT_HASH=$(echo -n "$(pwd)" | md5 | cut -c1-8)
 TIMESTAMP_FILE="/tmp/claude_context_timestamp_${PROJECT_HASH}"
-RELOAD_INTERVAL=3600  # 1時間（3600秒）
+RELOAD_INTERVAL=3600  # 1時間
 
 if [ "$FORCE_RELOAD" != "true" ] && [ -f "$TIMESTAMP_FILE" ]; then
   LAST_TIME=$(cat "$TIMESTAMP_FILE")
@@ -57,7 +57,26 @@ fi
 
 # 何か読み込んだ内容があれば出力
 if [ -n "$OUTPUT" ]; then
-  echo -e "The following context has been loaded:\n\n$OUTPUT"
+  # 読み込んだファイル一覧を作成
+  LOADED_FILES=()
+  [ -f "$USER_MEMORY" ] && LOADED_FILES+=("~/.claude/CLAUDE.md")
+  [ -n "$PROJECT_MEMORY" ] && [ -f "$PROJECT_MEMORY" ] && LOADED_FILES+=("$PROJECT_MEMORY")
+  [ -f "$README" ] && LOADED_FILES+=("$README")
+  LOADED_LIST=$(IFS=','; echo "${LOADED_FILES[*]}" | sed 's/,/, /g')
+
+  # JSON形式で出力（systemMessage: ユーザー通知、additionalContext: アシスタントへのコンテキスト注入）
+  CONTEXT=$(echo -e "The following context has been loaded:\n\n$OUTPUT")
+  jq -n \
+    --arg msg "[load_context] Loaded: $LOADED_LIST" \
+    --arg ctx "$CONTEXT" \
+    '{
+      systemMessage: $msg,
+      hookSpecificOutput: {
+        hookEventName: "PreToolUse",
+        additionalContext: $ctx
+      }
+    }'
+
   # タイムスタンプを更新
   date +%s > "$TIMESTAMP_FILE"
 fi

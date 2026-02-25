@@ -20,10 +20,11 @@ allowed-tools:
 
 ### 1. キャッシュをクリア
 
-プロジェクトごとのキャッシュファイルを削除します：
+`load_context.sh`はプロジェクトディレクトリ（`$PWD`）のMD5ハッシュでキャッシュを分離しているため、現在のプロジェクトのキャッシュのみを削除します：
 
 ```bash
-rm -f /tmp/claude_context_timestamp_*
+PROJECT_HASH=$(echo -n "$(pwd)" | md5 | cut -c1-8)
+rm -f "/tmp/claude_context_timestamp_${PROJECT_HASH}"
 ```
 
 ### 2. ユーザーメモリの読み込み
