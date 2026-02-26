@@ -135,9 +135,17 @@ fi
 # zoxide
 # brew install zoxide
 if command -v zoxide &> /dev/null; then
+    # zoxide初期化ヘルパー（cd / zi 両方から利用）
+    __ensure_zoxide_init() {
+        if [[ -z "$__ZOXIDE_INITIALIZED" ]]; then
+            eval "$(zoxide init zsh --cmd cd)"
+            __ZOXIDE_INITIALIZED=1
+        fi
+    }
+
     cd() {
         unfunction cd
-        eval "$(zoxide init zsh --cmd cd)"
+        __ensure_zoxide_init
         cd "$@"
     }
 fi

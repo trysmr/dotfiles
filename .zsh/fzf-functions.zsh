@@ -140,9 +140,25 @@ fi
 # =============================================================================
 
 if command -v zoxide &> /dev/null; then
-  # zi エイリアス: zoxide の cdi (インタラクティブモード) に委譲
-  # cd を zoxide に置き換えた場合、cdi が自動で使えるようになる
-  alias zi='cdi'
+  # ghq管理リポジトリでzoxideに未登録のものを登録
+  # zoxide query --list と ghq list -p の差分から未登録を検出
+  __zoxide_add_missing_ghq() {
+    command -v ghq &> /dev/null || return
+    comm -13 <(zoxide query --list | sort) <(ghq list -p | sort) | \
+      while IFS= read -r dir; do
+        zoxide add "$dir"
+      done
+  }
+
+  # zoxide インタラクティブモード（ghq連携付き）
+  zi() {
+    # zoxide未初期化の場合は初期化（cd より先に zi が呼ばれるケース対応）
+    if typeset -f __ensure_zoxide_init > /dev/null 2>&1; then
+      __ensure_zoxide_init
+    fi
+    __zoxide_add_missing_ghq
+    cdi "$@" || true
+  }
 fi
 
 # =============================================================================
