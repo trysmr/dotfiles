@@ -69,7 +69,7 @@ RESET='\033[0m'
 
 echo -e "[${BLUE_BOLD}${MODEL}${RESET}] ${CYAN}${DIR_NAME}${RESET} | ${RED_BOLD}${GIT_INFO}${RESET} | ${GREEN}${CONTEXT_INFO}${RESET} | ${YELLOW}${COST_INFO}${RESET}"
 if [ -n "$SESSION_ID" ]; then
-    echo -e "  ${MAGENTA_BOLD}${SESSION_ID}${RESET}"
+    echo -e "  Session: ${MAGENTA_BOLD}${SESSION_ID}${RESET}"
 fi
 
 # --- Usage情報（セッション・週間クォータ） ---
@@ -131,8 +131,8 @@ make_progress_bar() {
     local filled=$((pct / 10))
     local empty=$((10 - filled))
     local bar=""
-    for ((i = 0; i < filled; i++)); do bar+="▰"; done
-    for ((i = 0; i < empty; i++)); do bar+="▱"; done
+    for ((i = 0; i < filled; i++)); do bar+="●"; done
+    for ((i = 0; i < empty; i++)); do bar+="○"; done
     echo "$bar"
 }
 
