@@ -284,7 +284,13 @@ EOF
 ## PRのマージ（ユーザーから指示があった場合）
 
 ```bash
+# 通常のPR（feature/*, bugfix/*, chore/* など）
 gh pr merge <PR番号> --merge --delete-branch
+
+# リリースPR（staging → main）など永続ブランチからのPR
+gh pr merge <PR番号> --merge
 ```
 
-**注意**: プロジェクトでは**Merge commit**を使用します（Squash mergeは使用しない）。
+**注意**:
+- プロジェクトでは**Merge commit**を使用します（Squash mergeは使用しない）
+- `staging`や`main`などの永続ブランチがソースの場合は`--delete-branch`を**つけない**こと
