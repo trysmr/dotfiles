@@ -4,28 +4,15 @@
 # 機密ファイルや危険パスへの書き込みをdeterministicにブロック
 # permissions.denyを補完し、Edit経由のバイパスを防ぐ
 
+source "$(dirname "$0")/_common.sh"
+
 input=$(cat)
-is_copilot=$(printf '%s' "$input" | jq -r 'has("toolName")')
-file_path=$(printf '%s' "$input" | jq -r '
-  (
-    .toolArgs? | fromjson? | .file_path?
-  ) // .toolInput.file_path? // .tool_input.file_path? // ""
-')
+is_copilot=$(printf '%s' "$input" | detect_copilot)
+file_path=$(printf '%s' "$input" | extract_field "file_path")
 
 [ -z "$file_path" ] && exit 0
 
-deny() {
-  local message="$1"
-
-  if [ "$is_copilot" = "true" ]; then
-    jq -nc --arg msg "$message" \
-      '{"permissionDecision":"deny","permissionDecisionReason":$msg}'
-    exit 0
-  fi
-
-  printf '%s\n' "$message" >&2
-  exit 2
-}
+deny() { deny_action "$1" "$is_copilot"; }
 
 basename_lower=$(basename "$file_path" | tr '[:upper:]' '[:lower:]')
 

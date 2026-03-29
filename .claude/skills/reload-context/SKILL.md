@@ -1,6 +1,6 @@
 ---
 name: reload-context
-description: ユーザーメモリ、プロジェクトメモリ、READMEを再読み込み。「コンテキストを再読み込み」「設定をリロード」「CLAUDE.mdを読み直して」と言われた時、またはclear/compact後にコンテキストを復元したい時に使用
+description: CLAUDE.md/README.md編集後にコンテキストキャッシュを即座にクリア・再読み込み。「コンテキストを再読み込み」「設定をリロード」「CLAUDE.mdを読み直して」と言われた時、またはclear/compact後にコンテキストを復元したい時に使用
 allowed-tools:
   - Read
   - Bash

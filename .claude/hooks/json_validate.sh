@@ -18,7 +18,7 @@ esac
 
 [ -f "$file_path" ] || exit 0
 
-if ! jq empty "$file_path" 2>/dev/null; then
-  jq -n --arg msg "JSON構文エラー: $file_path を確認してください" \
+if ! error_msg=$(jq '.' "$file_path" 2>&1 >/dev/null); then
+  jq -n --arg msg "JSON構文エラー ($file_path): $error_msg" \
     '{systemMessage: $msg}'
 fi

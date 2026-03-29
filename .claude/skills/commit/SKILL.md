@@ -14,24 +14,8 @@ allowed-tools:
 
 ### 1. ブランチ戦略の確認
 
-まず`README.md`を読み込んで、プロジェクトのブランチ戦略を理解してください：
+ブランチ構成とベースブランチ選択ルールは `.claude/skills/_shared/branch-strategy.md` を参照。
 
-```bash
-Read README.md
-```
-
-**ブランチ構成の例**：
-- `main`: 本番環境（必須）
-- `staging`: ステージング環境（プロジェクトによっては存在しない場合がある）
-- `feature/*`: 新機能開発
-- `bugfix/*`: バグ修正
-- `hotfix/*`: 緊急修正
-- `refactor/*`: リファクタリング
-- `chore/*`: 設定変更・ビルド関連
-- `test/*`: テストコード
-- `docs/*`: ドキュメント作成・更新
-
-**ベースブランチの確認**：
 ```bash
 git branch -a
 ```

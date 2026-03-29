@@ -22,16 +22,13 @@ allowed-tools:
 Read README.md
 ```
 
-**ベースブランチの確認**：
+ベースブランチ選択ルールは `.claude/skills/_shared/branch-strategy.md` を参照。
+
 ```bash
 git branch -a
 ```
 
-で利用可能なブランチを確認し、以下のルールに従います：
-
-**ベースブランチ選択ルール**：
-- `hotfix/*` → `main`をベースにする
-- **その他すべて** → `staging`が存在する場合は`staging`、存在しない場合は`main`をベースにする
+で利用可能なブランチを確認します。
 
 ### 2. 変更内容の確認
 

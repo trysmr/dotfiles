@@ -1,25 +1,12 @@
 #!/bin/bash
 
+source "$(dirname "$0")/_common.sh"
+
 input=$(cat)
-is_copilot=$(echo "$input" | jq -r 'has("toolName")')
-command=$(echo "$input" | jq -r '
-  (
-    .toolArgs? | fromjson? | .command?
-  ) // .toolInput.command? // .tool_input.command? // ""
-')
+is_copilot=$(printf '%s' "$input" | detect_copilot)
+command=$(printf '%s' "$input" | extract_field "command")
 
-deny() {
-  local message="$1"
-
-  if [ "$is_copilot" = "true" ]; then
-    jq -nc --arg msg "$message" \
-      '{"permissionDecision":"deny","permissionDecisionReason":$msg}'
-    exit 0
-  fi
-
-  echo "$message" >&2
-  exit 2
-}
+deny() { deny_action "$1" "$is_copilot"; }
 
 # 対象：rails, bundle, rake など（bin/rails, ./bin/rails なども検知）
 if [[ "$command" =~ ^(\.?/?bin/)?(rails|bundle|rake)([[:space:]]|$) ]]; then

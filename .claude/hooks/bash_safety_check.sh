@@ -279,9 +279,58 @@ check_against_patterns() {
   return 1
 }
 
+# --- サブシェル/グループ化チェック ---
+# (cmd) や { cmd; } の外側を剥がし、内容を再分割してチェック
+# 既知の制限: ネストされた((...))は外側1段のみ検出
+
+check_grouping() {
+  local subcmd="$1"
+  local trimmed
+  trimmed=$(printf '%s' "$subcmd" | sed 's/^[[:space:]]*//; s/[[:space:]]*$//')
+
+  local inner=""
+  if [[ "$trimmed" == '('*')' ]]; then
+    inner="${trimmed:1:${#trimmed}-2}"
+  elif [[ "$trimmed" == '{'*'}' ]]; then
+    inner="${trimmed:1:${#trimmed}-2}"
+    inner=$(printf '%s' "$inner" | sed 's/[[:space:]]*;[[:space:]]*$//')
+  fi
+
+  [ -z "$inner" ] && return
+
+  local saved_results=("${SPLIT_RESULTS[@]}")
+  split_command "$inner"
+  for inner_cmd in "${SPLIT_RESULTS[@]}"; do
+    local result
+    result=$(check_against_patterns "$inner_cmd")
+    if [ $? -eq 0 ]; then
+      case "$result" in
+        deny:*)
+          local pattern="${result#deny:}"
+          deny "サブシェル/グループ内に禁止コマンド「${pattern}」が検出されました。コマンドは個別に実行してください。"
+          ;;
+        ask:*)
+          local pattern="${result#ask:}"
+          deny "サブシェル/グループ内に確認が必要なコマンド「${pattern}」が検出されました。コマンドは個別に実行してください。"
+          ;;
+      esac
+    fi
+  done
+  SPLIT_RESULTS=("${saved_results[@]}")
+}
+
 # --- メイン処理: コマンド分割と照合 ---
 
+# 全体が () や {} で囲まれている場合、split前にチェック
+# { cmd; } は ; で先に分割されるため、splitより前に処理する必要がある
+check_grouping "$command"
+
 split_command "$command"
+
+# 分割後の各パーツについてもサブシェルチェック（パイプ先の(cmd)等）
+for subcmd in "${SPLIT_RESULTS[@]}"; do
+  check_grouping "$subcmd"
+done
 
 if (( ${#SPLIT_RESULTS[@]} > 1 )); then
   for subcmd in "${SPLIT_RESULTS[@]}"; do
