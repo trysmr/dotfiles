@@ -64,15 +64,24 @@ if [ -n "$OUTPUT" ]; then
   [ -f "$README" ] && LOADED_FILES+=("$README")
   LOADED_LIST=$(IFS=','; echo "${LOADED_FILES[*]}" | sed 's/,/, /g')
 
+  # 呼び出し元のイベントに応じてhookEventNameを切り替え
+  # --force はSessionStartからのみ渡される
+  if [ "$FORCE_RELOAD" = "true" ]; then
+    HOOK_EVENT="SessionStart"
+  else
+    HOOK_EVENT="PreToolUse"
+  fi
+
   # JSON形式で出力（systemMessage: ユーザー通知、additionalContext: アシスタントへのコンテキスト注入）
   CONTEXT=$(echo -e "The following context has been loaded:\n\n$OUTPUT")
   jq -n \
     --arg msg "[load_context] Loaded: $LOADED_LIST" \
     --arg ctx "$CONTEXT" \
+    --arg evt "$HOOK_EVENT" \
     '{
       systemMessage: $msg,
       hookSpecificOutput: {
-        hookEventName: "PreToolUse",
+        hookEventName: $evt,
         additionalContext: $ctx
       }
     }'
