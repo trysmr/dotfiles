@@ -41,7 +41,8 @@
       "Skill(plan-feature)",
       "Skill(codex-review)",
       "WebFetch(domain:github.com)",
-      "WebFetch(domain:docs.anthropic.com)"
+      "WebFetch(domain:docs.anthropic.com)",
+      "WebFetch(domain:code.claude.com)"
     ],
     "deny": [
       "Bash(sudo:*)",
