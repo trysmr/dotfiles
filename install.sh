@@ -166,6 +166,9 @@ chmod 700 "$HOME/.claude"
 # CLAUDE.mdのシンボリックリンクを作成する
 safe_symlink "$dir/.claude/CLAUDE.md" "$HOME/.claude/CLAUDE.md"
 
+# AGENTS.mdのシンボリックリンクを作成する
+safe_symlink "$dir/.claude/AGENTS.md" "$HOME/.claude/AGENTS.md"
+
 # settings.jsonのシンボリックリンクを作成する
 safe_symlink "$dir/.claude/settings.json" "$HOME/.claude/settings.json"
 

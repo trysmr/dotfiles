@@ -49,6 +49,14 @@
 - Explain the **reasons for design choices** and trade-offs
 - Update documentation **immediately** when code changes
 
+### Review Gate
+
+実装完了後、コミット前に以下のレビューを実施する:
+
+- **セキュリティ関連の変更**（認証、入力処理、API、権限管理）: `security-reviewer` エージェントの実行を**必須**とする
+- **その他の変更**: `change-reviewer` エージェントまたは `review` Skillの実行を**推奨**する
+- Critical/High指摘がある場合は修正してからコミットする
+
 ### Todo Updates
 
 - Mark tasks as `in_progress` when starting work
