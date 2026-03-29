@@ -40,6 +40,8 @@
       "Skill(code-search)",
       "Skill(plan-feature)",
       "Skill(codex-review)",
+      "Skill(review)",
+      "Skill(record-lesson)",
       "WebFetch(domain:github.com)",
       "WebFetch(domain:docs.anthropic.com)",
       "WebFetch(domain:code.claude.com)"
@@ -145,6 +147,11 @@
           {
             "type": "command",
             "command": "~/.claude/hooks/json_validate.sh",
+            "timeout": 5
+          },
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/doc_freshness_check.sh",
             "timeout": 5
           }
         ]
