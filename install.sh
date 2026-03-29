@@ -181,6 +181,9 @@ safe_symlink "$dir/.claude/statusline.sh" "$HOME/.claude/statusline.sh"
 # rulesディレクトリのシンボリックリンクを作成する
 safe_symlink "$dir/.claude/rules" "$HOME/.claude/rules"
 
+# agentsディレクトリのシンボリックリンクを作成する
+safe_symlink "$dir/.claude/agents" "$HOME/.claude/agents"
+
 # .codexディレクトリを作成
 mkdir -p "$HOME/.codex"
 
