@@ -1,4 +1,5 @@
 {
+  "autoMemoryEnabled": true,
   "respectGitignore": true,
   "includeCoAuthoredBy": false,
   "permissions": {
@@ -15,7 +16,6 @@
       "Bash(git diff:*)",
       "Bash(git status:*)",
       "Bash(git add:*)",
-      "Bash(git push:*)",
       "Bash(gh pr *:*)",
       "Bash(docker compose exec app bundle list:*)",
       "Bash(docker compose exec app rails test:*)",
@@ -95,7 +95,8 @@
       "Bash(chmod:*)",
       "Bash(git stash:*)",
       "Bash(git cherry-pick:*)",
-      "Bash(git merge:*)"
+      "Bash(git merge:*)",
+      "Bash(git push:*)"
     ],
     "defaultMode": "plan",
     "disableBypassPermissionsMode": "disable"
