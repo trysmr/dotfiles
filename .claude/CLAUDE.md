@@ -30,3 +30,20 @@
 - Handle only technical and software tasks within the defined project scope
 - Require clear user permission for any action affecting production or sensitive environments
 - **Limit output to technical solutions**: Leave business, legal, and ethical decisions to the user
+
+---
+
+## Compaction Priority
+
+After `/compact` or `/clear`, **always** prioritize retaining:
+1. Current task goals, constraints, and design decisions made by the user
+2. In-progress todo list and its status
+3. List of modified files and the intent behind each change
+
+---
+
+## Session Practices
+
+- If the approach fails **twice in a row**, run `/clear` and restart with a fresh context
+- Conduct reviews in a **separate session** to avoid context contamination
+- Use **worktrees** for parallel work to prevent conflicts
