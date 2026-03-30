@@ -1,6 +1,6 @@
 # yaziテーマ設定 - Tokyo Night風
 
-[manager]
+[mgr]
 # カーソル行
 cwd = { fg = "#7aa2f7" }
 
@@ -44,7 +44,7 @@ title = { fg = "#c0caf5" }
 value = { fg = "#c0caf5" }
 selected = { reversed = true }
 
-[select]
+[pick]
 border = { fg = "#7aa2f7" }
 active = { fg = "#9ece6a", bold = true }
 inactive = { fg = "#565f89" }

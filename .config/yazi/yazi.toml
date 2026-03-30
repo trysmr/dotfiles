@@ -1,6 +1,6 @@
 # yazi基本設定
 
-[manager]
+[mgr]
 # 隠しファイルを表示
 show_hidden = true
 
