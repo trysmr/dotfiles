@@ -156,6 +156,19 @@
         ]
       }
     ],
+    "Stop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/render_mermaid.sh",
+            "timeout": 30,
+            "statusMessage": "Mermaidダイアグラムをレンダリング中..."
+          }
+        ]
+      }
+    ],
     "SessionStart": [
       {
         "matcher": "resume|clear|compact",

@@ -83,6 +83,8 @@ check_dependencies() {
   check_command fzf fzf recommended || true
   check_command zoxide zoxide recommended || true
   check_command delta git-delta recommended "未インストール時、git diff/logでエラーになります" || true
+  check_command jq jq recommended "Claude Code hookで使用" || true
+  check_command mmdc mermaid-cli recommended "Mermaid自動レンダリングhookで使用" || true
   check_file zsh-autosuggestions zsh-autosuggestions \
     "$BREW_PREFIX/share/zsh-autosuggestions/zsh-autosuggestions.zsh" recommended || true
   check_file zsh-syntax-highlighting zsh-syntax-highlighting \
@@ -97,7 +99,6 @@ check_dependencies() {
   check_command yazi yazi optional || true
   check_command fd fd optional "yaziの検索機能(/)で使用" || true
   check_command rg ripgrep optional "yaziのコンテンツ検索(?)で使用" || true
-  check_command jq jq optional || true
   echo ""
 
   echo "─────────────────────────────────"
