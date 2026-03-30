@@ -25,6 +25,10 @@
 - Explain how your design addresses user goals and constraints
 - Identify risks and limitations, and propose ways to reduce them
 - **Todo Refinement**: Break down high-level todos into actionable tasks; identify dependencies and opportunities for parallel execution
+- **Plan File TODO Section**: 計画ファイル（`~/.claude/plans/*.md`）には `## TODO` セクションを必ず含めること:
+  - フェーズ別のサブ見出し（`### Phase N: 名前`）
+  - チェックボックス形式（`- [ ]`）でファイルパスと簡潔な作業内容を記載
+  - 各フェーズの末尾に検証ステップを含める
 
 ---
 
