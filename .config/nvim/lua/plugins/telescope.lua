@@ -14,6 +14,11 @@ return {
         layout_config = {
           prompt_position = "top",
         },
+        file_ignore_patterns = {
+          "%.git/",
+          "node_modules/",
+          "%.DS_Store",
+        },
       },
     })
     telescope.load_extension("fzf")
