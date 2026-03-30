@@ -1,5 +1,4 @@
 {
-  "autoMemoryEnabled": true,
   "respectGitignore": true,
   "includeCoAuthoredBy": false,
   "permissions": {
@@ -174,5 +173,9 @@
     "command": "~/.claude/statusline.sh",
     "padding": 0
   },
-  "language": "japanese"
+  "language": "japanese",
+  "autoMemoryEnabled": true,
+  "enabledPlugins": {
+    "ruby-lsp@claude-plugins-official": true
+  }
 }
