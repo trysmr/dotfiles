@@ -1,66 +1,50 @@
 return {
-  -- 括弧の自動補完
   {
     "windwp/nvim-autopairs",
     event = "InsertEnter",
+    dependencies = { "hrsh7th/nvim-cmp" },
     config = function()
       require("nvim-autopairs").setup({
-        check_ts = true, -- Treesitter連携
+        check_ts = true,
       })
-      -- nvim-cmpと連携
+
       local cmp_autopairs = require("nvim-autopairs.completion.cmp")
       local cmp = require("cmp")
       cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done())
     end,
   },
 
-  -- コメントトグル
   {
     "numToStr/Comment.nvim",
     keys = {
-      { "gcc", mode = "n", desc = "Comment line" },
-      { "gc", mode = { "n", "v" }, desc = "Comment" },
+      { "gcc", mode = "n",          desc = "Comment line" },
+      { "gc",  mode = { "n", "v" }, desc = "Comment" },
     },
-    config = function()
-      require("Comment").setup()
-    end,
+    opts = {},
   },
 
-  -- キーバインドヘルプ
+  {
+    "folke/todo-comments.nvim",
+    event = { "BufReadPre", "BufNewFile" },
+    dependencies = { "nvim-lua/plenary.nvim" },
+    opts = {},
+  },
+
   {
     "folke/which-key.nvim",
-    event = "VeryLazy",
-    config = function()
-      local wk = require("which-key")
-      wk.setup({
-        delay = 500, -- 500ms後に表示
-      })
-      -- キーグループの説明を登録
-      wk.add({
-        { "<leader>a", group = "AI (Claude)" },
-        { "<leader>e", desc = "Explorer toggle" },
-        { "<leader>f", group = "Find (Telescope)" },
-        { "<leader>g", group = "Git" },
-        { "<leader>o", desc = "Explorer focus" },
-        { "<leader>q", group = "Quit" },
-        { "<leader>r", group = "Refactor" },
-        { "<leader>s", group = "Session" },
-        { "<leader>d", desc = "Diagnostic float" },
-        { "<leader>y", desc = "Yazi" },
-      })
-    end,
-  },
-
-  -- インデントガイド
-  {
-    "lukas-reineke/indent-blankline.nvim",
-    main = "ibl",
-    event = { "BufReadPost", "BufNewFile" },
-    config = function()
-      require("ibl").setup({
-        indent = { char = "│" },
-        scope = { enabled = true },
-      })
-    end,
+    lazy = false,
+    opts = {
+      delay = 400,
+      spec = {
+        { "<leader>b", group = "buffers" },
+        { "<leader>c", group = "code" },
+        { "<leader>d", group = "diagnostics" },
+        { "<leader>e", group = "explorer" },
+        { "<leader>f", group = "find" },
+        { "<leader>g", group = "git" },
+        { "<leader>o", group = "outline" },
+        { "<leader>t", group = "terminal" },
+      },
+    },
   },
 }

@@ -3,3 +3,5 @@
 /.zsh/git-completion.bash
 /.zsh/_git
 **/.DS_Store
+.nvimlog
+nvim.log

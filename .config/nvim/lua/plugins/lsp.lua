@@ -1,110 +1,119 @@
--- LSP共通設定
--- Mason経由でLSPサーバーをインストールし、共通キーマップを設定
 return {
   "neovim/nvim-lspconfig",
   event = { "BufReadPre", "BufNewFile" },
   dependencies = {
     "williamboman/mason.nvim",
     "williamboman/mason-lspconfig.nvim",
+    "hrsh7th/cmp-nvim-lsp",
+    "WhoIsSethDaniel/mason-tool-installer.nvim",
   },
   config = function()
-    local lspconfig = require("lspconfig")
+    local capabilities = vim.lsp.protocol.make_client_capabilities()
+    capabilities = require("cmp_nvim_lsp").default_capabilities(capabilities)
 
-    -- Mason: LSPサーバーのパッケージマネージャー
+    local servers = {
+      gopls = {
+        settings = {
+          gopls = {
+            analyses = { unusedparams = true },
+            staticcheck = true,
+            gofumpt = true,
+          },
+        },
+      },
+      ruby_lsp = {
+        init_options = {
+          formatter = "none",
+        },
+      },
+      lua_ls = {
+        settings = {
+          Lua = {
+            diagnostics = {
+              globals = { "vim" },
+            },
+            workspace = {
+              checkThirdParty = false,
+            },
+            telemetry = {
+              enable = false,
+            },
+          },
+        },
+      },
+      ts_ls = {},
+      rust_analyzer = {
+        settings = {
+          ["rust-analyzer"] = {
+            check = { command = "clippy" },
+            cargo = { allFeatures = true },
+          },
+        },
+      },
+      basedpyright = {
+        settings = {
+          basedpyright = {
+            analyses = {
+              typeCheckingMode = "standard",
+              autoImportCompletions = true,
+            }
+          }
+        }
+      }
+    }
+
     require("mason").setup()
-    require("mason-lspconfig").setup({
-      -- 使用するLSPサーバーを自動インストール
+    require("mason-tool-installer").setup({
       ensure_installed = {
-        "gopls",     -- Go
-        "ruby_lsp",  -- Ruby
-        "lua_ls",    -- Lua（Neovim設定編集用）
-      },
-      -- LSPサーバーごとの設定
-      handlers = {
-        -- デフォルトハンドラー（設定なしのLSPサーバー用）
-        function(server_name)
-          lspconfig[server_name].setup({})
-        end,
-
-        -- Go (gopls)
-        ["gopls"] = function()
-          lspconfig.gopls.setup({
-            settings = {
-              gopls = {
-                analyses = { unusedparams = true },
-                staticcheck = true,
-                gofumpt = true, -- より厳格なフォーマット
-              },
-            },
-          })
-        end,
-
-        -- Ruby (ruby_lsp)
-        ["ruby_lsp"] = function()
-          lspconfig.ruby_lsp.setup({
-            init_options = {
-              formatter = "auto",
-            },
-          })
-        end,
-
-        -- Lua (lua_ls)
-        ["lua_ls"] = function()
-          lspconfig.lua_ls.setup({
-            settings = {
-              Lua = {
-                diagnostics = {
-                  globals = { "vim" }, -- Neovim組み込みのvimグローバルを認識
-                },
-              },
-            },
-          })
-        end,
-      },
+        "gofumpt", "goimports",
+        "prettierd", "eslint_d",
+        "ruff",
+        "rubocop",
+        "stylua",
+      }
+    })
+    require("mason-lspconfig").setup({
+      ensure_installed = vim.tbl_keys(servers),
+      automatic_enable = false,
     })
 
-    -- LSPがバッファにアタッチしたときの共通設定
+    for server_name, server_opts in pairs(servers) do
+      vim.lsp.config(server_name, vim.tbl_deep_extend("force", {
+        capabilities = capabilities,
+      }, server_opts))
+      vim.lsp.enable(server_name)
+    end
+
     vim.api.nvim_create_autocmd("LspAttach", {
-      group = vim.api.nvim_create_augroup("LspKeymaps", { clear = true }),
+      group = vim.api.nvim_create_augroup("UserLspKeymaps", { clear = true }),
       callback = function(args)
         local opts = { buffer = args.buf }
 
-        -- ナビゲーション
-        vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
-        vim.keymap.set("n", "gD", vim.lsp.buf.declaration, opts)
-        vim.keymap.set("n", "gi", vim.lsp.buf.implementation, opts)
-        vim.keymap.set("n", "gr", vim.lsp.buf.references, opts)
-        vim.keymap.set("n", "gt", vim.lsp.buf.type_definition, opts)
-
-        -- ドキュメント
-        vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
-        vim.keymap.set("n", "<C-k>", vim.lsp.buf.signature_help, opts)
-
-        -- リファクタリング
-        vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts)
-        vim.keymap.set({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, opts)
-
-        -- 診断
-        vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, opts)
-        vim.keymap.set("n", "]d", vim.diagnostic.goto_next, opts)
-        vim.keymap.set("n", "<leader>d", vim.diagnostic.open_float, opts)
+        vim.keymap.set("n", "gd", vim.lsp.buf.definition, vim.tbl_extend("force", opts, { desc = "Go to definition" }))
+        vim.keymap.set("n", "gD", vim.lsp.buf.declaration, vim.tbl_extend("force", opts, { desc = "Go to declaration" }))
+        vim.keymap.set("n", "gi", vim.lsp.buf.implementation,
+          vim.tbl_extend("force", opts, { desc = "Go to implementation" }))
+        vim.keymap.set("n", "gr", vim.lsp.buf.references, vim.tbl_extend("force", opts, { desc = "References" }))
+        vim.keymap.set("n", "K", vim.lsp.buf.hover, vim.tbl_extend("force", opts, { desc = "Hover" }))
+        vim.keymap.set("n", "<leader>cr", vim.lsp.buf.rename, vim.tbl_extend("force", opts, { desc = "Rename" }))
+        vim.keymap.set({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action,
+        vim.tbl_extend("force", opts, { desc = "Code action" }))
+        vim.keymap.set("n", "[d", vim.diagnostic.goto_prev,
+          vim.tbl_extend("force", opts, { desc = "Previous diagnostic" }))
+        vim.keymap.set("n", "]d", vim.diagnostic.goto_next, vim.tbl_extend("force", opts, { desc = "Next diagnostic" }))
       end,
     })
 
-    -- 診断表示の設定
     vim.diagnostic.config({
       virtual_text = true,
       signs = true,
       underline = true,
       update_in_insert = false,
       severity_sort = true,
+      float = {
+        border = "rounded",
+        source = "if_many",
+      },
     })
-
-    -- 診断アイコンのカスタマイズ
-    local signs = { Error = " ", Warn = " ", Hint = "󰌵 ", Info = " " }
-    for type, icon in pairs(signs) do
-      local hl = "DiagnosticSign" .. type
-      vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
-    end
   end,
 }

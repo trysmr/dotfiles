@@ -1,5 +1,4 @@
 return {
-  -- 変更行の表示、blame、diff
   {
     "lewis6991/gitsigns.nvim",
     event = { "BufReadPre", "BufNewFile" },
@@ -46,5 +45,19 @@ return {
         end,
       })
     end,
+  },
+  {
+    "akinsho/toggleterm.nvim",
+    keys = {
+      {
+        "<leader>gg",
+        function()
+          local Terminal = require("toggleterm.terminal").Terminal
+          local lazygit = Terminal:new({ cmd = "lazygit", direction = "float", hidden = true })
+          lazygit:toggle()
+        end,
+        desc = "Lazygit"
+      },
+    },
   },
 }
