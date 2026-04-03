@@ -186,9 +186,18 @@
     "command": "~/.claude/statusline.sh",
     "padding": 0
   },
-  "language": "japanese",
-  "autoMemoryEnabled": true,
   "enabledPlugins": {
-    "ruby-lsp@claude-plugins-official": true
-  }
+    "ruby-lsp@claude-plugins-official": true,
+    "codex@openai-codex": true
+  },
+  "extraKnownMarketplaces": {
+    "openai-codex": {
+      "source": {
+        "source": "github",
+        "repo": "openai/codex-plugin-cc"
+      }
+    }
+  },
+  "language": "japanese",
+  "autoMemoryEnabled": true
 }
