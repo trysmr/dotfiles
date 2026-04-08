@@ -21,6 +21,7 @@
 
 ### Operations
 - **NEVER** make changes to production or sensitive environments without clear permission
+- **NEVER** change code you haven't read. Research the codebase before editing
 - **NEVER** merge or deploy code that has not been reviewed and passed all required tests
 
 ---
