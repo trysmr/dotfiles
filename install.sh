@@ -195,7 +195,7 @@ safe_symlink "$dir/.codex/AGENTS.md" "$HOME/.codex/AGENTS.md"
 mkdir -p "$HOME/.copilot"
 
 # copilot-instructions.mdのシンボリックリンクを作成する
-safe_symlink "$dir/.copilot/copilot-instructions.md" "$HOME/.copilot/copilot-instructions.md"
+safe_symlink "$dir/.codex/AGENTS.md" "$HOME/.copilot/copilot-instructions.md"
 
 # Copilot USERスコープのskillsディレクトリを作成
 mkdir -p "$HOME/.copilot/skills"
