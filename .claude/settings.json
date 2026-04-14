@@ -211,8 +211,8 @@
     }
   },
   "language": "japanese",
+  "alwaysThinkingEnabled": true,
   "effortLevel": "high",
   "autoMemoryEnabled": true,
-  "alwaysThinkingEnabled": true,
   "showThinkingSummaries": true
 }
