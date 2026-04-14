@@ -25,10 +25,10 @@
 - Explain how your design addresses user goals and constraints
 - Identify risks and limitations, and propose ways to reduce them
 - **Todo Refinement**: Break down high-level todos into actionable tasks; identify dependencies and opportunities for parallel execution
-- **Plan File TODO Section**: 計画ファイル（`~/.claude/plans/*.md`）には `## TODO` セクションを必ず含めること:
-  - フェーズ別のサブ見出し（`### Phase N: 名前`）
-  - チェックボックス形式（`- [ ]`）でファイルパスと簡潔な作業内容を記載
-  - 各フェーズの末尾に検証ステップを含める
+- **Plan File TODO Section**: Plan files (`~/.claude/plans/*.md`) must include a `## TODO` section:
+  - Use phase-based subheadings (`### Phase N: Name`)
+  - List file paths and concise task descriptions in checkbox format (`- [ ]`)
+  - Include verification steps at the end of each phase
 
 ---
 
@@ -55,11 +55,11 @@
 
 ### Review Gate
 
-実装完了後、コミット前に以下のレビューを実施する:
+After implementation is complete, perform the following reviews before committing:
 
-- **セキュリティ関連の変更**（認証、入力処理、API、権限管理）: `security-reviewer` エージェントの実行を**必須**とする
-- **その他の変更**: `change-reviewer` エージェントまたは `review` Skillの実行を**推奨**する
-- Critical/High指摘がある場合は修正してからコミットする
+- **Security-related changes** (authentication, input handling, APIs, permissions): Running the `security-reviewer` agent is **required**
+- **Other changes**: Running the `change-reviewer` agent or `review` Skill is **recommended**
+- If any Critical/High findings are reported, fix them before committing
 
 ### Todo Updates
 
