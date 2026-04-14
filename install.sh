@@ -167,9 +167,6 @@ chmod 700 "$HOME/.claude"
 # CLAUDE.mdのシンボリックリンクを作成する
 safe_symlink "$dir/.claude/CLAUDE.md" "$HOME/.claude/CLAUDE.md"
 
-# AGENTS.mdのシンボリックリンクを作成する
-safe_symlink "$dir/.claude/AGENTS.md" "$HOME/.claude/AGENTS.md"
-
 # settings.jsonのシンボリックリンクを作成する
 safe_symlink "$dir/.claude/settings.json" "$HOME/.claude/settings.json"
 
@@ -192,13 +189,13 @@ safe_symlink "$dir/.claude/agents" "$HOME/.claude/agents"
 mkdir -p "$HOME/.codex"
 
 # AGENTS.mdのシンボリックリンクを作成する
-safe_symlink "$dir/.claude/CLAUDE.md" "$HOME/.codex/AGENTS.md"
+safe_symlink "$dir/.codex/AGENTS.md" "$HOME/.codex/AGENTS.md"
 
 # .copilotディレクトリを作成
 mkdir -p "$HOME/.copilot"
 
 # copilot-instructions.mdのシンボリックリンクを作成する
-safe_symlink "$dir/.claude/CLAUDE.md" "$HOME/.copilot/copilot-instructions.md"
+safe_symlink "$dir/.copilot/copilot-instructions.md" "$HOME/.copilot/copilot-instructions.md"
 
 # Copilot USERスコープのskillsディレクトリを作成
 mkdir -p "$HOME/.copilot/skills"
@@ -240,6 +237,8 @@ for f in "$dir"/.??*; do
   filename="$(basename "$f")"
   [[ "$filename" = ".git" ]] && continue
   [[ "$filename" = ".claude" ]] && continue
+  [[ "$filename" = ".codex" ]] && continue
+  [[ "$filename" = ".copilot" ]] && continue
 
   # .configの場合はディレクトリを対象にする
   if [[ "$filename" = ".config" ]]; then
