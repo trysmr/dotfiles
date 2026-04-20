@@ -37,3 +37,31 @@ deny_action() {
 detect_copilot() {
   jq -r 'has("toolName")'
 }
+
+# YAML frontmatterから指定キーの値を抽出（jq非依存）
+# 使用法: value=$(parse_frontmatter "file.md" "type")
+parse_frontmatter() {
+  local file="$1"
+  local key="$2"
+  awk -v k="$key" '
+    /^---$/ { block++; next }
+    block == 1 && $0 ~ "^" k " *:" {
+      sub("^" k " *: *", "")
+      print
+      exit
+    }
+    block >= 2 { exit }
+  ' "$file"
+}
+
+# YAML frontmatterを除去し本文のみ出力
+# frontmatterがないファイルはそのまま全文出力
+# 使用法: body=$(strip_frontmatter "file.md")
+strip_frontmatter() {
+  local file="$1"
+  awk '
+    NR == 1 && /^---$/ { in_fm = 1; next }
+    in_fm && /^---$/ { in_fm = 0; next }
+    !in_fm { print }
+  ' "$file"
+}

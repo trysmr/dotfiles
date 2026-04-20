@@ -7,6 +7,9 @@
 
 set -uo pipefail
 
+# --- 共通関数の読み込み ---
+source "$(dirname "$0")/_common.sh"
+
 # --- デフォルトのメモリディレクトリ ---
 # PWDベースのプロジェクトディレクトリを動的に解決
 if [ -z "${MEMORY_DIR:-}" ]; then
@@ -23,21 +26,6 @@ get_threshold() {
     user)      echo 90 ;;
     *)         echo 60 ;;
   esac
-}
-
-# --- frontmatterからフィールドを抽出（jq非依存、macOS/Linux両対応） ---
-parse_frontmatter() {
-  local file="$1"
-  local key="$2"
-  awk -v k="$key" '
-    /^---$/ { block++; next }
-    block == 1 && $0 ~ "^" k " *:" {
-      sub("^" k " *: *", "")
-      print
-      exit
-    }
-    block >= 2 { exit }
-  ' "$file"
 }
 
 # --- ファイル更新日からの経過日数（macOS/Linux両対応） ---

@@ -21,6 +21,7 @@ tests=(
   "bash_safety:test_bash_safety.sh"
   "write_safety:test_write_safety.sh"
   "settings_integrity:test_settings_integrity.sh"
+  "load_memory:test_load_memory.sh"
 )
 
 total=0

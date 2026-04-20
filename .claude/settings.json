@@ -188,6 +188,10 @@
           {
             "type": "command",
             "command": "~/.claude/hooks/load_context.sh --force"
+          },
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/load_memory.sh"
           }
         ]
       }

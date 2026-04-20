@@ -44,6 +44,15 @@ elif [ -f ".claude/CLAUDE.md" ]; then
 fi
 
 # プロジェクトメモリが存在する場合、内容を追加
+# シンボリックリンクで同一ファイルを指している場合はスキップ
+if [ -n "$PROJECT_MEMORY" ] && [ -f "$PROJECT_MEMORY" ] && [ -f "$USER_MEMORY" ]; then
+  USER_REAL=$(realpath "$USER_MEMORY" 2>/dev/null || true)
+  PROJ_REAL=$(realpath "$PROJECT_MEMORY" 2>/dev/null || true)
+  if [ -n "$USER_REAL" ] && [ "$USER_REAL" = "$PROJ_REAL" ]; then
+    PROJECT_MEMORY=""
+  fi
+fi
+
 if [ -n "$PROJECT_MEMORY" ] && [ -f "$PROJECT_MEMORY" ]; then
   OUTPUT+="## Project Memory\n\n"
   OUTPUT+="$(cat "$PROJECT_MEMORY")\n\n"
