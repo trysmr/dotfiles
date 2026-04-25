@@ -87,18 +87,10 @@ usage_color() {
 }
 
 # リセット時刻フォーマット（Unix epoch -> Asia/Tokyo）
-format_reset_short() {
-    local epoch=$1
-    [ -n "$epoch" ] && [ "$epoch" != "null" ] || return 1
-    LC_ALL=C TZ=Asia/Tokyo date -j -f "%s" "$epoch" "+%-l%p" 2>/dev/null \
-        | sed 's/AM/am/; s/PM/pm/'
-}
-
 format_reset_long() {
     local epoch=$1
     [ -n "$epoch" ] && [ "$epoch" != "null" ] || return 1
-    LC_ALL=C TZ=Asia/Tokyo date -j -f "%s" "$epoch" "+%b %-d at %-l%p" 2>/dev/null \
-        | sed 's/AM/am/; s/PM/pm/'
+    TZ=Asia/Tokyo date -j -f "%s" "$epoch" "+%-m/%-d %H:%M" 2>/dev/null
 }
 
 # 5時間クォータ
@@ -109,12 +101,13 @@ if [ -n "$PCT_5H" ]; then
     PCT_5H_INT=$(printf "%.0f" "$PCT_5H")
     BAR_5H=$(make_progress_bar "$PCT_5H_INT")
     COLOR_5H=$(usage_color "$PCT_5H_INT")
-    RESET_5H=$(format_reset_short "$RESET_5H_EPOCH")
+    RESET_5H=$(format_reset_long "$RESET_5H_EPOCH")
     RESET_5H_DISPLAY=""
     if [ -n "$RESET_5H" ]; then
         RESET_5H_DISPLAY="Resets ${RESET_5H} (Asia/Tokyo)"
     fi
-    echo -e "  ${WHITE_BOLD}5h${RESET}  ${COLOR_5H}${BAR_5H}  ${PCT_5H_INT}%${RESET}  ${RESET_5H_DISPLAY}"
+    PCT_5H_FMT=$(printf "%3d" "$PCT_5H_INT")
+    echo -e "  ${WHITE_BOLD}5h${RESET}  ${COLOR_5H}${BAR_5H} ${PCT_5H_FMT}%${RESET}  ${RESET_5H_DISPLAY}"
 fi
 
 # 7日間クォータ
@@ -130,5 +123,6 @@ if [ -n "$PCT_7D" ]; then
     if [ -n "$RESET_7D" ]; then
         RESET_7D_DISPLAY="Resets ${RESET_7D} (Asia/Tokyo)"
     fi
-    echo -e "  ${LIGHT_BLUE}7d${RESET}  ${COLOR_7D}${BAR_7D}  ${PCT_7D_INT}%${RESET}  ${RESET_7D_DISPLAY}"
+    PCT_7D_FMT=$(printf "%3d" "$PCT_7D_INT")
+    echo -e "  ${LIGHT_BLUE}7d${RESET}  ${COLOR_7D}${BAR_7D} ${PCT_7D_FMT}%${RESET}  ${RESET_7D_DISPLAY}"
 fi
