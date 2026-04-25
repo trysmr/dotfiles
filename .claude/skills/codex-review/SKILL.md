@@ -1,7 +1,7 @@
 ---
 name: codex-review
 description: >
-  Codex CLI（gpt-5.4 xhigh）サブエージェントで現在のブランチの変更を徹底レビュー。
+  Codex CLI（gpt-5.5 xhigh）サブエージェントで現在のブランチの変更を徹底レビュー。
   「codexでレビュー」「codexにレビューさせて」「ブランチをレビュー」「PR前にレビュー」「変更をチェック」と言われた時に使用
 argument-hint: "[--staged | --branch | --commit <hash>]"
 context: fork
@@ -15,9 +15,9 @@ allowed-tools:
 user-invocable: true
 ---
 
-# codex-review: Codex CLI（gpt-5.4）徹底レビュー
+# codex-review: Codex CLI（gpt-5.5）徹底レビュー
 
-Codex CLI の gpt-5.4 モデル（xhigh effort）を使い、現在のブランチの変更を品質・セキュリティ両面から徹底的にレビューする。
+Codex CLI の gpt-5.5 モデル（xhigh effort）を使い、現在のブランチの変更を品質・セキュリティ両面から徹底的にレビューする。
 
 ## 実行手順
 
@@ -65,7 +65,7 @@ Codex CLI でレビューを実行してください。
 
 実行コマンド:
 codex exec \
-  --model gpt-5.4 \
+  --model gpt-5.5 \
   --reasoning-effort xhigh \
   --sandbox read-only \
   "<差分とコミット履歴をここに埋め込む>
