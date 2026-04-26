@@ -90,7 +90,7 @@ usage_color() {
 format_reset_long() {
     local epoch=$1
     [ -n "$epoch" ] && [ "$epoch" != "null" ] || return 1
-    TZ=Asia/Tokyo date -j -f "%s" "$epoch" "+%-m/%-d %H:%M" 2>/dev/null
+    TZ=Asia/Tokyo date -j -f "%s" "$epoch" "+%m/%d %H:%M" 2>/dev/null
 }
 
 # 5時間クォータ
