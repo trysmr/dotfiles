@@ -113,7 +113,7 @@
     "defaultMode": "plan",
     "disableBypassPermissionsMode": "disable"
   },
-  "model": "opus",
+  "model": "claude-opus-4-6[1m]",
   "hooks": {
     "PreToolUse": [
       {
@@ -215,8 +215,11 @@
     }
   },
   "language": "japanese",
-  "alwaysThinkingEnabled": true,
   "effortLevel": "high",
+  "tui": "fullscreen",
   "autoMemoryEnabled": true,
-  "showThinkingSummaries": true
+  "verbose": true,
+  "remoteControlAtStartup": false,
+  "agentPushNotifEnabled": true,
+  "advisorModel": "opus"
 }
