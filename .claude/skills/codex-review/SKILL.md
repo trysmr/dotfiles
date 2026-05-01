@@ -142,4 +142,4 @@ Codexの出力をそのまま報告してください。
 - `main`/`staging` ブランチ上でのブランチレビューは不可（差分の比較対象がないため）
 - `codex exec` は `--sandbox read-only` で実行し、コードベースへの変更を防ぐ
 - サブエージェントには必ず `subagent_type: "change-reviewer"` を指定すること
-- Codex CLI には必ず `--model gpt-5.4 --reasoning-effort xhigh` を指定させること
+- Codex CLI には必ず `--model gpt-5.5 --reasoning-effort xhigh` を指定させること

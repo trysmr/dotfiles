@@ -109,20 +109,6 @@ git branch --show-current
 - [ ] ユーザーの許可を得てからブランチを作成した
 - [ ] ブランチが正常に作成されたことを確認した
 
-## よくある間違い
-
-❌ **間違い**: `git branch -a`でブランチ確認せずに`staging`から分岐
-✅ **正解**: 必ず`git branch -a`で`staging`の存在を確認してから分岐
-
-❌ **間違い**: `fix-login-error`（プレフィックスなし）
-✅ **正解**: `bugfix/fix-login-error`
-
-❌ **間違い**: `feature/AddUserProfile`（PascalCase）
-✅ **正解**: `feature/add-user-profile`（kebab-case）
-
-❌ **間違い**: `bug/fix-error`（bugではなくbugfix）
-✅ **正解**: `bugfix/fix-error`
-
 ## Troubleshooting
 
 | エラー | 原因 | 対処 |
