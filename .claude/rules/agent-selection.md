@@ -27,15 +27,18 @@ See `.claude/agents/` for the agent definitions.
 
 Choose tools and workflow based on task type:
 
-| Task | Approach | Agents/Skills |
-|------|----------|---------------|
-| Single-file fix | Direct implementation, no plan needed | — |
-| Multi-file feature | Plan file required, then implement | `plan-feature` |
-| Investigation/search | Read-only exploration | `repo-explorer` |
-| Pre-PR review | Parallel quality + security review | `change-reviewer` + `security-reviewer` |
-| Thorough review | Dedicated review with stronger model | `deep-review` or `codex-review` |
-| Security-sensitive change | Security review mandatory before commit | `security-reviewer` |
-| PR creation | Tests pass, review done, then create | `pr` |
+| Task | Approach | Agents/Skills | Effort |
+|------|----------|---------------|--------|
+| Quick question / grep | Direct answer | — | low |
+| Single-file fix | Direct implementation, no plan needed | — | high |
+| Multi-file feature | Plan file required, then implement | `plan-feature` | xhigh |
+| Investigation/search | Read-only exploration | `repo-explorer` | medium |
+| Pre-PR review | Parallel quality + security review | `change-reviewer` + `security-reviewer` | high |
+| Thorough review | Dedicated review with stronger model | `deep-review` or `codex-review` | xhigh |
+| Security-sensitive change | Security review mandatory before commit | `security-reviewer` | xhigh |
+| PR creation | Tests pass, review done, then create | `pr` | high |
+
+Switch effort with `/effort <level>` when the task type changes mid-session.
 
 ## Orchestration Patterns
 

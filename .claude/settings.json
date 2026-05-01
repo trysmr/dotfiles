@@ -61,7 +61,6 @@
       "WebFetch(domain:code.claude.com)",
       "WebFetch(domain:docs.anthropic.com)",
       "WebFetch(domain:edgeguides.rubyonrails.org)",
-      "WebFetch(domain:github.com)",
       "WebFetch(domain:hub.docker.com)",
       "WebFetch(domain:packages.debian.org)",
       "WebFetch(domain:railsdiff.org)",
@@ -187,6 +186,11 @@
             "type": "command",
             "command": "~/.claude/hooks/doc_freshness_check.sh",
             "timeout": 5
+          },
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/contract_check.sh",
+            "timeout": 5
           }
         ]
       }
@@ -252,12 +256,7 @@
     "allowUnsandboxedCommands": true,
     "network": {
       "allowedDomains": [
-        "github.com",
-        "api.github.com",
-        "api.individual.githubcopilot.com",
-        "api.githubcopilot.com",
-        "telemetry.individual.githubcopilot.com",
-        "blog.rubygems.org",
+       "blog.rubygems.org",
         "bundler.io",
         "claude.com",
         "code.claude.com",
