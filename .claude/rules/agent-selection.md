@@ -7,7 +7,6 @@ Use specialized agents and skills deliberately so exploration stays fast and rev
 ## Agent Selection
 
 - Use `repo-explorer` for lightweight repository discovery, structure checks, and dependency or pattern surveys
-- Use code-search workflows when you need targeted implementation lookup or symbol hunting
 - Use `change-reviewer` for code quality, maintainability, naming, query shape, and test coverage review
 - Use `security-reviewer` for security-sensitive changes involving authentication, authorization, input handling, secrets, APIs, or permissions
 
