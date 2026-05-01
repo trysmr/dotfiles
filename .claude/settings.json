@@ -56,6 +56,7 @@
       "Skill(plan-feature)",
       "Skill(pr)",
       "Skill(pr-release)",
+      "Skill(reload-context)",
       "WebFetch(domain:blog.rubygems.org)",
       "WebFetch(domain:bundler.io)",
       "WebFetch(domain:claude.com)",
