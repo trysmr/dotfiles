@@ -20,6 +20,7 @@
       "Bash(gh pr checks:*)",
       "Bash(gh pr diff:*)",
       "Bash(gh pr view:*)",
+      "Bash(terraform fmt:*)",
       "Bash(docker compose exec app bundle list:*)",
       "Bash(docker compose exec app rails test:*)",
       "Bash(docker compose exec app bin/rails test:*)",
@@ -54,9 +55,18 @@
       "Skill(drawio)",
       "Skill(plan-feature)",
       "Skill(pr)",
-      "WebFetch(domain:github.com)",
+      "WebFetch(domain:blog.rubygems.org)",
+      "WebFetch(domain:bundler.io)",
+      "WebFetch(domain:claude.com)",
+      "WebFetch(domain:code.claude.com)",
       "WebFetch(domain:docs.anthropic.com)",
-      "WebFetch(domain:code.claude.com)"
+      "WebFetch(domain:edgeguides.rubyonrails.org)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:hub.docker.com)",
+      "WebFetch(domain:packages.debian.org)",
+      "WebFetch(domain:railsdiff.org)",
+      "WebFetch(domain:rubygems.org)",
+      "mcp__chrome-devtools"
     ],
     "deny": [
       "Bash(sudo:*)",
@@ -227,12 +237,37 @@
       }
     }
   },
+  "outputStyle": "Explanatory",
   "language": "japanese",
   "effortLevel": "high",
+  "advisorModel": "opus",
   "tui": "fullscreen",
   "autoMemoryEnabled": true,
   "verbose": true,
   "remoteControlAtStartup": false,
   "agentPushNotifEnabled": true,
-  "advisorModel": "opus"
+  "sandbox": {
+    "enabled": true,
+    "autoAllowBashIfSandboxed": true,
+    "allowUnsandboxedCommands": true,
+    "network": {
+      "allowedDomains": [
+        "github.com",
+        "api.github.com",
+        "api.individual.githubcopilot.com",
+        "api.githubcopilot.com",
+        "telemetry.individual.githubcopilot.com",
+        "blog.rubygems.org",
+        "bundler.io",
+        "claude.com",
+        "code.claude.com",
+        "docs.anthropic.com",
+        "edgeguides.rubyonrails.org",
+        "hub.docker.com",
+        "packages.debian.org",
+        "railsdiff.org",
+        "rubygems.org"
+      ]
+    }
+  }
 }
