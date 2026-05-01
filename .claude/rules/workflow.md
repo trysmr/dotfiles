@@ -117,3 +117,30 @@ After implementation is complete, perform the following reviews before committin
 - All code must be **tested and produce intended output** before being considered final
 - Include references (official docs, links, test output) for all answers/code/samples
 - Mark answers as "to be confirmed" if any part is unverified
+
+---
+
+## Skill Execution Discipline
+
+When the user invokes a skill via `/skill-name`, treat the skill definition as a **mandatory checklist**, not a reference document. Each step must be explicitly traversed in order.
+
+### Strict Compliance Rules
+
+- **Do not skip steps based on prior work**: Even if a prerequisite (tests, reviews, etc.) was completed earlier in the session or before invocation, re-run it as the skill prescribes — unless the skill itself defines a literal skip condition that is satisfied.
+- **Do not substitute steps with self-judgment**: Skills exist to enforce a consistent workflow. Replacing a step with "I already verified this" or "this is obvious" defeats the purpose.
+- **Verify skip conditions literally**: When a skill says "may be skipped if X", check whether X is satisfied verbatim. Do not interpret broadly. If unsure, ask the user.
+- **Apply formatting and convention rules before presenting**: When a skill specifies a title format (e.g. 体言止め), commit message style, PR body template, etc., re-read the rule and apply it before proposing output to the user. Do not flow output from a previous step (e.g. commit title) directly into the next without re-checking.
+- **Re-reference the skill definition each invocation**: Reading the skill once at session start is not enough. When invoking, treat the definition as a checklist to traverse, not a memorized procedure.
+
+### When to Ask vs. Execute
+
+- **Execute**: A step that is clearly within the skill's scope and that the user has implicitly delegated by invoking the skill.
+- **Ask first**: When you want to deviate from the skill (skip, substitute, modify). Frame the question explicitly: state which step you want to skip, and why.
+
+### Common Failure Modes
+
+| Failure | Example | Prevention |
+|---------|---------|------------|
+| Reusing prior results | Skipping Pre-PR Review because "it was done before commit" | If the skill prescribes re-running, re-run. To substitute, get explicit user approval. |
+| Convention oversight | Proposing a PR title in verb form when the skill requires noun form (体言止め) | Quote the title format and examples from the skill before proposing. |
+| Self-judged shortcut | Skipping a step because "it's obvious" or "the change is small" | Honor only the skip conditions explicitly defined in the skill. |
