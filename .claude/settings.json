@@ -55,6 +55,7 @@
       "Skill(drawio)",
       "Skill(plan-feature)",
       "Skill(pr)",
+      "Skill(pr-release)",
       "WebFetch(domain:blog.rubygems.org)",
       "WebFetch(domain:bundler.io)",
       "WebFetch(domain:claude.com)",
@@ -131,7 +132,6 @@
     "defaultMode": "plan",
     "disableBypassPermissionsMode": "disable"
   },
-  "model": "claude-opus-4-6[1m]",
   "hooks": {
     "PreToolUse": [
       {
@@ -243,20 +243,13 @@
   },
   "outputStyle": "Explanatory",
   "language": "japanese",
-  "effortLevel": "high",
-  "advisorModel": "opus",
-  "tui": "fullscreen",
-  "autoMemoryEnabled": true,
-  "verbose": true,
-  "remoteControlAtStartup": false,
-  "agentPushNotifEnabled": true,
   "sandbox": {
     "enabled": true,
     "autoAllowBashIfSandboxed": true,
     "allowUnsandboxedCommands": true,
     "network": {
       "allowedDomains": [
-       "blog.rubygems.org",
+        "blog.rubygems.org",
         "bundler.io",
         "claude.com",
         "code.claude.com",
@@ -268,5 +261,12 @@
         "rubygems.org"
       ]
     }
-  }
+  },
+  "effortLevel": "high",
+  "advisorModel": "opus",
+  "tui": "fullscreen",
+  "autoMemoryEnabled": true,
+  "verbose": true,
+  "remoteControlAtStartup": false,
+  "agentPushNotifEnabled": true
 }
