@@ -1,5 +1,6 @@
 /.config/karabiner/automatic_backups/*
 /.claude/settings.local.json
+CLAUDE.local.md
 /.zsh/git-completion.bash
 /.zsh/_git
 **/.DS_Store

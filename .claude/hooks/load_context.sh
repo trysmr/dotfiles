@@ -45,6 +45,12 @@ elif [ -f ".claude/CLAUDE.md" ]; then
   PROJECT_MEMORY=".claude/CLAUDE.md"
 fi
 
+# ローカルメモリ（gitignore対象、個人専用）
+PROJECT_LOCAL_MEMORY=""
+if [ -f "CLAUDE.local.md" ]; then
+  PROJECT_LOCAL_MEMORY="CLAUDE.local.md"
+fi
+
 # プロジェクトメモリが存在する場合、内容を追加
 # シンボリックリンクで同一ファイルを指している場合はスキップ
 if [ -n "$PROJECT_MEMORY" ] && [ -f "$PROJECT_MEMORY" ] && [ -f "$USER_MEMORY" ]; then
@@ -58,6 +64,11 @@ fi
 if [ -n "$PROJECT_MEMORY" ] && [ -f "$PROJECT_MEMORY" ]; then
   OUTPUT+="## Project Memory\n\n"
   OUTPUT+="$(cat "$PROJECT_MEMORY")\n\n"
+fi
+
+if [ -n "$PROJECT_LOCAL_MEMORY" ] && [ -f "$PROJECT_LOCAL_MEMORY" ]; then
+  OUTPUT+="## Project Memory (Local)\n\n"
+  OUTPUT+="$(cat "$PROJECT_LOCAL_MEMORY")\n\n"
 fi
 
 # グローバルrulesの読み込み（pathsフロントマターがないファイルのみ）
@@ -84,6 +95,7 @@ if [ -n "$OUTPUT" ]; then
   LOADED_FILES=()
   [ -f "$USER_MEMORY" ] && LOADED_FILES+=("~/.claude/CLAUDE.md")
   [ -n "$PROJECT_MEMORY" ] && [ -f "$PROJECT_MEMORY" ] && LOADED_FILES+=("$PROJECT_MEMORY")
+  [ -n "$PROJECT_LOCAL_MEMORY" ] && [ -f "$PROJECT_LOCAL_MEMORY" ] && LOADED_FILES+=("$PROJECT_LOCAL_MEMORY")
   if [ -d "$RULES_DIR" ]; then
     for rule_file in "$RULES_DIR"/*.md; do
       [ ! -f "$rule_file" ] && continue
