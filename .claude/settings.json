@@ -122,6 +122,10 @@
           {
             "type": "command",
             "command": "~/.claude/hooks/load_context.sh"
+          },
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/load_memory.sh"
           }
         ]
       },
@@ -191,7 +195,7 @@
           },
           {
             "type": "command",
-            "command": "~/.claude/hooks/load_memory.sh"
+            "command": "~/.claude/hooks/load_memory.sh --force"
           }
         ]
       }

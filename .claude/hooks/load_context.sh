@@ -26,6 +26,8 @@ fi
 USER_MEMORY="$HOME/.claude/CLAUDE.md"
 # README.mdのパス
 README="README.md"
+# グローバルrulesディレクトリ
+RULES_DIR="$HOME/.claude/rules"
 
 OUTPUT=""
 
@@ -58,6 +60,18 @@ if [ -n "$PROJECT_MEMORY" ] && [ -f "$PROJECT_MEMORY" ]; then
   OUTPUT+="$(cat "$PROJECT_MEMORY")\n\n"
 fi
 
+# グローバルrulesの読み込み（pathsフロントマターがないファイルのみ）
+if [ -d "$RULES_DIR" ]; then
+  for rule_file in "$RULES_DIR"/*.md; do
+    [ ! -f "$rule_file" ] && continue
+    if grep -q "^paths:" "$rule_file" 2>/dev/null; then
+      continue
+    fi
+    OUTPUT+="## Rule: $(basename "$rule_file" .md)\n\n"
+    OUTPUT+="$(cat "$rule_file")\n\n"
+  done
+fi
+
 # README.mdが存在する場合、内容を追加
 if [ -f "$README" ]; then
   OUTPUT+="## README\n\n"
@@ -70,6 +84,13 @@ if [ -n "$OUTPUT" ]; then
   LOADED_FILES=()
   [ -f "$USER_MEMORY" ] && LOADED_FILES+=("~/.claude/CLAUDE.md")
   [ -n "$PROJECT_MEMORY" ] && [ -f "$PROJECT_MEMORY" ] && LOADED_FILES+=("$PROJECT_MEMORY")
+  if [ -d "$RULES_DIR" ]; then
+    for rule_file in "$RULES_DIR"/*.md; do
+      [ ! -f "$rule_file" ] && continue
+      grep -q "^paths:" "$rule_file" 2>/dev/null && continue
+      LOADED_FILES+=("rules/$(basename "$rule_file")")
+    done
+  fi
   [ -f "$README" ] && LOADED_FILES+=("$README")
   LOADED_LIST=$(IFS=','; echo "${LOADED_FILES[*]}" | sed 's/,/, /g')
 

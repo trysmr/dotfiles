@@ -1,14 +1,32 @@
 #!/bin/bash
 
-# SessionStart (compact/clear/resume) 時にプロジェクトメモリファイルの内容を注入する。
-# auto compaction後にメモリ内容が失われる問題への対策。
+# プロジェクトメモリファイルの内容を注入する。
+# PreToolUse（1時間TTL）とSessionStart（--force）の両方で呼ばれる。
 
 set -uo pipefail
 
 source "$(dirname "$0")/_common.sh"
 
-MAX_FILES=8
-MAX_BODY_BYTES=4096
+# --force が指定された場合はTTLチェックをスキップ
+FORCE_RELOAD=false
+if [ "${1:-}" = "--force" ]; then
+  FORCE_RELOAD=true
+fi
+
+# TTLキャッシュ（プロジェクトごとに分離）
+PROJECT_HASH=$(echo -n "$(pwd)" | md5 | cut -c1-8)
+TIMESTAMP_FILE="/tmp/claude_memory_timestamp_${PROJECT_HASH}"
+RELOAD_INTERVAL=3600  # 1時間
+
+if [ "$FORCE_RELOAD" != "true" ] && [ -f "$TIMESTAMP_FILE" ]; then
+  LAST_TIME=$(cat "$TIMESTAMP_FILE")
+  CURRENT_TIME=$(date +%s)
+  ELAPSED=$((CURRENT_TIME - LAST_TIME))
+
+  if [ $ELAPSED -lt $RELOAD_INTERVAL ]; then
+    exit 0
+  fi
+fi
 
 # --- メモリディレクトリの解決 ---
 if [ -z "${MEMORY_DIR:-}" ]; then
@@ -20,7 +38,7 @@ if [ ! -d "$MEMORY_DIR" ]; then
   exit 0
 fi
 
-# --- メモリファイルの収集（更新日時の新しい順、最大MAX_FILES件） ---
+# --- メモリファイルの収集（全件） ---
 files=()
 while IFS= read -r f; do
   [ ! -f "$f" ] && continue
@@ -29,8 +47,8 @@ done < <(
   for f in "$MEMORY_DIR"/*.md; do
     [ ! -f "$f" ] && continue
     [ "$(basename "$f")" = "MEMORY.md" ] && continue
-    echo "$f"
-  done | xargs ls -t 2>/dev/null | head -n "$MAX_FILES"
+    printf '%s\n' "$f"
+  done
 )
 
 if [ ${#files[@]} -eq 0 ]; then
@@ -48,11 +66,6 @@ for f in "${files[@]}"; do
 
   [ -z "$body" ] && continue
 
-  if [ ${#body} -gt $MAX_BODY_BYTES ]; then
-    body=$(echo "$body" | head -c $MAX_BODY_BYTES)
-    body+="..."
-  fi
-
   name="${name:-$(basename "$f" .md)}"
   type="${type:-unknown}"
 
@@ -66,14 +79,25 @@ fi
 
 LOADED_LIST=$(IFS=','; echo "${LOADED_FILES[*]}" | sed 's/,/, /g')
 
+# 呼び出し元のイベントに応じてhookEventNameを切り替え
+if [ "$FORCE_RELOAD" = "true" ]; then
+  HOOK_EVENT="SessionStart"
+else
+  HOOK_EVENT="PreToolUse"
+fi
+
 CONTEXT=$(echo -e "$OUTPUT")
 jq -n \
   --arg msg "[load_memory] Loaded: $LOADED_LIST" \
   --arg ctx "$CONTEXT" \
+  --arg evt "$HOOK_EVENT" \
   '{
     systemMessage: $msg,
     hookSpecificOutput: {
-      hookEventName: "SessionStart",
+      hookEventName: $evt,
       additionalContext: $ctx
     }
   }'
+
+# タイムスタンプを更新
+date +%s > "$TIMESTAMP_FILE"
