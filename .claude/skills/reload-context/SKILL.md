@@ -7,26 +7,23 @@ allowed-tools:
 
 # Reload Context
 
-`load_context.sh`と`load_memory.sh`のTTLキャッシュをクリアし、次のツール実行時に強制再読み込みさせます。
+`load_context.sh`のTTLキャッシュをクリアし、次のツール実行時に強制再読み込みさせます。
 
 ## 仕組み
 
-通常、コンテキストとメモリは1時間TTLでキャッシュされます。`SessionStart`の`resume|clear|compact`では`--force`で即時再読み込みされますが、セッション中にCLAUDE.md系ファイルを編集した場合は反映されません。このスキルはキャッシュタイムスタンプを削除することで、次のツール実行時にhookが再実行されます。
+通常、コンテキストとメモリは2時間TTLでキャッシュされます。`SessionStart`の`resume|clear|compact`では`--force`で即時再読み込みされますが、セッション中にCLAUDE.md系ファイルを編集した場合は反映されません。このスキルはキャッシュタイムスタンプを削除することで、次のツール実行時にhookが再実行されます。
 
 ## 実行手順
 
 ### キャッシュクリア
 
 ```bash
-PROJECT_HASH=$(echo -n "$(pwd)" | md5 | cut -c1-8)
+CACHE_KEY="$(pwd):${MEMORY_DIR:-}"
+PROJECT_HASH=$(echo -n "$CACHE_KEY" | md5 | cut -c1-8)
 rm -f "/tmp/claude_context_timestamp_${PROJECT_HASH}"
-
-CACHE_KEY_MEMORY="$(pwd):"
-MEMORY_HASH=$(echo -n "$CACHE_KEY_MEMORY" | md5 | cut -c1-8)
-rm -f "/tmp/claude_memory_timestamp_${MEMORY_HASH}"
 ```
 
-これで次のツール実行時に`load_context.sh`と`load_memory.sh`が再実行され、最新のコンテキストが注入されます。
+これで次のツール実行時に`load_context.sh`が再実行され、最新のコンテキストとメモリが注入されます。
 
 ## 使用タイミング
 
@@ -44,9 +41,7 @@ rm -f "/tmp/claude_memory_timestamp_${MEMORY_HASH}"
 - `CLAUDE.local.md`（Project Memory Local、gitignore対象）
 - `~/.claude/rules/*.md`（pathsフロントマターなしのrule）
 - `README.md`
-
-`load_memory.sh`が読み込むファイル:
-- `~/.claude/projects/{プロジェクトキー}/memory/*.md`（MEMORY.mdを除く全件）
+- `~/.claude/projects/{プロジェクトキー}/memory/*.md`（MEMORY.mdを除く全件、Auto-Memory）
 
 ## 注意事項
 
