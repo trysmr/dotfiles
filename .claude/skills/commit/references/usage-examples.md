@@ -11,7 +11,7 @@ git diff
 
 **ステップ2**: ステージングと確認
 ```bash
-git add docs/contact_relation_spec.md
+git add docs/design-spec.md
 git diff --cached
 git diff --cached --name-only
 ```
