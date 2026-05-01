@@ -25,10 +25,14 @@
 - Explain how your design addresses user goals and constraints
 - Identify risks and limitations, and propose ways to reduce them
 - **Todo Refinement**: Break down high-level todos into actionable tasks; identify dependencies and opportunities for parallel execution
-- **Plan File TODO Section**: Plan files (`~/.claude/plans/*.md`) must include a `## TODO` section:
-  - Use phase-based subheadings (`### Phase N: Name`)
-  - List file paths and concise task descriptions in checkbox format (`- [ ]`)
-  - Include verification steps at the end of each phase
+- **Plan File Structure**: Plan files (`~/.claude/plans/*.md`) must include:
+  - `## Context`: Why this change is needed — the problem, what prompted it, and the intended outcome
+  - `## Acceptance Criteria`: Checklist of conditions that must be true when done (`- [ ]`)
+  - `## TODO`: Phase-based implementation tasks
+    - Use phase-based subheadings (`### Phase N: Name`)
+    - List file paths and concise task descriptions in checkbox format (`- [ ]`)
+    - Include verification steps at the end of each phase
+  - `## Verification`: How to test the changes end-to-end (commands, tests, manual checks)
 
 ---
 

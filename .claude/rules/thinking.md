@@ -17,6 +17,7 @@
 - Start investigation from **core parts (core modules, shared logic, config files)**, not just the file that threw the error
 - Check all affected areas before proposing solutions
 - Ask clarifying questions whenever requirements or constraints are unclear
+- **Verify before recommending**: When suggesting tools, features, directory conventions, or configuration options, confirm they are officially supported (via docs, source code, or empirical test). Label unverified claims as "unconfirmed"
 
 ---
 

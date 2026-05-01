@@ -23,6 +23,20 @@ See `.claude/agents/` for the agent definitions.
 
 ---
 
+## Task Routing
+
+Choose tools and workflow based on task type:
+
+| Task | Approach | Agents/Skills |
+|------|----------|---------------|
+| Single-file fix | Direct implementation, no plan needed | — |
+| Multi-file feature | Plan file required, then implement | `plan-feature` |
+| Investigation/search | Read-only exploration | `repo-explorer` |
+| Pre-PR review | Parallel quality + security review | `change-reviewer` + `security-reviewer` |
+| Thorough review | Dedicated review with stronger model | `deep-review` or `codex-review` |
+| Security-sensitive change | Security review mandatory before commit | `security-reviewer` |
+| PR creation | Tests pass, review done, then create | `pr` |
+
 ## Orchestration Patterns
 
 - For unfamiliar repositories, start with `repo-explorer` and follow with `change-reviewer` only after the structure is understood
