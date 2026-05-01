@@ -39,19 +39,24 @@
 
 ### Test-Driven Development (TDD)
 
+For non-trivial features and bug fixes, follow TDD:
+
 - Write test cases before implementation and verify that the tests **fail initially**
 - Clearly define expected behaviors through your tests
 - After confirming test failures, implement only the **minimal code required** to pass the test
 - Switch back and forth between writing tests and implementation, confirming all tests pass
 
+**Lightweight exception**: For trivial changes (config edits, typo fixes, comment updates, simple renames), TDD may be skipped. State the reason briefly.
+
 ### Documentation During Implementation
 
-- Document all **public interfaces**: purpose, usage, inputs, outputs, examples, and warnings
-- Document all **methods and classes**: purpose, parameters, return values, exceptions, and usage examples
-- Always include **concrete examples** alongside API reference documentation
-- Add extra documentation for **important private details**
+For new public APIs and significant changes:
+
+- Document **public interfaces**: purpose, usage, inputs, outputs, examples, and warnings
 - Explain the **reasons for design choices** and trade-offs
 - Update documentation **immediately** when code changes
+
+**Lightweight exception**: For internal/private code, config changes, or trivial fixes, documentation is optional. Prioritize clear naming over comments.
 
 ### Review Gate
 

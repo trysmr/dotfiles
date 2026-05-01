@@ -13,8 +13,9 @@ if [ "${1:-}" = "--force" ]; then
   FORCE_RELOAD=true
 fi
 
-# TTLキャッシュ（プロジェクトごとに分離）
-PROJECT_HASH=$(echo -n "$(pwd)" | md5 | cut -c1-8)
+# TTLキャッシュ（プロジェクト+メモリディレクトリで分離）
+CACHE_KEY="$(pwd):${MEMORY_DIR:-}"
+PROJECT_HASH=$(echo -n "$CACHE_KEY" | md5 | cut -c1-8)
 TIMESTAMP_FILE="/tmp/claude_memory_timestamp_${PROJECT_HASH}"
 RELOAD_INTERVAL=3600  # 1時間
 

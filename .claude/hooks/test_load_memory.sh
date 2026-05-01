@@ -120,20 +120,17 @@ assert_eq "0" "$rc4" "不存在ディレクトリでexit 0"
 assert_eq "" "$output4" "不存在ディレクトリで出力なし"
 
 echo ""
-echo "=== 大ファイルガード ==="
+echo "=== 大ファイル（制限なし・全文出力） ==="
 
 TEST_DIR5="$TMPDIR_TEST/large"
 mkdir -p "$TEST_DIR5"
-large_body=$(python3 -c "print('A' * 5000)")
+large_body=$(python3 -c "print('X' * 5000)")
 create_memory_file "$TEST_DIR5" "large_test.md" "reference" "$large_body"
 
 output5=$(MEMORY_DIR="$TEST_DIR5" bash "$HOOK")
 ctx5=$(echo "$output5" | jq -r '.hookSpecificOutput.additionalContext')
-body_len=$(echo "$ctx5" | grep -o 'A' | wc -l | tr -d ' ')
-assert_eq "1" "$([ "$body_len" -le 4096 ] && echo 1 || echo 0)" "大ファイルが4096バイト以下に切り詰められる"
-
-echo "$ctx5" | grep -q '\.\.\.$'
-assert_eq "0" "$?" "切り詰め時に...が付与される"
+body_len=$(echo "$ctx5" | grep -o 'X' | wc -l | tr -d ' ')
+assert_eq "5000" "$body_len" "大ファイルが切り詰められず全文出力される"
 
 echo ""
 echo "=== MEMORY.mdのみのディレクトリ ==="
