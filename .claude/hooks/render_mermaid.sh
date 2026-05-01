@@ -7,7 +7,6 @@
 command -v mmdc &>/dev/null || exit 0
 
 # stdin からhook入力を読み取り
-# Stop hookのJSONには last_assistant_message フィールドが含まれる
 input=$(cat)
 last_text=$(printf '%s' "$input" | jq -r '.last_assistant_message // empty')
 
