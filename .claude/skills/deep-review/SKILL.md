@@ -3,7 +3,7 @@ name: deep-review
 description: >
   Opus 4.7サブエージェントで現在のブランチの変更を徹底レビュー。
   「深くレビュー」「Opusでレビュー」「しっかりレビュー」と言われた時に使用。
-argument-hint: "[--staged | --branch | --commit <hash>]"
+argument-hint: "[--branch | --uncommitted | --staged | --commit <hash> | ファイルパス]"
 context: fork
 agent: general-purpose
 allowed-tools:
@@ -25,9 +25,11 @@ Opus 4.7モデルのサブエージェントを使い、現在のブランチの
 
 引数に応じてレビュー対象を決定する:
 
-- **引数なし（デフォルト）**: ブランチレビュー（ベースブランチからの差分）
+- **引数なし / `--branch`（デフォルト）**: ブランチレビュー（ベースブランチからの差分）
+- **`--uncommitted`**: 未コミットの変更をレビュー（`git diff` でワーキングツリーの差分を取得）
 - **`--staged`**: ステージ済みの変更のみ（`git diff --cached`）
 - **`--commit <hash>`**: 特定コミットの変更（`git show <hash>`）
+- **ファイルパス指定**: 指定ファイルを直接レビュー
 
 #### ブランチレビューの場合
 
@@ -113,8 +115,10 @@ effortをxhighに設定してください。
 
 ```
 /deep-review              # ブランチの全変更をレビュー（デフォルト）
+/deep-review --uncommitted   # 未コミット変更をレビュー
 /deep-review --staged     # ステージ済み変更をレビュー
 /deep-review --commit abc123  # 特定コミットをレビュー
+/deep-review docs/plan.md    # 指定ファイルをレビュー
 ```
 
 ## 注意事項
