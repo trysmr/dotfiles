@@ -191,6 +191,13 @@ mkdir -p "$HOME/.codex"
 # AGENTS.mdのシンボリックリンクを作成する
 safe_symlink "$dir/.codex/AGENTS.md" "$HOME/.codex/AGENTS.md"
 
+# config.tomlのシンボリックリンクを作成する
+safe_symlink "$dir/.codex/config.toml" "$HOME/.codex/config.toml"
+
+# hooks設定とhooksディレクトリのシンボリックリンクを作成する
+safe_symlink "$dir/.codex/hooks.json" "$HOME/.codex/hooks.json"
+safe_symlink "$dir/.codex/hooks" "$HOME/.codex/hooks"
+
 # .copilotディレクトリを作成
 mkdir -p "$HOME/.copilot"
 
@@ -224,8 +231,11 @@ safe_symlink "$dir/.github/hooks/claude-compatible.json" "$HOME/.copilot/hooks/c
 # Codex USERスコープのskillsディレクトリを作成
 mkdir -p "$HOME/.agents/skills"
 
-# Claude CodeのスキルをCodex USERスコープへ連携する
-for skill_dir in "$dir/.claude/skills"/*; do
+# Codexスキルの共通リファレンスを連携する
+safe_symlink "$dir/.agents/skills/_shared" "$HOME/.agents/skills/_shared"
+
+# Codex用スキルをUSERスコープへ連携する
+for skill_dir in "$dir/.agents/skills"/*; do
   [[ -d "$skill_dir" ]] || continue
   skill_name="$(basename "$skill_dir")"
   [[ "$skill_name" = .* ]] && continue

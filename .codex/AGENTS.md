@@ -316,3 +316,27 @@ end
 - All methods/classes: purpose, parameters, return values, exceptions, usage examples
 - Explain reasons for design decisions and trade-offs
 - Update documentation immediately when code changes
+
+---
+
+# Codex Local Extensions
+
+## Skills
+
+- Project/user Codex skills live in `.agents/skills/<skill-name>/SKILL.md`.
+- Shared skill references live in `.agents/skills/_shared/`.
+- Prefer Codex-native skills over Claude-specific `.claude/skills` when both exist.
+- Keep Codex skill frontmatter to fields Codex uses (`name`, `description`) unless a specific Codex feature requires more.
+- When adding or changing a skill, keep `SKILL.md` concise and move reusable details to `references/` or `_shared/`.
+
+## Hooks
+
+- Codex hook configuration lives in `.codex/hooks.json`.
+- Hook scripts live in `.codex/hooks/` and are symlinked to `~/.codex/hooks` by `install.sh`.
+- Keep hook scripts deterministic and fail closed for safety checks involving destructive commands, secrets, `.env`, or `.git` paths.
+- Validate hook JSON with `jq` after edits.
+
+## Config
+
+- Codex feature flags and repo/user defaults live in `.codex/config.toml`.
+- `goals` and `codex_hooks` are enabled there so `/goal` and lifecycle hooks work after installation or in trusted project-local config.
