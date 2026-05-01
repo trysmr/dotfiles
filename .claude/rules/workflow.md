@@ -43,12 +43,38 @@
 
 ### Test-Driven Development (TDD)
 
-For non-trivial features and bug fixes, follow TDD:
+#### Phase Classification (declare before editing code)
+
+State which phase you are in at task start. This prevents silently skipping TDD.
+
+- **Spike (exploratory)**: Shape is unknown. Goal is learning, not shipping. TDD is **not required**.
+  - Output: working prototype + a written summary of what was learned.
+- **Stabilize (productionizing)**: Shape is clear, code will be kept. TDD is **required** for non-trivial logic.
+- **Maintain (modifying existing code)**: TDD is **required** for behavioral changes. Trivial edits (config/typo/rename) are exempt with a stated reason.
+
+#### Spike Rules
+
+- Mark spike code clearly (branch name, comment, or scratch directory)
+- After spike: either (a) throw away and re-implement under Stabilize, or (b) explicitly transition to Stabilize and add tests before merging
+- **Never merge spike code without transitioning to Stabilize**
+
+#### Stabilize / Maintain Rules (TDD applies)
 
 - Write test cases before implementation and verify that the tests **fail initially**
 - Clearly define expected behaviors through your tests
 - After confirming test failures, implement only the **minimal code required** to pass the test
 - Switch back and forth between writing tests and implementation, confirming all tests pass
+
+#### Per-Domain Hints
+
+Use the testing strategy that fits the exploration type:
+
+| Exploration type | Recommended approach |
+|---|---|
+| Library/API behavior verification | Spike-heavy. Capture findings in a separate note, then Stabilize the integration with TDD |
+| Data shape / pipeline design | Spike to confirm shape. Stabilize by locking schema/types and writing TDD around transformations |
+| UI / visual iteration | Spike-heavy. Use snapshot/approval testing to lock regressions once a layout is accepted |
+| Prompt / AI output tuning | Spike-heavy. Use golden-sample snapshot tests since exact outputs are not deterministic |
 
 **Lightweight exception**: For trivial changes (config edits, typo fixes, comment updates, simple renames), TDD may be skipped. State the reason briefly.
 
