@@ -48,7 +48,6 @@
       "Skill(plan-feature)",
       "Skill(codex-review)",
       "Skill(review)",
-      "Skill(record-lesson)",
       "WebFetch(domain:github.com)",
       "WebFetch(domain:docs.anthropic.com)",
       "WebFetch(domain:code.claude.com)"
