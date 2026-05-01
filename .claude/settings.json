@@ -44,7 +44,6 @@
       "Read(**/*.md)",
       "Skill(reload-context)",
       "Skill(create-branch)",
-      "Skill(recent-changes-review)",
       "Skill(commit)",
       "Skill(pr)",
       "Skill(code-search)",

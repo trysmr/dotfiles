@@ -58,7 +58,7 @@
 After implementation is complete, perform the following reviews before committing:
 
 - **Security-related changes** (authentication, input handling, APIs, permissions): Running the `security-reviewer` agent is **required**
-- **Other changes**: Running the `change-reviewer` agent or `review` Skill is **recommended**
+- **Other changes**: Running the `change-reviewer` agent is **recommended**
 - If any Critical/High findings are reported, fix them before committing
 
 ### Todo Updates

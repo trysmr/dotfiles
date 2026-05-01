@@ -17,11 +17,10 @@ See `.claude/agents/` for the agent definitions.
 
 ## Review Workflows
 
-- Use `recent-changes-review` for time-based review of recent commits
-- Use `review` for pre-PR diff review when you want quality and security coverage together
-- Run `change-reviewer` directly when only code quality or maintainability needs validation
-- Run `security-reviewer` directly when only security risk needs validation
-- Use `codex-review` when you explicitly want an external Codex-based review pass
+- Run `change-reviewer` for code quality or maintainability review
+- Run `security-reviewer` for security-sensitive changes
+- Use `deep-review` for thorough review with Opus 4.7
+- Use `codex-review` for external Codex-based review with gpt-5.5
 
 ---
 
