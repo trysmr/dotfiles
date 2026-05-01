@@ -36,6 +36,20 @@
   - Git commit messages: Clearly state changes and rationale in Japanese
   - Documentation, PR comments, UI text: Japanese
 
+### Formatting Conventions
+
+- Use ASCII arrow `->` instead of Unicode arrow `→`. The Unicode form looks AI-generated.
+- Do not insert spaces between Japanese and English/numeric characters. `Sprint 1テスト作成` is correct; `Sprint 1 テスト作成` is wrong.
+- For business-facing task descriptions (project tracker tickets, planning docs), avoid implementation-level terms (class names, column names, code). Use domain language instead — engineering details belong in design docs and code comments.
+
+---
+
+## Git Commit Message Style
+
+- **Title (first line)**: Noun-form, 50 chars or less. End with a verbal noun (`〜を追加` / `〜を修正` / `〜に対応`). Avoid polite forms (`〜しました`).
+- **Body**: One paragraph = one line. Do not wrap mid-paragraph. Bullet lists may span multiple lines.
+- **Why-centric**: Explain the rationale, not just what changed. The diff already shows what.
+
 ---
 
 ## Pull Request Required Sections

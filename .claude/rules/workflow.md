@@ -117,6 +117,29 @@ After implementation is complete, perform the following reviews before committin
 - All code must be **tested and produce intended output** before being considered final
 - Include references (official docs, links, test output) for all answers/code/samples
 - Mark answers as "to be confirmed" if any part is unverified
+- **Verify Japanese text after edits**: After Edit/Write operations on files containing Japanese, run `grep` for `�` (U+FFFD replacement character). Mojibake is most likely with `replace_all` or long string substitutions, and looks unprofessional to the user opening the file.
+
+---
+
+## Plan File Maintenance
+
+- When a TODO item in `~/.claude/plans/*.md` is completed, update the corresponding `- [ ]` to `- [x]` immediately. Do this even after exiting Plan mode — partial updates leave the plan file unreliable.
+- Update granularity: per task or per phase, not at session end (easy to miss items).
+- Items requiring user judgment or manual verification: keep as `- [ ]` and explain why in the summary.
+- For verification phases, append evidence after the checkbox where possible (test counts, command output, file counts) so the plan doubles as an audit trail.
+
+---
+
+## Interaction Modes
+
+### Syakyo Mode (Hands-Off)
+
+When the user says "写経したい" / "写経していきたい" / "I want to type it myself", **do not edit files**. The user is learning by typing the code themselves.
+
+- Present code in code blocks
+- State the target file path and line numbers explicitly
+- Use Read only; never Edit/Write
+- Wait for the user to apply the code before moving on
 
 ---
 

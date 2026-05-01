@@ -44,3 +44,28 @@ Only allow scopes for **stable domain vocabulary** — universal properties of t
 **Not scopes:** Screen/use-case-specific filters, current-user-dependent queries, search form conditions, aggregation/report queries
 
 When collection operations are needed, extract them as Query Objects that accept and return Relations.
+
+---
+
+## Naming Conventions
+
+### Boolean Columns and Methods
+
+Prefix boolean columns and predicate-style attributes with `is_` or `has_` (e.g., `is_active`, `has_attachments`). This overrides Rails' convention of unprefixed booleans.
+
+**Rationale**: The column name alone should reveal the type. `published` reads as a past participle and could plausibly be a date or status string; `is_published` is unambiguously boolean.
+
+**Apply at**: New table creation and column additions. Existing unprefixed boolean columns are not retroactively renamed unless the surrounding code is being touched.
+
+---
+
+## Frontend Style Adherence
+
+When matching an existing component's appearance (font size, padding, height, spacing), do **not** guess values and iterate by screenshot. Read the existing component's computed values via DevTools first, then apply them.
+
+- **First choice**: Reuse the existing CSS class directly. Do not reimplement the same look with new selectors.
+- **If reimplementation is necessary**: Inspect the reference component in DevTools, copy the computed values, and use those literals.
+- **Verify before declaring done**: Place the new and reference components side-by-side in the same view (or screenshot) to confirm alignment.
+- **Visual fine-tuning belongs in a separate session** with the browser open. Don't try to converge on pixel-perfect output through guess-adjust-screenshot loops.
+
+**Rationale**: Guess-and-check loops on CSS waste massive time and rarely converge. The reference component's computed values are the ground truth.

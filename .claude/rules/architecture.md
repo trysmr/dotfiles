@@ -57,3 +57,17 @@ end
 ```
 
 **Rationale**: Simplicity is a virtue. Remove unnecessary syntax by using language features.
+
+---
+
+### Preserve User-Authored Code Style
+
+**Principle**: When editing existing code, change only what the task requires. Do not silently restyle the surrounding code.
+
+**Examples of style choices to preserve:**
+- Line breaks and method chaining layout
+- Variable assignment patterns (e.g., `result = SomeClass.new(...)` vs. inline)
+- Trailing comma usage
+- Comment placement and density
+
+**Rationale**: Style choices the user made are intentional. Drive-by reformatting creates noise in diffs, obscures the real change, and erodes trust. If a style change is genuinely warranted, raise it explicitly as a separate proposal.
