@@ -24,6 +24,16 @@
 - Who are the target users and environments (browsers, OS, etc.)?
 - What's the top priority: speed, safety, or simplicity?
 
+### Use AskUserQuestion for Choice-Based Decisions
+
+When asking the user to choose between 2-4 alternatives, **MUST** use the `AskUserQuestion` tool instead of presenting a numbered list in plain text. `AskUserQuestion` is a deferred tool — load its schema first via `ToolSearch` with `select:AskUserQuestion`, then call it.
+
+- **Apply when**: presenting concrete alternatives the user picks from (approach A vs B, library choice, scope decision, file location)
+- **Skip when**: simple yes/no confirmation, or when the next step is obvious from context
+- **Format**: place the recommended option first and append `(Recommended)` to its label; bundle related decisions into a single call (max 4 questions)
+
+**Rationale**: Click-based selection is faster and less error-prone than long text replies, especially for multi-branch agreement. The extra `ToolSearch` step is intentional friction — do not skip it just because plain text feels easier.
+
 ---
 
 # Language and Documentation Standards
