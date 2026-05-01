@@ -17,7 +17,7 @@ fi
 CACHE_KEY="$(pwd):${MEMORY_DIR:-}"
 PROJECT_HASH=$(echo -n "$CACHE_KEY" | md5 | cut -c1-8)
 TIMESTAMP_FILE="/tmp/claude_memory_timestamp_${PROJECT_HASH}"
-RELOAD_INTERVAL=3600  # 1時間
+RELOAD_INTERVAL=7200  # 2時間
 
 if [ "$FORCE_RELOAD" != "true" ] && [ -f "$TIMESTAMP_FILE" ]; then
   LAST_TIME=$(cat "$TIMESTAMP_FILE")
