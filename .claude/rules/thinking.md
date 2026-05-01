@@ -16,7 +16,7 @@
 
 - Start investigation from **core parts (core modules, shared logic, config files)**, not just the file that threw the error
 - Check all affected areas before proposing solutions
-- Always ask clarifying questions before implementation
+- Ask clarifying questions whenever requirements or constraints are unclear
 
 ---
 
