@@ -58,6 +58,7 @@
       "Skill(pr-release)",
       "Skill(reload-context)",
       "WebFetch(domain:api.github.com)",
+      "WebFetch(domain:github.com)",
       "WebFetch(domain:blog.rubygems.org)",
       "WebFetch(domain:bundler.io)",
       "WebFetch(domain:claude.com)",
