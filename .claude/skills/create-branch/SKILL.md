@@ -14,11 +14,7 @@ allowed-tools:
 
 ### 1. ブランチ戦略の確認
 
-まず`README.md`を読み込んで、プロジェクトのブランチ命名規則を理解してください：
-
-```bash
-Read README.md
-```
+まず`README.md`を読み込んで、プロジェクトのブランチ命名規則を理解してください。
 
 ブランチ構成・プレフィックス・ベースブランチ選択ルールは `.claude/skills/_shared/branch-strategy.md` を参照。
 

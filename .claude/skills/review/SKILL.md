@@ -11,6 +11,7 @@ allowed-tools:
   - Read
   - Grep
   - Glob
+argument-hint: "[--staged | --branch | --commit <hash>]"
 user-invocable: true
 ---
 
