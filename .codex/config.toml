@@ -1,6 +1,0 @@
-[features]
-codex_hooks = true
-goals = true
-
-[tui]
-status_line = ["model-with-reasoning", "current-dir", "git-branch", "context-remaining", "five-hour-limit", "task-progress", "session-id", "codex-version"]
