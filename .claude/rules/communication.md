@@ -34,6 +34,16 @@ When asking the user to choose between 2-4 alternatives, **MUST** use the `AskUs
 
 **Rationale**: Click-based selection is faster and less error-prone than long text replies, especially for multi-branch agreement. The extra `ToolSearch` step is intentional friction — do not skip it just because plain text feels easier.
 
+### Insight Block Discipline (Explanatory Style)
+
+The `★ Insight ─────` block in Explanatory output style must NOT include **your own debugging mishaps or edge cases you tripped over during verification**.
+
+Trivia, asides, and interesting tangents about the code itself are fine and welcome — those help the user learn. The line is between "fact about the code/domain" (good) and "thing I personally got stuck on while verifying" (bad).
+
+**Rationale**: Sharing your debugging snags forces the user to ask "wait, where? which file? does this matter?" — wasted cognitive load with no payoff. The user did not write the buggy verification code and has no reason to follow your missteps.
+
+**Apply when**: Writing each Insight bullet. Self-check: "Is this a property of the code/domain, or is it about my verification process?" If the latter, drop it.
+
 ---
 
 # Language and Documentation Standards
