@@ -124,7 +124,7 @@
     "defaultMode": "plan",
     "disableBypassPermissionsMode": "disable"
   },
-  "model": "claude-opus-4-6",
+  "model": "claude-opus-4-6[1m]",
   "hooks": {
     "PreToolUse": [
       {
@@ -253,7 +253,6 @@
     }
   },
   "effortLevel": "high",
-  "advisorModel": "opus",
   "tui": "fullscreen",
   "autoMemoryEnabled": true,
   "verbose": true,
