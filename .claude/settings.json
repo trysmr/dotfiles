@@ -236,6 +236,8 @@
     "allowUnsandboxedCommands": true,
     "network": {
       "allowedDomains": [
+        "api.github.com",
+        "github.com",
         "blog.rubygems.org",
         "bundler.io",
         "claude.com",
