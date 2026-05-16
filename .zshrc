@@ -213,3 +213,11 @@ if [[ -f "$BREW_PREFIX/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 fi
 
 export PATH="$HOME/.local/bin:$PATH"
+
+# bun completions
+[ -s "/Users/toru/.bun/_bun" ] && source "/Users/toru/.bun/_bun"
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
+
