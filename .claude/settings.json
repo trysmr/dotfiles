@@ -260,5 +260,6 @@
   "autoMemoryEnabled": true,
   "verbose": true,
   "remoteControlAtStartup": false,
+  "inputNeededNotifEnabled": true,
   "agentPushNotifEnabled": true
 }
