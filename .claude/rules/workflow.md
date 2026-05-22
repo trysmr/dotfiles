@@ -19,6 +19,8 @@ Useful lenses (apply when relevant, not as a checklist):
 
 For unfamiliar code or wide impact analysis, use `repo-explorer` to get a digested overview of structure, dependencies, and patterns before grepping into specifics.
 
+When observed behavior conflicts with documented behavior, run the cheapest verification (`pwd`, `echo`, single status command) before adopting a workaround. The conflict itself is the signal — don't pick whichever feels louder.
+
 For bug fixes, do not patch the first matching symptom. Trace at least one caller or execution path to explain why the change fixes the root cause.
 
 For design choices, compare at least two viable options when the first option affects shared code, public behavior, data shape, security, or long-term maintainability. Prefer the smallest option only when you can explain why it does not narrow future change.
