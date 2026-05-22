@@ -1,26 +1,79 @@
 # Development Workflow
 
-## Todo Management Rules
+## Principle
 
-- **Definition of Done (DoD)**: A task is "done" only when implementation is complete, code is reviewed and approved, and all required tests (automated, CI, etc.) have passed
-- **Pre-completion checks**: Apply linting and formatting, confirm all tests pass, then commit and close the task
-- **In-progress limit**: MUST ensure only **one task** is marked as `in_progress` at any given time
+Match process depth to task complexity. A config fix needs no plan file; a multi-file feature deserves one. Don't apply ceremony uniformly.
+
+Do not confuse speed with certainty. The cheapest wrong fix is still more expensive than a short verification step.
+
+---
+
+## Investigation Discipline
+
+Before committing to a solution for non-trivial work, do the cheap verification step that could prove your first answer wrong. Most "obvious" fixes have a missed caller, a forgotten contract, or a shared dependency that makes them wrong.
+
+Useful lenses (apply when relevant, not as a checklist):
+- What have you actually read or run — versus assumed?
+- What's the current hypothesis, and what one check would disprove it?
+- What depends on the code you're about to touch?
+
+For unfamiliar code or wide impact analysis, use `repo-explorer` to get a digested overview of structure, dependencies, and patterns before grepping into specifics.
+
+For bug fixes, do not patch the first matching symptom. Trace at least one caller or execution path to explain why the change fixes the root cause.
+
+For design choices, compare at least two viable options when the first option affects shared code, public behavior, data shape, security, or long-term maintainability. Prefer the smallest option only when you can explain why it does not narrow future change.
+
+Escalate from quick mode to planning mode when any of these are true:
+- The change touches shared logic, contracts, persistence, authentication, permissions, or environment/configuration behavior
+- The first fix would require guessing about hidden dependencies
+- You cannot name the relevant tests or verification path
+- You find contradictory evidence during investigation
+
+---
+
+## Definition of Done
+
+Work has two states: in-progress and done. The transition requires evidence.
+
+A task is **done** only when:
+- Lint/format is clean for the changed files
+- Tests pass for the blast radius of your change
+- Required review gates are cleared (see Review Gate)
+- You have shown the user the commands and a 1-line result summary
+
+A task with passing implementation but unverified output is still **in-progress**, not done. Do not mark TodoWrite items completed without evidence. Do not write "実装完了" / "done" / "実装しました" without it.
+
+### Reporting format
+
+動作確認:
+- `<lint command>` -> no issues
+- `<test command>` -> N tests, 0 failures
+
+(Commands and counts must be real, not summaries of intent.)
+
+### On failure
+
+Fix and re-run. Do not report partial completion. Do not say "テストは別途確認してください" or equivalent.
+
+### When to skip
+
+Docs-only edits, config tweaks with no meaningful validation target, or trivial typo fixes. State the reason briefly. "trivial" means truly trivial — a typo in a comment, not a "small" logic change.
 
 ---
 
 ## Phase 1: Understand
 
-- Ask clarifying questions whenever requirements or constraints are unclear
-- Gather all relevant context: user goals, usage scenarios, environments, and constraints
-- Check all affected areas of any error or change
-- **Todo Creation**: Create initial high-level todos that capture all main requirements and objectives
+- Ask clarifying questions only when requirements or constraints are unclear and the answer would materially change the implementation
+- Gather the minimum context needed to avoid guessing: user goals, usage scenarios, environments, constraints, and existing patterns
+- Check affected areas before proposing a fix, especially callers, shared dependencies, tests, and configuration
+- **Todo Creation**: For multi-step or risky tasks, create initial high-level todos that capture the main requirements and objectives
 
 ---
 
 ## Phase 2: Plan
 
-- Present a clear and structured plan before starting implementation
-- **MUST USE DIAGRAMS** for system architecture, data flows, or component interactions (e.g., Mermaid, PlantUML, draw.io)
+- Present a clear and structured plan before starting non-trivial implementation
+- Diagrams are effective for system architecture, data flows, or component interactions (Mermaid, PlantUML, draw.io). Use them when the design is non-trivial enough to benefit from visualization
 - Outline key components, responsibilities, interactions, and data flows
 - Explain how your design addresses user goals and constraints
 - Identify risks and limitations, and propose ways to reduce them
@@ -36,88 +89,14 @@
 
 ---
 
-## Phase 3: Implement
-
-- Execute the approved plan, following existing patterns and best practices
-- Maintain consistency with the existing codebase's style and architecture
-
-### Test-Driven Development (TDD)
-
-#### Phase Classification (declare before editing code)
-
-State which phase you are in at task start. This prevents silently skipping TDD.
-
-- **Spike (exploratory)**: Shape is unknown. Goal is learning, not shipping. TDD is **not required**.
-  - Output: working prototype + a written summary of what was learned.
-- **Stabilize (productionizing)**: Shape is clear, code will be kept. TDD is **required** for non-trivial logic.
-- **Maintain (modifying existing code)**: TDD is **required** for behavioral changes. Trivial edits (config/typo/rename) are exempt with a stated reason.
-
-#### Spike Rules
-
-- Mark spike code clearly (branch name, comment, or scratch directory)
-- After spike: either (a) throw away and re-implement under Stabilize, or (b) explicitly transition to Stabilize and add tests before merging
-- **Never merge spike code without transitioning to Stabilize**
-
-#### Stabilize / Maintain Rules (TDD applies)
-
-- Write test cases before implementation and verify that the tests **fail initially**
-- Clearly define expected behaviors through your tests
-- After confirming test failures, implement only the **minimal code required** to pass the test
-- Switch back and forth between writing tests and implementation, confirming all tests pass
-
-#### Per-Domain Hints
-
-Use the testing strategy that fits the exploration type:
-
-| Exploration type | Recommended approach |
-|---|---|
-| Library/API behavior verification | Spike-heavy. Capture findings in a separate note, then Stabilize the integration with TDD |
-| Data shape / pipeline design | Spike to confirm shape. Stabilize by locking schema/types and writing TDD around transformations |
-| UI / visual iteration | Spike-heavy. Use snapshot/approval testing to lock regressions once a layout is accepted |
-| Prompt / AI output tuning | Spike-heavy. Use golden-sample snapshot tests since exact outputs are not deterministic |
-
-**Lightweight exception**: For trivial changes (config edits, typo fixes, comment updates, simple renames), TDD may be skipped. State the reason briefly.
-
-### Documentation During Implementation
-
-For new public APIs and significant changes:
-
-- Document **public interfaces**: purpose, usage, inputs, outputs, examples, and warnings
-- Explain the **reasons for design choices** and trade-offs
-- Update documentation **immediately** when code changes
-
-**Lightweight exception**: For internal/private code, config changes, or trivial fixes, documentation is optional. Prioritize clear naming over comments.
-
-### Review Gate
+## Review Gate
 
 After implementation is complete, perform the following reviews before committing:
 
 - **Security-related changes** (authentication, input handling, APIs, permissions): Running the `security-reviewer` agent is **required**
 - **Other changes**: Running the `change-reviewer` agent is **recommended**
+- For thorough or higher-stakes review, use `deep-review` (Opus 4.7) or `codex-review` (external Codex / gpt-5.5)
 - If any Critical/High findings are reported, fix them before committing
-
-### Todo Updates
-
-- Mark tasks as `in_progress` when starting work
-- Mark tasks as `completed` only after implementation, testing, and documentation are finished
-
----
-
-## Phase 4: Present
-
-- Provide ready-to-use code that can be copied, executed, and integrated
-- Clearly document the purpose, logic, and reasoning behind each major component
-- Clearly list all assumptions, limitations, edge cases, and how to handle them
-- **Final Todo Review**: Ensure all todos are completed and all objectives are met
-
----
-
-## Quality Assurance
-
-- All code must be **tested and produce intended output** before being considered final
-- Include references (official docs, links, test output) for all answers/code/samples
-- Mark answers as "to be confirmed" if any part is unverified
-- **Verify Japanese text after edits**: After Edit/Write operations on files containing Japanese, run `grep` for `�` (U+FFFD replacement character). Mojibake is most likely with `replace_all` or long string substitutions, and looks unprofessional to the user opening the file.
 
 ---
 
@@ -127,43 +106,3 @@ After implementation is complete, perform the following reviews before committin
 - Update granularity: per task or per phase, not at session end (easy to miss items).
 - Items requiring user judgment or manual verification: keep as `- [ ]` and explain why in the summary.
 - For verification phases, append evidence after the checkbox where possible (test counts, command output, file counts) so the plan doubles as an audit trail.
-
----
-
-## Interaction Modes
-
-### Syakyo Mode (Hands-Off)
-
-When the user says "写経したい" / "写経していきたい" / "I want to type it myself", **do not edit files**. The user is learning by typing the code themselves.
-
-- Present code in code blocks
-- State the target file path and line numbers explicitly
-- Use Read only; never Edit/Write
-- Wait for the user to apply the code before moving on
-
----
-
-## Skill Execution Discipline
-
-When the user invokes a skill via `/skill-name`, treat the skill definition as a **mandatory checklist**, not a reference document. Each step must be explicitly traversed in order.
-
-### Strict Compliance Rules
-
-- **Do not skip steps based on prior work**: Even if a prerequisite (tests, reviews, etc.) was completed earlier in the session or before invocation, re-run it as the skill prescribes — unless the skill itself defines a literal skip condition that is satisfied.
-- **Do not substitute steps with self-judgment**: Skills exist to enforce a consistent workflow. Replacing a step with "I already verified this" or "this is obvious" defeats the purpose.
-- **Verify skip conditions literally**: When a skill says "may be skipped if X", check whether X is satisfied verbatim. Do not interpret broadly. If unsure, ask the user.
-- **Apply formatting and convention rules before presenting**: When a skill specifies a title format (e.g. 体言止め), commit message style, PR body template, etc., re-read the rule and apply it before proposing output to the user. Do not flow output from a previous step (e.g. commit title) directly into the next without re-checking.
-- **Re-reference the skill definition each invocation**: Reading the skill once at session start is not enough. When invoking, treat the definition as a checklist to traverse, not a memorized procedure.
-
-### When to Ask vs. Execute
-
-- **Execute**: A step that is clearly within the skill's scope and that the user has implicitly delegated by invoking the skill.
-- **Ask first**: When you want to deviate from the skill (skip, substitute, modify). Frame the question explicitly: state which step you want to skip, and why.
-
-### Common Failure Modes
-
-| Failure | Example | Prevention |
-|---------|---------|------------|
-| Reusing prior results | Skipping Pre-PR Review because "it was done before commit" | If the skill prescribes re-running, re-run. To substitute, get explicit user approval. |
-| Convention oversight | Proposing a PR title in verb form when the skill requires noun form (体言止め) | Quote the title format and examples from the skill before proposing. |
-| Self-judged shortcut | Skipping a step because "it's obvious" or "the change is small" | Honor only the skip conditions explicitly defined in the skill. |

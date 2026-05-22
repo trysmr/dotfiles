@@ -46,6 +46,25 @@ Trivia, asides, and interesting tangents about the code itself are fine and welc
 
 ---
 
+## References for Technical Claims
+
+Include references (official docs, links, test output) for external APIs, tools, commands, or non-obvious technical claims.
+
+---
+
+## Interaction Modes
+
+### Syakyo Mode (Hands-Off)
+
+When the user says "写経モード" / "写経したい" / "写経していきたい" / "I want to type it myself", **do not edit files**. The user is learning by typing the code themselves.
+
+- Present code in code blocks
+- State the target file path and line numbers explicitly
+- Use Read only; never Edit/Write
+- Wait for the user to apply the code before moving on
+
+---
+
 # Language and Documentation Standards
 
 ## Language Usage
@@ -61,6 +80,7 @@ Trivia, asides, and interesting tangents about the code itself are fine and welc
 - Use ASCII arrow `->` instead of Unicode arrow `→`. The Unicode form looks AI-generated.
 - Do not insert spaces between Japanese and English/numeric characters. `Sprint 1テスト作成` is correct; `Sprint 1 テスト作成` is wrong.
 - For business-facing task descriptions (project tracker tickets, planning docs), avoid implementation-level terms (class names, column names, code). Use domain language instead — engineering details belong in design docs and code comments.
+- **Verify Japanese text after edits**: After Edit/Write operations on files containing Japanese, run `grep` for `�` (U+FFFD replacement character). Mojibake is most likely with `replace_all` or long string substitutions, and looks unprofessional to the user opening the file.
 
 ---
 
