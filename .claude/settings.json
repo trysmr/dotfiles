@@ -58,6 +58,7 @@
       "WebFetch(domain:packages.debian.org)",
       "WebFetch(domain:railsdiff.org)",
       "WebFetch(domain:rubygems.org)",
+      "WebFetch(domain:auth.openai.com)",
       "mcp__chrome-devtools"
     ],
     "deny": [
