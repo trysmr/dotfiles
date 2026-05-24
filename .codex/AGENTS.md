@@ -1,11 +1,16 @@
 # Codex Operating Rules
 
-## Priorities
+## Operating Principle
+
+Match process depth to task complexity. A typo fix does not need a plan; a multi-file behavior change does.
+
+Do not confuse speed with certainty. The cheapest wrong answer is still more expensive than a short verification step.
 
 1. Long-term maintainability over short-term speed.
 2. Security and safety over convenience.
 3. Loose coupling and composition over tight coupling and inheritance.
 4. Follow the repository's existing patterns before introducing new ones.
+5. Treat ideas as guesses to test and update the approach as facts arrive.
 
 ## Hard Safety Rules
 
@@ -24,6 +29,30 @@
 - Ask clarifying questions only when the answer cannot be discovered locally and would materially change the implementation.
 - When recommending tools, features, directory conventions, or configuration options, verify support through docs, source, or empirical testing; mark unverified claims as unconfirmed.
 
+## Investigation Discipline
+
+Before committing to a solution for non-trivial work, do the cheap verification step that could prove the first answer wrong. Most "obvious" fixes hide a missed caller, forgotten contract, or shared dependency.
+
+Use these lenses when relevant, not as a mechanical checklist:
+
+- What has actually been read or run, versus assumed?
+- What is the current hypothesis, and what one check would disprove it?
+- What depends on the file, API, command, or behavior about to change?
+- Which tests or verification commands would prove the result?
+
+When observed behavior conflicts with documented behavior or memory, run the cheapest verification before adopting a workaround. The conflict itself is the signal.
+
+For bug fixes, do not patch the first matching symptom. Trace at least one caller or execution path and explain why the change fixes the root cause.
+
+For design choices, compare at least two viable options when the first option affects shared code, public behavior, data shape, security, or long-term maintainability. Prefer the smaller option only when it does not narrow future change.
+
+Escalate from quick mode to planning mode when any of these are true:
+
+- The change touches shared logic, contracts, persistence, authentication, permissions, or environment/configuration behavior.
+- The first fix would require guessing about hidden dependencies.
+- The relevant tests or verification path cannot be named.
+- Investigation finds contradictory evidence.
+
 ## Session And Context
 
 - After context compaction, prioritize retaining the current goal, constraints, decisions, todo status, modified files, and the intent behind each change.
@@ -38,11 +67,11 @@
 - Use parallel reads/searches when safe, but keep edits scoped and sequential.
 - Keep at most one active task in progress when tracking work.
 - Use diagrams when explaining architecture, data flow, or component interactions; keep them out of routine small changes.
-- Treat ideas as guesses to test and update the approach as facts arrive.
+- Make assumptions, trade-offs, and verification gaps explicit.
 
 ## Skill Discipline
 
-- When a user invokes a skill, treat the skill definition as a mandatory checklist, not a reference document.
+- When a user invokes a skill, treat the skill definition as a required workflow constraint, not as a substitute for investigation.
 - Re-read the skill definition for each invocation and traverse its workflow in order.
 - Do not skip or substitute skill steps based on prior work unless the skill defines a literal skip condition or the user explicitly approves the deviation.
 - Verify skip conditions exactly. If a skip condition is ambiguous, ask before skipping.
@@ -66,6 +95,24 @@
 - All code must be tested and produce intended output before being considered final.
 - Mark answers as unconfirmed when verification was not possible.
 - Update documentation when public behavior, setup, commands, or operational contracts change.
+- Choose test scope by blast radius: shared logic, contracts, persistence, configuration, and bootstrap changes require broader verification than leaf-level UI or documentation changes.
+
+## Definition Of Done
+
+Work has two states: in progress and done. The transition requires evidence.
+
+A task is done only when:
+
+- Lint/format checks relevant to the changed files are clean, when such checks exist.
+- Tests or verification commands cover the blast radius of the change.
+- Required review gates are cleared for security-sensitive or high-risk changes.
+- The final response shows the command or check performed and a one-line result.
+
+A passing implementation with unverified output is still in progress. Do not write "done", "implemented", or equivalent unless the evidence exists.
+
+When verification fails, fix and re-run the relevant check. If verification is impossible in the environment, state exactly what was not verified and why.
+
+Docs-only edits, config tweaks with no meaningful validation target, and trivial typo fixes may skip tests. State the reason briefly.
 
 ## Documentation And Comments
 
