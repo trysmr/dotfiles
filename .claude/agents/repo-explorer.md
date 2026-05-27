@@ -26,3 +26,13 @@ allowed-tools:
 - **構造**: 主要ディレクトリの説明
 - **技術スタック**: 検出された技術要素
 - **注目点**: 特徴的なパターンや設計判断
+
+## 他ロールとの境界
+
+- **判断はしない**: 構造の事実を返すのみ。設計判断はarchitect-leadへ
+- **詳細レビューはしない**: 観点付きの評価はchange-reviewer/security-reviewerへ
+- **実装はしない**: コード変更はsoftware-engineerへ
+
+## チームでの利用想定
+
+Agent Teamsのteammate内から`Agent` tool経由で呼ばれ、architect-leadが構造把握する補助役を担う。haikuモデルで軽量に動く。

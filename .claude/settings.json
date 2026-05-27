@@ -1,6 +1,9 @@
 {
   "respectGitignore": true,
   "includeCoAuthoredBy": false,
+  "env": {
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
+  },
   "permissions": {
     "allow": [
       "Bash(rg:*)",
@@ -46,6 +49,7 @@
       "Skill(pr)",
       "Skill(pr-release)",
       "Skill(reload-context)",
+      "Skill(start-dev-team)",
       "WebFetch(domain:api.github.com)",
       "WebFetch(domain:github.com)",
       "WebFetch(domain:blog.rubygems.org)",
