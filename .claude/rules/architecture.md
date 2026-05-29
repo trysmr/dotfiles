@@ -13,6 +13,25 @@ For each architectural decision, briefly explain **why this approach contributes
 
 ---
 
+## Capability over Plumbing
+
+Keep behavior on the domain object that owns it. Do not push that object's natural responsibilities into surrounding service / orchestration code that merely pipes data in and out ("plumbing").
+
+**Principle**: A domain object's public API should read as a coherent set of capabilities it can perform on itself. When external code repeatedly extracts the object's state, computes a result, and writes it back, that pull-compute-push pattern signals the capability belongs **on the object** instead.
+
+**Why**: If domain behavior leaks into service layers, the object becomes a "data container" (Anemic Domain Model). Readers can no longer answer "what can this object do?" from its API alone, and behavior fragments across many service classes — making the codebase harder to evolve.
+
+**Decision lens**:
+- Does the new method express something the object itself does, or is it an orchestration of multiple objects / external I/O?
+- Tell, Don't Ask: Can the caller say `object.do_X(...)` instead of pulling state, computing, and setting it back?
+- Would a one-line thin wrapper on the object replace several lines of pull-compute-push in the caller?
+
+**Apply when**: deciding whether a new method belongs on the domain object or in a service / orchestrator. Even a one-line wrapper is worth keeping on the object when it names a domain capability.
+
+**Do not apply**: when the logic genuinely orchestrates multiple objects, performs cross-aggregate transactions, or coordinates external I/O. Those belong in a service / orchestration layer.
+
+---
+
 ## Code Documentation and Clarity
 
 ### Explain "Why", Not Just "What"

@@ -21,17 +21,36 @@ When presenting placement options, lead with the responsibility perspective. Men
 
 ## Method Extraction Criteria
 
-Only extract a private method when **all three** of the following are true. If any is "No", keep it inline.
+Extraction decisions depend on the **visibility** of the method.
+Private/internal methods are evaluated from a **code structure** perspective; public methods are evaluated from a **domain capability** perspective. Use both lenses; do not collapse one into the other.
+
+### Private / internal method: code structure perspective
+
+Only extract a private/internal method when **all three** of the following are true. If any is "No", keep it inline.
 
 1. Does the same logic exist in 2+ places? (eliminating duplication)
 2. Would the code be hard to understand without that name? (abstraction payoff)
 3. Is the body long enough to disrupt the flow at the call site? (readability improvement)
 
+### Public method: domain capability perspective
+
+When a method represents an **object's capability** (something the object itself does), the structure criteria above are insufficient. Also evaluate:
+
+1. **Tell, Don't Ask**: Is it more natural to tell the object to do something than to extract its state and have the caller compute the result? If yes, keep the method.
+2. **Symmetry with existing capabilities**: Does the method sit naturally alongside other public methods on the object? An object's public API should read as a coherent set of behaviors, not a random grab bag.
+3. **Future hook surface**: Is there a plausible future need to inject callbacks, observability, or lifecycle hooks around this capability? A named method gives you the seam.
+4. **Avoid Anemic Domain Model**: Removing the method should not demote the object to a "data container" with logic scattered into surrounding service / orchestration layers.
+
+Keep capability methods even when there is no duplication, the body is short, and there is only one caller — if the method expresses a domain concept.
+
+### When hitting metric limits
+
 Extracting solely to reduce line count is counterproductive. When hitting metric limits, follow this order:
+
 1. Can the responsibility be delegated to a separate class?
 2. Can early returns or guard clauses reduce complexity?
 3. Can data structuring reduce branches?
-4. If extraction is truly needed, design the extracted method to satisfy all three questions
+4. If extraction is truly needed, design the extracted method to satisfy the appropriate criteria above
 
 ---
 
