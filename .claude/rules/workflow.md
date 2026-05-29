@@ -97,7 +97,7 @@ After implementation is complete, perform the following reviews before committin
 
 - **Security-related changes** (authentication, input handling, APIs, permissions): Running the `security-reviewer` agent is **required**
 - **Other changes**: Running the `change-reviewer` agent is **recommended**
-- For thorough or higher-stakes review, use `deep-review` (Opus 4.7) or `codex-review` (external Codex / gpt-5.5)
+- For thorough or higher-stakes review, use `deep-review` (Opus) or `codex-review` (external Codex / gpt-5.5)
 - If any Critical/High findings are reported, fix them before committing
 
 ---

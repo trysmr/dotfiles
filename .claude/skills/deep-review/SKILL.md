@@ -1,7 +1,7 @@
 ---
 name: deep-review
 description: >
-  Opus 4.7サブエージェントで現在のブランチの変更を徹底レビュー。
+  Opusサブエージェントで現在のブランチの変更を徹底レビュー。
   「深くレビュー」「Opusでレビュー」「しっかりレビュー」と言われた時に使用。
 argument-hint: "[--branch | --uncommitted | --staged | --commit <hash> | ファイルパス]"
 context: fork
@@ -15,9 +15,9 @@ allowed-tools:
 user-invocable: true
 ---
 
-# deep-review: Opus 4.7 徹底レビュー
+# deep-review: Opus 徹底レビュー
 
-Opus 4.7モデルのサブエージェントを使い、現在のブランチの変更を品質・セキュリティ両面から徹底的にレビューする。
+Opusモデルのサブエージェントを使い、現在のブランチの変更を品質・セキュリティ両面から徹底的にレビューする。
 
 ## 実行手順
 
@@ -52,7 +52,7 @@ git log --oneline <base>...HEAD
 #### 2a. change-reviewer（品質・保守性）
 
 **必須パラメータ**:
-- `model: "opus"` — Opus 4.7を使用
+- `model: "opus"` — Opusを使用
 - `subagent_type: "change-reviewer"`
 
 **プロンプトに含める内容**:
@@ -108,7 +108,7 @@ effortをxhighに設定してください。
 #### 2b. security-reviewer（セキュリティ）
 
 **必須パラメータ**:
-- `model: "opus"` — Opus 4.7を使用
+- `model: "opus"` — Opusを使用
 - `subagent_type: "security-reviewer"`
 
 **プロンプトに含める内容**:
