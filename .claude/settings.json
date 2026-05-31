@@ -1,9 +1,9 @@
 {
   "respectGitignore": true,
-  "includeCoAuthoredBy": false,
   "env": {
     "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
   },
+  "includeCoAuthoredBy": false,
   "permissions": {
     "allow": [
       "Bash(rg:*)",
@@ -185,6 +185,12 @@
             "type": "command",
             "command": "~/.claude/hooks/contract_check.sh",
             "timeout": 5
+          },
+          {
+            "type": "prompt",
+            "prompt": "書き込んだファイルの日本語（コメント、テスト名、エラーメッセージ）が自然か確認してください。声に出して読んで不自然な表現があればokをfalseにし、具体的な箇所と言い換え案を返してください。注意点: 漢語接頭辞の造語（未〜/非〜で名詞と合成した語）、助詞の省略（次エッジ->次のエッジ）、既存の語彙にない業務用語の造語。日本語を含まないファイルはokをtrueにしてください。$ARGUMENTS",
+            "timeout": 15,
+            "continueOnBlock": true
           }
         ]
       }
