@@ -16,11 +16,23 @@ deny() {
 
 normalized=$(printf '%s' "$command" | tr '\n' ' ' | sed 's/[[:space:]][[:space:]]*/ /g; s/^ //; s/ $//')
 
-case "$normalized" in
-  *".git/"*|*"/.git/"*)
-    deny ".gitディレクトリを直接参照するコマンドは禁止されています。gitコマンド経由で確認してください。"
-    ;;
-esac
+for token in $normalized; do
+  token=${token#\'}
+  token=${token%\'}
+  token=${token#\"}
+  token=${token%\"}
+
+  # rg/find等の除外glob（例: --glob '!**/.git/**'）は直接参照ではないため除外する。
+  if [[ "$token" == "!"* || "$token" == *"*"* || "$token" == *"?"* || "$token" == *"["* ]]; then
+    continue
+  fi
+
+  case "$token" in
+    .git|.git/*|*/.git|*/.git/*)
+      deny ".gitディレクトリを直接参照するコマンドは禁止されています。gitコマンド経由で確認してください。"
+      ;;
+  esac
+done
 
 if [[ "$normalized" =~ (^|[[:space:];|&])sudo($|[[:space:]]) ]]; then
   deny "sudoの実行は禁止されています。必要な場合は目的と影響範囲をユーザーに確認してください。"
@@ -30,7 +42,7 @@ if [[ "$normalized" =~ (^|[[:space:];|&])(bash|sh|zsh)[[:space:]]+-c($|[[:space:
   deny "shell -c は権限ルールを迂回しやすいため禁止されています。直接コマンドを実行してください。"
 fi
 
-if [[ "$normalized" =~ (^|[[:space:];|&])(eval|exec)($|[[:space:]]) ]]; then
+if [[ "$normalized" =~ (^|[;|&][[:space:]]*)(eval|exec)($|[[:space:]]) ]]; then
   deny "eval/execは禁止されています。展開後の具体的なコマンドを使ってください。"
 fi
 
