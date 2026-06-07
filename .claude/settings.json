@@ -270,6 +270,11 @@
       "allowUnixSockets": [
         "~/.docker/run/docker.sock"
       ]
+    },
+    "filesystem": {
+      "allowRead": [
+        ".env.sample"
+      ]
     }
   },
   "effortLevel": "high",
