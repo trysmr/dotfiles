@@ -188,6 +188,7 @@ PR作成後、URLをユーザーに提示します。
 | `staging`または`main`が存在しない | プロジェクトでstagingブランチを使っていない | リリースPRは不要。通常の`pr`スキルを使う |
 | `git log main..staging`が空 | stagingにマージ済みの変更がmainにない状態 | リリース対象がない。マージ済みPRを確認 |
 | `gh pr create`が「a pull request for branch already exists」 | 既存のリリースPRがある | `gh pr view`で既存PRを確認し、必要なら更新 |
+| `gh pr create`がTLS/証明書エラーで失敗 | サンドボックス環境のネットワーク制限 | `dangerouslyDisableSandbox: true`を指定して再実行する |
 
 ## 使用例
 

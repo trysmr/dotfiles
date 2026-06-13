@@ -237,6 +237,7 @@ PR作成後、URLをユーザーに提示します。
 | `a pull request for branch already exists` | 同ブランチで既にPRが存在する | `gh pr view` で既存PRを確認してユーザーに提示する |
 | test・linterが失敗する | コードに問題がある | PR作成を中断し、エラー内容をユーザーに提示して修正を促す |
 | `--base staging` でエラー | stagingブランチが存在しない | `git branch -a` で確認し `--base main` に変更する |
+| `gh pr create`がTLS/証明書エラーで失敗 | サンドボックス環境のネットワーク制限 | `dangerouslyDisableSandbox: true`を指定して再実行する |
 
 ## 使用例
 
