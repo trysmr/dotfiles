@@ -39,7 +39,9 @@ description: Use when the user asks for a release PR, 本番リリース, リリ
 
 ## テスト計画
 - [x] RuboCop静的解析パス
+- [x] stylelint静的解析パス
 - [x] 全テストN件パス(0 failures, 0 errors)
+- [x] JSテストパス
 - [x] staging環境で動作確認
 - [ ] 本番デプロイ後の確認
   - [ ] アプリケーションが正常に起動することを確認
@@ -50,3 +52,4 @@ description: Use when the user asks for a release PR, 本番リリース, リリ
 
 - `staging` または `main` がない場合は通常PRへ切り替える。
 - ユーザー許可なしにPRを作成しない。
+- `gh pr create`がTLS/証明書エラーで失敗した場合は`dangerouslyDisableSandbox: true`を指定して再実行する。

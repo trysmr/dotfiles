@@ -19,7 +19,7 @@ description: Use when the user asks to create a pull request, PR, プルリク, 
 2. `git branch -a`、`git status`、`git log --oneline -5` で状態を確認する。
 3. ベースブランチを決める。`hotfix/*` は `main`、その他は `staging` があれば `staging`、なければ `main`。
 4. `git diff <base>...HEAD` でPR範囲の差分を確認する。
-5. プロジェクトのテスト/lintコマンドを検出して実行する。失敗した場合はPR作成を止める。
+5. プロジェクトのテスト/lintコマンドを検出して実行する。`package.json`に`lint:css`や`test:js`がある場合も必ず実行する。失敗した場合はPR作成を止める。
 6. 可能なら `change-reviewer`、セキュリティ関連変更なら `security-reviewer` でレビューする。
 7. PRタイトルと本文を作成し、ユーザーに提示して許可を得る。
 8. 許可後、必要なら `git push -u origin <branch>` を実行し、`gh pr create` でPRを作成する。
@@ -43,3 +43,4 @@ description: Use when the user asks to create a pull request, PR, プルリク, 
 - ユーザー許可なしにPRを作成しない。
 - test/lint失敗中はPRを作成しない。
 - Critical/Highレビュー指摘がある場合は先に修正する。
+- `gh pr create`がTLS/証明書エラーで失敗した場合は`dangerouslyDisableSandbox: true`を指定して再実行する。
