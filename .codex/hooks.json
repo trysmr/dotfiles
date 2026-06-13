@@ -22,6 +22,18 @@
             "command": "/bin/bash \"$HOME/.codex/hooks/command_safety_check.sh\"",
             "timeout": 10,
             "statusMessage": "Checking shell command safety"
+          },
+          {
+            "type": "command",
+            "command": "/bin/bash \"$HOME/.codex/hooks/docker_rails_exec_check.sh\"",
+            "timeout": 10,
+            "statusMessage": "Checking Rails command environment"
+          },
+          {
+            "type": "command",
+            "command": "python3 \"$HOME/.codex/hooks/japanese_commit_check.py\"",
+            "timeout": 10,
+            "statusMessage": "Checking Japanese commit text"
           }
         ]
       },
