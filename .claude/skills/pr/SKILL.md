@@ -57,7 +57,9 @@ PR作成前に品質チェックを実行します。
 ```bash
 # Docker Compose + Railsプロジェクトの場合
 docker compose exec app bin/rubocop
+docker compose exec app npm run lint:css  # package.jsonにlint:cssがある場合（fixはlint:css:fix）
 docker compose exec app bin/rails test
+docker compose exec app npm run test:js   # package.jsonにtest:jsがある場合
 
 # Railsプロジェクト（ローカル実行）の場合
 bin/rails test
@@ -67,6 +69,8 @@ bin/rubocop
 npm test
 npm run lint
 ```
+
+**重要**: `package.json`に`lint:css`や`test:js`がある場合は必ず実行する。RuboCopと`bin/rails test`だけでは不十分。
 
 **重要**: test・linterが失敗した場合、PR作成プロセスを中断してください。エラー内容をユーザーに提示し、修正を促してください。
 
@@ -104,7 +108,9 @@ npm run lint
 
 ## テスト計画
 - [x] RuboCop静的解析パス
+- [x] stylelint静的解析パス（CSS変更がある場合）
 - [x] [テスト対象]テストN件パス(0 failures, 0 errors)
+- [x] JSテストパス（JS変更がある場合）
 ```
 
 #### タイトルの書き方

@@ -91,7 +91,9 @@ gh pr view <番号> --json number,title,body
 
 ## テスト計画
 - [x] RuboCop静的解析パス
+- [x] stylelint静的解析パス
 - [x] 全テストN件パス(0 failures, 0 errors)
+- [x] JSテストパス
 - [x] staging環境で動作確認
 - [ ] 本番デプロイ後の確認
   - [ ] アプリケーションが正常に起動することを確認
@@ -150,7 +152,9 @@ gh pr create --base main --head staging --title "タイトル" --body "$(cat <<'
 
 ## テスト計画
 - [x] RuboCop静的解析パス
+- [x] stylelint静的解析パス
 - [x] 全テストN件パス(0 failures, 0 errors)
+- [x] JSテストパス
 - [x] staging環境で動作確認
 - [ ] 本番デプロイ後の確認
   - [ ] アプリケーションが正常に起動することを確認
