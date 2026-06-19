@@ -3,7 +3,8 @@
 # bash_safety_check.sh のテストスクリプト
 # テスト用settings.jsonを一時作成して独立実行する
 
-HOOK="$HOME/.claude/hooks/bash_safety_check.sh"
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+HOOK="$SCRIPT_DIR/bash_safety_check.sh"
 pass=0
 fail=0
 
@@ -27,7 +28,11 @@ cat > "$TEMP_SETTINGS" <<'SETTINGS'
       "Bash(sudo:*)",
       "Bash(eval:*)",
       "Bash(git reset:*)",
-      "Bash(git -C:*)"
+      "Bash(git -C:*)",
+      "Bash(git --git-dir:*)",
+      "Bash(git --work-tree:*)",
+      "Bash(*db:drop*)",
+      "Bash(git push *--force*)"
     ],
     "ask": [
       "Bash(curl:*)",
@@ -70,6 +75,9 @@ test_hook 'echo "hello && world"' "pass" "クォート内の&&"
 test_hook "git log --oneline | head -5" "pass" "allowのgit log | head"
 test_hook "ls 2>&1" "pass" "リダイレクトの&"
 test_hook "" "pass" "空コマンド"
+test_hook 'echo "git -C/tmp status"' "pass" "クォート内のgit -C文字列"
+test_hook 'sudo=1 ls' "pass" "環境変数代入はsudo実行ではない"
+test_hook 'git commit -m ""' "pass" "直接git commitの空メッセージ"
 test_hook 'git commit -m "$(cat <<'"'"'EOF'"'"'
 git_chain_checkを拡張
 EOF
@@ -79,7 +87,7 @@ echo ""
 echo "=== deny でブロック ==="
 test_hook "ls && sudo whoami" "block" "allowチェーンdeny: sudo"
 test_hook "ls && cat x && git reset --hard" "block" "チェーン内のgit reset"
-test_hook "/usr/bin/sudo whoami" "pass" "絶対パス単独(permissions判定に委ねる)"
+test_hook "/usr/bin/sudo whoami" "block" "絶対パス単独sudo"
 test_hook "ls && /usr/bin/sudo whoami" "block" "チェーン内の絶対パスsudo"
 test_hook "ls && command sudo whoami" "block" "commandラッパー経由"
 test_hook "ls && env -i sudo whoami" "block" "env -i経由"
@@ -87,6 +95,11 @@ test_hook "ls && env FOO=1 sudo whoami" "block" "env変数代入経由"
 test_hook "cat file | sudo tee /etc/passwd" "block" "パイプ経由のsudo"
 test_hook 'echo $(eval "bad")' "block" "サブシェル内のeval"
 test_hook "git -C /tmp status" "block" "git -Cオプション"
+test_hook "git -C/tmp status" "block" "git -C attachedオプション"
+test_hook "command git -C/tmp status" "block" "command経由のgit -C attachedオプション"
+test_hook "git --git-dir=.git status" "block" "git --git-dir= オプション"
+test_hook "env FOO=1 git --git-dir .git status" "block" "env経由のgit --git-dir オプション"
+test_hook "git --work-tree=/tmp status" "block" "git --work-tree= オプション"
 test_hook $'ls && git\treset --hard' "block" "タブ区切りgit reset"
 
 echo ""
@@ -105,6 +118,19 @@ test_hook "ls && curl https://example.com" "block" "チェーン内のcurl"
 test_hook "cat file | rm foo.txt" "block" "パイプ内のrm"
 test_hook "ls && wget https://example.com" "block" "チェーン内のwget"
 test_hook "git log && git commit -m test" "block" "チェーン内のgit commit"
+test_hook $'cat <<'"'"'MSG'"'"' | git commit -F -\nmessage\nMSG' "block" "ヒアドクpipe経由のgit commit"
+test_hook "printf x |& git commit -F -" "block" "|&経由のgit commit"
+test_hook "printf x & git commit -m test" "block" "バックグラウンド区切り後のgit commit"
+test_hook "cat msg | GIT_AUTHOR_NAME=x git commit -F -" "block" "環境変数プレフィックス経由のgit commit"
+test_hook "cat msg | git -c user.name=x commit -F -" "block" "git -c経由のgit commit"
+test_hook "cat msg | git --no-pager commit -F -" "block" "gitグローバルオプション経由のgit commit"
+test_hook "env -u GIT_DIR git commit -m test" "block" "env -u経由のgit commit"
+test_hook 'echo "$(git status && git commit -m test)"' "block" '引用された$()内チェーンのgit commit'
+test_hook 'cat msg | "$(which git)" commit -F -' "block" "動的コマンド名経由のgit commit"
+test_hook 'op=commit; cat msg | git "$op" -F -' "block" "動的gitサブコマンド経由のgit commit"
+test_hook 'git "$(printf commit)" -m test' "block" "コマンド置換gitサブコマンド経由のgit commit"
+test_hook "bin/rails db:drop" "block" "ワイルドカード/コロン入りdenyパターン"
+test_hook "git push origin main --force-with-lease" "block" "中間ワイルドカードdenyパターン"
 
 echo ""
 echo "=== settings.json異常系 ==="

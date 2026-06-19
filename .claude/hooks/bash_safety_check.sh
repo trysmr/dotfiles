@@ -2,7 +2,7 @@
 
 # Bashコマンドの安全性チェック（PreToolUseフック）
 # チェーン実行（&&, ||, ;, |, 改行）でdeny/askパターンがバイパスされることを防ぐ
-# 既知の制限: ネストされた$()、プロセス置換<()、変数展開$cmd、エイリアスは検出不可
+# 動的コマンド名は解決できないためfail-closedでブロックする
 
 input=$(cat)
 is_copilot=$(printf '%s' "$input" | jq -r 'has("toolName")')
@@ -42,11 +42,19 @@ if ! jq -e '.permissions' "$SETTINGS_FILE" >/dev/null 2>&1; then
 fi
 
 # Bashパターンを抽出: "Bash(sudo:*)" → "sudo"
+# コマンド自体に含まれる ":" や "*" は保持する。
 extract_patterns() {
   local key="$1"
+  local spec
   jq -r ".permissions.${key}[]? // empty" "$SETTINGS_FILE" | \
     grep --color=never '^Bash(' | \
-    sed 's/^Bash(//; s/)$//; s/:.*$//'
+    sed 's/^Bash(//; s/)$//' | \
+    while IFS= read -r spec; do
+      case "$spec" in
+        *':*') printf '%s\n' "${spec%:*}" ;;
+        *) printf '%s\n' "$spec" ;;
+      esac
+    done
 }
 
 deny_patterns=$(extract_patterns "deny")
@@ -57,70 +65,310 @@ if [ -z "$deny_patterns" ] && [ -z "$ask_patterns" ]; then
   exit 0
 fi
 
-# --- git -C チェック（既存ロジック維持） ---
-
-if [[ "$command" =~ git[[:space:]]+-C[[:space:]=] ]]; then
-  deny "-Cオプションは禁止されています。現在のディレクトリでgitコマンドを実行してください。"
-fi
-
 # --- サブコマンド正規化 ---
 
-normalize_subcmd() {
+trim_space() {
+  printf '%s' "$1" | sed 's/^[[:space:]]*//; s/[[:space:]]*$//'
+}
+
+first_command_line() {
+  local line
+  local trimmed
+
+  while IFS= read -r line; do
+    trimmed=$(trim_space "$line")
+    if [ -n "$trimmed" ]; then
+      printf '%s' "$line"
+      return
+    fi
+  done <<< "$1"
+}
+
+WORDS=()
+
+parse_words() {
   local cmd="$1"
+  local len=${#cmd}
+  local i=0
+  local char
+  local word=""
+  local in_single=false
+  local in_double=false
+  local escaped=false
 
-  # 1. 空白正規化（タブ→スペース、複数スペース→単一、先頭末尾除去）
-  cmd=$(printf '%s' "$cmd" | tr '\t' ' ' | sed 's/  */ /g; s/^ //; s/ $//')
+  WORDS=()
 
-  # 2. command/env ラッパーを除去
-  while true; do
-    case "$cmd" in
-      command\ *) cmd="${cmd#command }" ;;
-      env\ -*)
-        # envのオプション（-i等）をスキップ
-        cmd="${cmd#env }"
-        while [[ "$cmd" == -* ]]; do
-          cmd="${cmd#* }"
-        done
+  while (( i < len )); do
+    char="${cmd:$i:1}"
+
+    if $escaped; then
+      word+="$char"
+      escaped=false
+      (( i++ ))
+      continue
+    fi
+
+    if [ "$char" = "\\" ] && ! $in_single; then
+      escaped=true
+      (( i++ ))
+      continue
+    fi
+
+    if [ "$char" = "'" ] && ! $in_double; then
+      if $in_single; then in_single=false; else in_single=true; fi
+      (( i++ ))
+      continue
+    fi
+
+    if [ "$char" = '"' ] && ! $in_single; then
+      if $in_double; then in_double=false; else in_double=true; fi
+      (( i++ ))
+      continue
+    fi
+
+    if ! $in_single && ! $in_double && [[ "$char" =~ [[:space:]] ]]; then
+      if [ -n "$word" ]; then
+        WORDS+=("$word")
+        word=""
+      fi
+      (( i++ ))
+      continue
+    fi
+
+    word+="$char"
+    (( i++ ))
+  done
+
+  if [ -n "$word" ]; then
+    WORDS+=("$word")
+  fi
+}
+
+is_assignment_word() {
+  [[ "$1" =~ ^[A-Za-z_][A-Za-z0-9_]*= ]]
+}
+
+word_basename() {
+  local word="$1"
+
+  case "$word" in
+    *'$('*|*'`'*|'$'*|'${'*)
+      printf '%s' "$word"
+      ;;
+    */*)
+      printf '%s' "${word##*/}"
+      ;;
+    *)
+      printf '%s' "$word"
+      ;;
+  esac
+}
+
+join_words_from() {
+  local start="$1"
+  local total="${#WORDS[@]}"
+  local i="$start"
+  local out=""
+  local word
+
+  while (( i < total )); do
+    word="${WORDS[$i]}"
+    if (( i == start )); then
+      word=$(word_basename "$word")
+    fi
+    if [ -z "$out" ]; then
+      out="$word"
+    else
+      out="$out $word"
+    fi
+    (( i++ ))
+  done
+
+  printf '%s' "$out"
+}
+
+NEXT_INDEX=0
+NORMALIZE_DYNAMIC=false
+
+skip_env_wrapper() {
+  local i="$1"
+  local total="${#WORDS[@]}"
+  local word
+
+  (( i++ ))
+
+  while (( i < total )); do
+    word="${WORDS[$i]}"
+
+    if is_assignment_word "$word"; then
+      (( i++ ))
+      continue
+    fi
+
+    case "$word" in
+      --)
+        (( i++ ))
+        break
         ;;
-      env\ *=*)
-        # env KEY=VALUE ... の形式
-        cmd="${cmd#env }"
-        while [[ "$cmd" == *=* ]]; do
-          local first_word="${cmd%% *}"
-          if [[ "$first_word" == *=* ]]; then
-            if [ "$cmd" = "$first_word" ]; then
-              cmd=""
-              break
-            fi
-            cmd="${cmd#* }"
-          else
-            break
-          fi
-        done
+      -i|--ignore-environment|-0|--null)
+        (( i++ ))
         ;;
-      env\ *) cmd="${cmd#env }" ;;
-      *) break ;;
+      -u|-C|--unset|--chdir)
+        (( i += 2 ))
+        ;;
+      --unset=*|--chdir=*)
+        (( i++ ))
+        ;;
+      -S|--split-string|--split-string=*)
+        NORMALIZE_DYNAMIC=true
+        NEXT_INDEX="$total"
+        return
+        ;;
+      -*)
+        (( i++ ))
+        ;;
+      *)
+        break
+        ;;
     esac
   done
 
-  # 3. 絶対パス → ベース名
-  if [[ "$cmd" == /* ]]; then
-    local first_word="${cmd%% *}"
-    local rest=""
-    if [ "$cmd" != "$first_word" ]; then
-      rest="${cmd#"$first_word"}"
-    fi
-    local basename="${first_word##*/}"
-    cmd="${basename}${rest}"
+  NEXT_INDEX="$i"
+}
+
+normalize_git_command() {
+  local start="$1"
+  local total="${#WORDS[@]}"
+  local i=$((start + 1))
+  local word
+  local out="git"
+
+  while (( i < total )); do
+    word="${WORDS[$i]}"
+    case "$word" in
+      --)
+        (( i++ ))
+        break
+        ;;
+      -C|-C*)
+        printf '%s' "git -C"
+        return
+        ;;
+      --git-dir|--git-dir=*)
+        printf '%s' "git --git-dir"
+        return
+        ;;
+      --work-tree|--work-tree=*)
+        printf '%s' "git --work-tree"
+        return
+        ;;
+      -c|-C|--git-dir|--work-tree|--namespace|--exec-path|--super-prefix|--config-env)
+        (( i += 2 ))
+        ;;
+      -c*|--git-dir=*|--work-tree=*|--namespace=*|--exec-path=*|--super-prefix=*|--config-env=*)
+        (( i++ ))
+        ;;
+      --no-pager|--paginate|-p|--bare|--literal-pathspecs|--no-literal-pathspecs|--glob-pathspecs|--noglob-pathspecs|--icase-pathspecs|--no-optional-locks)
+        (( i++ ))
+        ;;
+      -*)
+        (( i++ ))
+        ;;
+      *)
+        break
+        ;;
+    esac
+  done
+
+  if (( i < total )); then
+    case "${WORDS[$i]}" in
+      *'$('*|*'`'*|'$'*|'${'*)
+        printf '%s' "__dynamic_command__ git"
+        return
+        ;;
+    esac
   fi
 
-  printf '%s' "$cmd"
+  while (( i < total )); do
+    out="$out ${WORDS[$i]}"
+    (( i++ ))
+  done
+
+  printf '%s' "$out"
+}
+
+normalize_subcmd() {
+  local cmd="$1"
+  local line
+  local total
+  local i=0
+  local cmd_word
+
+  line=$(first_command_line "$cmd")
+  line=$(printf '%s' "$line" | tr '\t' ' ')
+  line=$(trim_space "$line")
+  [ -z "$line" ] && return
+
+  parse_words "$line"
+  total="${#WORDS[@]}"
+
+  while (( i < total )) && is_assignment_word "${WORDS[$i]}"; do
+    (( i++ ))
+  done
+
+  while (( i < total )); do
+    cmd_word=$(word_basename "${WORDS[$i]}")
+    case "$cmd_word" in
+      command)
+        (( i++ ))
+        while (( i < total )) && [[ "${WORDS[$i]}" == -* ]]; do
+          (( i++ ))
+        done
+        while (( i < total )) && is_assignment_word "${WORDS[$i]}"; do
+          (( i++ ))
+        done
+        ;;
+      env)
+        NORMALIZE_DYNAMIC=false
+        skip_env_wrapper "$i"
+        if $NORMALIZE_DYNAMIC; then
+          printf '%s' "__dynamic_command__ env -S"
+          return
+        fi
+        i="$NEXT_INDEX"
+        while (( i < total )) && is_assignment_word "${WORDS[$i]}"; do
+          (( i++ ))
+        done
+        ;;
+      *)
+        break
+        ;;
+    esac
+  done
+
+  (( i >= total )) && return
+
+  cmd_word=$(word_basename "${WORDS[$i]}")
+  case "$cmd_word" in
+    *'$('*|*'`'*|'$'*|'${'*)
+      printf '%s' "__dynamic_command__ $(join_words_from "$i")"
+      return
+      ;;
+    git)
+      normalize_git_command "$i"
+      ;;
+    *)
+      join_words_from "$i"
+      ;;
+  esac
 }
 
 # --- クォート考慮のコマンド分割 ---
 # 結果はグローバル配列 SPLIT_RESULTS に格納（改行を含むサブコマンドに対応）
+# RAW_SEGMENTS: パイプ/チェーン分割直後のセグメント（ヒアドク統合前）
 
 SPLIT_RESULTS=()
+RAW_SEGMENTS=()
 
 split_command() {
   local cmd="$1"
@@ -166,6 +414,10 @@ split_command() {
     # クォート外でのみ演算子を検出
     if ! $in_single && ! $in_double; then
       local next="${cmd:$((i+1)):1}"
+      local prev=""
+      if (( i > 0 )); then
+        prev="${cmd:$((i-1)):1}"
+      fi
 
       # && 検出
       if [ "$char" = "&" ] && [ "$next" = "&" ]; then
@@ -183,8 +435,24 @@ split_command() {
         continue
       fi
 
+      # |& 検出
+      if [ "$char" = "|" ] && [ "$next" = "&" ]; then
+        results+=("$current")
+        current=""
+        (( i += 2 ))
+        continue
+      fi
+
       # | 検出（単独、||ではない）
       if [ "$char" = "|" ] && [ "$next" != "|" ]; then
+        results+=("$current")
+        current=""
+        (( i++ ))
+        continue
+      fi
+
+      # & 検出（2>&1、&>file、<&0などのリダイレクトは除外）
+      if [ "$char" = "&" ] && [ "$prev" != ">" ] && [ "$prev" != "<" ] && [ "$next" != ">" ]; then
         results+=("$current")
         current=""
         (( i++ ))
@@ -205,6 +473,9 @@ split_command() {
   done
 
   results+=("$current")
+
+  # パイプ/チェーン分割直後の生セグメントを保存（ヒアドクによる統合前）
+  RAW_SEGMENTS=("${results[@]}")
 
   # 改行でさらに分割（ヒアドク内は分割しない）
   SPLIT_RESULTS=()
@@ -253,30 +524,121 @@ split_command() {
 
 # --- パターン照合 ---
 
-check_against_patterns() {
-  local subcmd
-  subcmd=$(normalize_subcmd "$1")
+normalize_raw_subcmd() {
+  local line
+
+  line=$(first_command_line "$1")
+  line=$(printf '%s' "$line" | tr '\t' ' ' | sed 's/  */ /g')
+  trim_space "$line"
+}
+
+pattern_matches() {
+  local subcmd="$1"
+  local pattern="$2"
+  local last_word
 
   [ -z "$subcmd" ] && return 1
+  [ -z "$pattern" ] && return 1
 
+  case "$pattern" in
+    *'*'*|*'?'*|*'['*)
+      [[ "$subcmd" == $pattern ]]
+      ;;
+    *)
+      if [[ "$subcmd" == "$pattern" || "$subcmd" == "$pattern "* ]]; then
+        return 0
+      fi
+
+      last_word="${pattern##* }"
+      if [[ "$last_word" == -* ]]; then
+        [[ "$subcmd" == "$pattern"* ]]
+      else
+        return 1
+      fi
+      ;;
+  esac
+}
+
+match_pattern_list() {
+  local subcmd="$1"
+  local patterns="$2"
+  local kind="$3"
+  local source="$4"
   local pattern
-  while IFS= read -r pattern; do
-    [ -z "$pattern" ] && continue
-    if [[ "$subcmd" == "$pattern" || "$subcmd" == "$pattern "* ]]; then
-      printf '%s' "deny:$pattern"
-      return 0
-    fi
-  done <<< "$deny_patterns"
 
   while IFS= read -r pattern; do
     [ -z "$pattern" ] && continue
-    if [[ "$subcmd" == "$pattern" || "$subcmd" == "$pattern "* ]]; then
-      printf '%s' "ask:$pattern"
+    if pattern_matches "$subcmd" "$pattern"; then
+      printf '%s' "${kind}:${source}:${pattern}"
       return 0
     fi
-  done <<< "$ask_patterns"
+  done <<< "$patterns"
 
   return 1
+}
+
+check_against_patterns() {
+  local raw
+  local normalized
+  local result
+
+  raw=$(normalize_raw_subcmd "$1")
+  normalized=$(normalize_subcmd "$1")
+
+  result=$(match_pattern_list "$raw" "$deny_patterns" "deny" "direct")
+  [ $? -eq 0 ] && { printf '%s' "$result"; return 0; }
+
+  result=$(match_pattern_list "$normalized" "$deny_patterns" "deny" "normalized")
+  [ $? -eq 0 ] && { printf '%s' "$result"; return 0; }
+
+  result=$(match_pattern_list "$raw" "$ask_patterns" "ask" "direct")
+  [ $? -eq 0 ] && { printf '%s' "$result"; return 0; }
+
+  result=$(match_pattern_list "$normalized" "$ask_patterns" "ask" "normalized")
+  [ $? -eq 0 ] && { printf '%s' "$result"; return 0; }
+
+  if [[ "$normalized" == __dynamic_command__* ]]; then
+    printf '%s' "dynamic:normalized:dynamic"
+    return 0
+  fi
+
+  return 1
+}
+
+deny_for_match() {
+  local result="$1"
+  local context="$2"
+  local force_ask_block="$3"
+  local kind="${result%%:*}"
+  local rest="${result#*:}"
+  local source="${rest%%:*}"
+  local pattern="${rest#*:}"
+
+  case "$kind" in
+    deny)
+      deny "${context}に禁止コマンド「${pattern}」が検出されました。"
+      ;;
+    ask)
+      if [ "$force_ask_block" = "true" ] || [ "$source" != "direct" ]; then
+        deny "${context}に確認が必要なコマンド「${pattern}」が検出されました。コマンドは権限確認を迂回しない形で個別に実行してください。"
+      fi
+      ;;
+    dynamic)
+      deny "${context}に動的に決まるコマンド名が含まれています。権限確認を迂回できるため、実行するコマンド名を明示してください。"
+      ;;
+  esac
+}
+
+enforce_segment() {
+  local subcmd="$1"
+  local context="$2"
+  local force_ask_block="$3"
+  local result
+
+  result=$(check_against_patterns "$subcmd")
+  if [ $? -eq 0 ]; then
+    deny_for_match "$result" "$context" "$force_ask_block"
+  fi
 }
 
 # --- サブシェル/グループ化チェック ---
@@ -299,24 +661,19 @@ check_grouping() {
   [ -z "$inner" ] && return
 
   local saved_results=("${SPLIT_RESULTS[@]}")
+  local saved_raw=("${RAW_SEGMENTS[@]}")
   split_command "$inner"
-  for inner_cmd in "${SPLIT_RESULTS[@]}"; do
-    local result
-    result=$(check_against_patterns "$inner_cmd")
-    if [ $? -eq 0 ]; then
-      case "$result" in
-        deny:*)
-          local pattern="${result#deny:}"
-          deny "サブシェル/グループ内に禁止コマンド「${pattern}」が検出されました。コマンドは個別に実行してください。"
-          ;;
-        ask:*)
-          local pattern="${result#ask:}"
-          deny "サブシェル/グループ内に確認が必要なコマンド「${pattern}」が検出されました。コマンドは個別に実行してください。"
-          ;;
-      esac
-    fi
+
+  for raw_seg in "${RAW_SEGMENTS[@]}"; do
+    enforce_segment "$raw_seg" "サブシェル/グループ内" "true"
   done
+
+  for inner_cmd in "${SPLIT_RESULTS[@]}"; do
+    enforce_segment "$inner_cmd" "サブシェル/グループ内" "true"
+  done
+
   SPLIT_RESULTS=("${saved_results[@]}")
+  RAW_SEGMENTS=("${saved_raw[@]}")
 }
 
 # --- メイン処理: コマンド分割と照合 ---
@@ -327,66 +684,192 @@ check_grouping "$command"
 
 split_command "$command"
 
+has_chain=false
+if (( ${#RAW_SEGMENTS[@]} > 1 || ${#SPLIT_RESULTS[@]} > 1 )); then
+  has_chain=true
+fi
+
 # 分割後の各パーツについてもサブシェルチェック（パイプ先の(cmd)等）
 for subcmd in "${SPLIT_RESULTS[@]}"; do
   check_grouping "$subcmd"
 done
 
-if (( ${#SPLIT_RESULTS[@]} > 1 )); then
-  for subcmd in "${SPLIT_RESULTS[@]}"; do
-    result=$(check_against_patterns "$subcmd")
-    if [ $? -eq 0 ]; then
-      case "$result" in
-        deny:*)
-          pattern="${result#deny:}"
-          deny "禁止コマンド「${pattern}」がチェーン内に含まれています。コマンドは個別に実行してください。"
-          ;;
-        ask:*)
-          pattern="${result#ask:}"
-          deny "確認が必要なコマンド「${pattern}」がチェーン内に含まれています。コマンドは個別に実行してください。"
-          ;;
-      esac
-    fi
-  done
-fi
+# ヒアドキュメント境界を越えたコマンドをRAW_SEGMENTSで検出
+# split_commandのヒアドク解析でSPLIT_RESULTSが統合されても、分割直後のセグメントで検出できる
+for raw_seg in "${RAW_SEGMENTS[@]}"; do
+  enforce_segment "$raw_seg" "コマンド列" "$has_chain"
+done
 
-# --- 埋め込みコマンドチェック（$()・バッククォート） ---
-# 既知の制限: ネストされた$()は外側のみ検出
+for subcmd in "${SPLIT_RESULTS[@]}"; do
+  enforce_segment "$subcmd" "コマンド列" "$has_chain"
+done
+
+# --- 埋め込みコマンドチェック（$()・バッククォート・プロセス置換） ---
+
+MATCH_END=-1
+
+find_matching_paren() {
+  local cmd="$1"
+  local open_idx="$2"
+  local len=${#cmd}
+  local i=$((open_idx + 1))
+  local depth=1
+  local char
+  local in_single=false
+  local in_double=false
+  local escaped=false
+
+  MATCH_END=-1
+
+  while (( i < len )); do
+    char="${cmd:$i:1}"
+
+    if $escaped; then
+      escaped=false
+      (( i++ ))
+      continue
+    fi
+
+    if [ "$char" = "\\" ] && ! $in_single; then
+      escaped=true
+      (( i++ ))
+      continue
+    fi
+
+    if [ "$char" = "'" ] && ! $in_double; then
+      if $in_single; then in_single=false; else in_single=true; fi
+      (( i++ ))
+      continue
+    fi
+
+    if [ "$char" = '"' ] && ! $in_single; then
+      if $in_double; then in_double=false; else in_double=true; fi
+      (( i++ ))
+      continue
+    fi
+
+    if ! $in_single; then
+      if [ "$char" = "(" ]; then
+        (( depth++ ))
+      elif [ "$char" = ")" ]; then
+        (( depth-- ))
+        if (( depth == 0 )); then
+          MATCH_END="$i"
+          return
+        fi
+      fi
+    fi
+
+    (( i++ ))
+  done
+}
+
+check_embedded_command() {
+  local embedded="$1"
+  local saved_results=("${SPLIT_RESULTS[@]}")
+  local saved_raw=("${RAW_SEGMENTS[@]}")
+  local raw_seg
+  local embedded_cmd
+
+  split_command "$embedded"
+
+  for raw_seg in "${RAW_SEGMENTS[@]}"; do
+    enforce_segment "$raw_seg" "埋め込みコマンド内" "true"
+  done
+
+  for embedded_cmd in "${SPLIT_RESULTS[@]}"; do
+    check_grouping "$embedded_cmd"
+    enforce_segment "$embedded_cmd" "埋め込みコマンド内" "true"
+  done
+
+  check_embedded "$embedded"
+
+  SPLIT_RESULTS=("${saved_results[@]}")
+  RAW_SEGMENTS=("${saved_raw[@]}")
+}
 
 check_embedded() {
   local cmd="$1"
+  local len=${#cmd}
+  local i=0
+  local char
+  local next
+  local inner
+  local in_single=false
+  local in_double=false
+  local escaped=false
+  local backtick_start
 
-  # $(...) 内のコマンドを抽出（簡易: ネストは非対応）
-  local embedded
-  embedded=$(printf '%s' "$cmd" | grep -oE '\$\([^)]+\)' | sed 's/^\$(//' | sed 's/)$//')
+  while (( i < len )); do
+    char="${cmd:$i:1}"
+    next="${cmd:$((i+1)):1}"
 
-  # バッククォート内も抽出
-  local backtick
-  backtick=$(printf '%s' "$cmd" | grep -oE '`[^`]+`' | sed 's/^`//' | sed 's/`$//')
+    if $escaped; then
+      escaped=false
+      (( i++ ))
+      continue
+    fi
 
-  local all_embedded="${embedded}
-${backtick}"
+    if [ "$char" = "\\" ] && ! $in_single; then
+      escaped=true
+      (( i++ ))
+      continue
+    fi
 
-  while IFS= read -r emb; do
-    [ -z "$emb" ] && continue
-    # 正規化して先頭コマンドで判定（部分一致による誤検出を防止）
-    local normalized
-    normalized=$(normalize_subcmd "$emb")
-    [ -z "$normalized" ] && continue
-    local pattern
-    while IFS= read -r pattern; do
-      [ -z "$pattern" ] && continue
-      if [[ "$normalized" == "$pattern" || "$normalized" == "$pattern "* ]]; then
-        deny "埋め込みコマンド内に禁止パターン「${pattern}」が検出されました。"
+    if [ "$char" = "'" ] && ! $in_double; then
+      if $in_single; then in_single=false; else in_single=true; fi
+      (( i++ ))
+      continue
+    fi
+
+    if [ "$char" = '"' ] && ! $in_single; then
+      if $in_double; then in_double=false; else in_double=true; fi
+      (( i++ ))
+      continue
+    fi
+
+    if ! $in_single && [ "$char" = "$" ] && [ "$next" = "(" ]; then
+      find_matching_paren "$cmd" "$((i + 1))"
+      if (( MATCH_END > i )); then
+        inner="${cmd:$((i + 2)):$((MATCH_END - i - 2))}"
+        check_embedded_command "$inner"
+        i=$((MATCH_END + 1))
+        continue
       fi
-    done <<< "$deny_patterns"
-    while IFS= read -r pattern; do
-      [ -z "$pattern" ] && continue
-      if [[ "$normalized" == "$pattern" || "$normalized" == "$pattern "* ]]; then
-        deny "埋め込みコマンド内に確認が必要なパターン「${pattern}」が検出されました。"
+    fi
+
+    if ! $in_single && { [ "$char" = "<" ] || [ "$char" = ">" ]; } && [ "$next" = "(" ]; then
+      find_matching_paren "$cmd" "$((i + 1))"
+      if (( MATCH_END > i )); then
+        inner="${cmd:$((i + 2)):$((MATCH_END - i - 2))}"
+        check_embedded_command "$inner"
+        i=$((MATCH_END + 1))
+        continue
       fi
-    done <<< "$ask_patterns"
-  done <<< "$all_embedded"
+    fi
+
+    if ! $in_single && [ "$char" = '`' ]; then
+      backtick_start="$i"
+      (( i++ ))
+      while (( i < len )); do
+        char="${cmd:$i:1}"
+        if [ "$char" = "\\" ]; then
+          (( i += 2 ))
+          continue
+        fi
+        if [ "$char" = '`' ]; then
+          inner="${cmd:$((backtick_start + 1)):$((i - backtick_start - 1))}"
+          check_embedded_command "$inner"
+          (( i++ ))
+          continue 2
+        fi
+        (( i++ ))
+      done
+      continue
+    fi
+
+    (( i++ ))
+  done
 }
 
 check_embedded "$command"
