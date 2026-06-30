@@ -21,8 +21,9 @@ description: Use when the user asks to create a pull request, PR, プルリク, 
 4. `git diff <base>...HEAD` でPR範囲の差分を確認する。
 5. プロジェクトのテスト/lintコマンドを検出して実行する。`package.json`に`lint:css`や`test:js`がある場合も必ず実行する。失敗した場合はPR作成を止める。
 6. 可能なら `change-reviewer`、セキュリティ関連変更なら `security-reviewer` でレビューする。
-7. PRタイトルと本文を作成し、ユーザーに提示して許可を得る。
-8. 許可後、必要なら `git push -u origin <branch>` を実行し、`gh pr create` でPRを作成する。
+7. PRタイトルと本文を作成し、声に出して読んで不自然な日本語がないか確認する（漢語接頭辞の造語、助詞の省略、既存語彙にない業務用語の造語）。不自然な表現があれば修正する。
+8. ユーザーに提示して許可を得る。
+9. 許可後、必要なら `git push -u origin <branch>` を実行し、`gh pr create` でPRを作成する。
 
 ## PR Body
 
