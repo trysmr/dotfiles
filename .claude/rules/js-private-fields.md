@@ -3,19 +3,19 @@ paths:
   - "**/*.{js,jsx,ts,tsx,mjs,cjs}"
 ---
 
-# JS Private Fields: クラスレベル宣言必須
+# JS Private Fields: Class-Level Declaration Required
 
-`this.#field = ...`でプライベートフィールドを使う場合、クラスレベルで宣言が必要。宣言なしだとSyntaxErrorでモジュール全体がサイレントに壊れる。
+When assigning `this.#field = ...`, the field must be declared at class level. Without the declaration it is a SyntaxError, which silently breaks the entire module.
 
 ```js
-// BAD: SyntaxErrorでコントローラー全体が読み込まれない
+// BAD: SyntaxError — the whole controller fails to load
 class Foo extends Controller {
   connect() {
-    this.#handler = () => { ... }  // 未宣言
+    this.#handler = () => { ... }  // undeclared
   }
 }
 
-// GOOD: クラスレベルで宣言
+// GOOD: declared at class level
 class Foo extends Controller {
   #handler
 
@@ -24,7 +24,7 @@ class Foo extends Controller {
   }
 }
 
-// GOOD: 宣言不要な_プレフィックス慣習
+// GOOD: `_` prefix convention, no declaration needed
 class Foo extends Controller {
   connect() {
     this._handler = () => { ... }
@@ -32,4 +32,4 @@ class Foo extends Controller {
 }
 ```
 
-動的に代入するプロパティ（`connect()`で設定して`disconnect()`で参照する等）は`_`プレフィックス慣習の方が宣言忘れリスクがない。`#`メソッドは宣言と定義が一体なので問題にならない。
+For dynamically assigned properties (set in `connect()`, read in `disconnect()`, etc.), the `_` prefix convention avoids the risk of a forgotten declaration. `#` methods are not affected — declaration and definition are one.

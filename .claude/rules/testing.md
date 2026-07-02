@@ -30,6 +30,11 @@ Do not write comments that repeat the test case name. `test "..."` serves as the
 
 In search/query tests, verify the actual text content of matched records, not just IDs. Prefer `assert_equal` over `assert_includes` to compare the full result set — the diff on failure shows exactly what went wrong.
 
+### Search/Filter Test Rigor
+
+- **Fixtures must hold real data in the searched fields**: a test that only asserts "no hit" cannot catch a broken partial-match. Populate the searched field and verify both hit and no-hit cases.
+- **Test inputs that normalize to empty**: when a query method normalizes its input (prefix stripping, trimming), add a case where the normalized value becomes empty. The method must return an empty result (`scope.none`), not fall through to the unfiltered scope — falling through silently returns all records.
+
 ---
 
 ## Contract Tests Are Mandatory

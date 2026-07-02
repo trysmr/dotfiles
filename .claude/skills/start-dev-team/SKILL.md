@@ -142,4 +142,4 @@ Create an agent team for release preparation. Spawn 2 teammates:
 
 - 公式ドキュメント: https://code.claude.com/docs/en/agent-teams
 - ロール定義: `.claude/agents/`
-- フェーズ運用ルール: `CLAUDE.local.md` の `Typical Team` セクション
+- フェーズ運用ルール: プロジェクトに`CLAUDE.local.md`があればその`Typical Team`セクションを参照（存在しないプロジェクトでは本skillの記述が全て）

@@ -84,6 +84,7 @@ When matching an existing component's appearance (font size, padding, height, sp
 
 - **First choice**: Reuse the existing CSS class directly. Do not reimplement the same look with new selectors.
 - **If reimplementation is necessary**: Inspect the reference component in DevTools, copy the computed values, and use those literals.
+- **Check which CSS files the target page actually loads** before editing styles — editing a stylesheet the page never loads is a silent no-op that wastes iterations.
 - **Verify before declaring done**: Place the new and reference components side-by-side in the same view (or screenshot) to confirm alignment.
 - **Visual fine-tuning belongs in a separate session** with the browser open. Don't try to converge on pixel-perfect output through guess-adjust-screenshot loops.
 

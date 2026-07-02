@@ -34,6 +34,27 @@ For migrations spanning multiple files, use `db:rollback STEP=N` to roll back th
 
 ---
 
+## ActiveRecord
+
+### Never Use `includes` — Choose `preload` or `eager_load` Explicitly
+
+`includes` implicitly picks either `preload` (separate query) or `eager_load` (LEFT JOIN) depending on the rest of the relation. Always name the strategy yourself.
+
+```ruby
+# Avoid: strategy is decided implicitly
+Post.includes(:comments)
+
+# OK: separate query, explicit
+Post.preload(:comments)
+
+# OK: LEFT JOIN, explicit (needed when referencing the association in WHERE/ORDER)
+Post.eager_load(:comments)
+```
+
+**Rationale**: Which strategy `includes` picks is hard to predict from the call site, so unintended queries (a giant JOIN, or a missing JOIN causing an error) appear only at runtime. Naming `preload`/`eager_load` makes the query shape reviewable.
+
+---
+
 ## I18n
 
 ### Omit `format: :default` for `I18n.l`

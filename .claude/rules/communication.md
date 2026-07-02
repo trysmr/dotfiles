@@ -26,13 +26,13 @@
 
 ### Use AskUserQuestion for Choice-Based Decisions
 
-When asking the user to choose between 2-4 alternatives, **MUST** use the `AskUserQuestion` tool instead of presenting a numbered list in plain text. `AskUserQuestion` is a deferred tool — load its schema first via `ToolSearch` with `select:AskUserQuestion`, then call it.
+When asking the user to choose between 2-4 alternatives, **MUST** use the `AskUserQuestion` tool instead of presenting a numbered list in plain text. In environments where `AskUserQuestion` is deferred (schema not yet loaded), load it first via `ToolSearch` with `select:AskUserQuestion`; if it is already available as a top-level tool, call it directly.
 
 - **Apply when**: presenting concrete alternatives the user picks from (approach A vs B, library choice, scope decision, file location)
 - **Skip when**: simple yes/no confirmation, or when the next step is obvious from context
 - **Format**: place the recommended option first and append `(Recommended)` to its label; bundle related decisions into a single call (max 4 questions)
 
-**Rationale**: Click-based selection is faster and less error-prone than long text replies, especially for multi-branch agreement. The extra `ToolSearch` step is intentional friction — do not skip it just because plain text feels easier.
+**Rationale**: Click-based selection is faster and less error-prone than long text replies, especially for multi-branch agreement. Do not fall back to plain text just because it feels easier.
 
 ### Insight Block Discipline (Explanatory Style)
 
@@ -59,9 +59,10 @@ Include references (official docs, links, test output) for external APIs, tools,
 When the user says "写経モード" / "写経したい" / "写経していきたい" / "I want to type it myself", **do not edit files**. The user is learning by typing the code themselves.
 
 - Present code in code blocks
-- State the target file path and line numbers explicitly
+- State the target file path and line numbers explicitly (use the latest values confirmed via Read), plus the before/after lines so the user can locate the change instantly
 - Use Read only; never Edit/Write
 - Wait for the user to apply the code before moving on
+- **Persist across phases**: the agreement does not reset at phase boundaries. Re-confirm the syakyo target files at the start of each phase instead of silently switching back to direct edits
 
 ---
 
@@ -81,6 +82,21 @@ When the user says "写経モード" / "写経したい" / "写経していき�
 - Do not insert spaces between Japanese and English/numeric characters. `Sprint 1テスト作成` is correct; `Sprint 1 テスト作成` is wrong.
 - For business-facing task descriptions (project tracker tickets, planning docs), avoid implementation-level terms (class names, column names, code). Use domain language instead — engineering details belong in design docs and code comments.
 - **Verify Japanese text after edits**: After Edit/Write operations on files containing Japanese, run `grep` for `�` (U+FFFD replacement character). Mojibake is most likely with `replace_all` or long string substitutions, and looks unprofessional to the user opening the file.
+
+### Natural Japanese Wording
+
+Comments, test names, error messages, and commit/PR prose must read as natural Japanese. Do not coin words with kanji prefixes. Self-check: read the sentence aloud — if it sounds stiff or invented, rephrase.
+
+Patterns to avoid, with replacements:
+
+- ❌「未〜」coinages (未充足/未永続化) → ✅「〜していない」「〜されていない」
+- ❌「非〜」coinages (非終端) → ✅「終端でない」「〜以外の」
+- ❌ invented compound nouns not in the project vocabulary → ✅ spell out the condition, or use the actual flag/attribute name
+- ❌「高々N」→ ✅「N以下」「最大N」
+- ❌「真実の源泉」(literal translation of "source of truth") → ✅「定義元」「〜で一元管理している」. English identifiers are fine
+- ❌ commit bodies stuffed with backtick identifiers → ✅ plain Japanese, 1-2 sentences on the why; the diff already lists the identifiers
+
+Established project domain terms do not count as coinages.
 
 ---
 
@@ -102,6 +118,8 @@ When the user says "写経モード" / "写経したい" / "写経していき�
 The **No review-process meta** rule from Git Commit Message Style applies to the PR body as well — write the motivation directly, do not narrate the review process.
 
 The **Test Plan** should list CI-reproducible checks (lint, automated tests). Manual or ad-hoc verification runs (e.g., Rails runner sessions, one-off scripts) are not part of the Test Plan checklist — reviewers cannot replay them from the PR alone. If such checks were valuable to record, mention them in the Summary or as a discussion note, not as a check item.
+
+**Exception — deployment verification**: environment-gated checks that only become possible after merge/deploy (e.g. staging smoke checks, a release PR's post-deploy checklist) are allowed as Test Plan items, per the `pr` / `pr-release` skill templates. They track release workflow state, not ad-hoc local verification.
 
 ---
 
