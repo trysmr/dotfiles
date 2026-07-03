@@ -35,4 +35,4 @@ allowed-tools:
 
 ## チームでの利用想定
 
-Agent Teamsのteammate内から`Agent` tool経由で呼ばれ、architect-leadが構造把握する補助役を担う。haikuモデルで軽量に動く。
+leadから必要時だけ呼ばれ、architect-leadが構造把握する補助役を担う。haikuモデルで軽量に動く。

@@ -17,7 +17,7 @@ Useful lenses (apply when relevant, not as a checklist):
 - What's the current hypothesis, and what one check would disprove it?
 - What depends on the code you're about to touch?
 
-For unfamiliar code or wide impact analysis, use `repo-explorer` to get a digested overview of structure, dependencies, and patterns before grepping into specifics.
+For unfamiliar code or wide impact analysis, first do the cheap local checks in the main session. Use `repo-explorer` only when the scope is broad enough that a separate summary will clearly save context, or when the user explicitly asks for a subagent.
 
 When observed behavior conflicts with documented behavior, run the cheapest verification (`pwd`, `echo`, single status command) before adopting a workaround. The conflict itself is the signal — don't pick whichever feels louder.
 
@@ -96,9 +96,11 @@ Docs-only edits, config tweaks with no meaningful validation target, or trivial 
 After implementation is complete, perform the following reviews before committing:
 
 - **Security-related changes** (authentication, input handling, APIs, permissions): Running the `security-reviewer` agent is **required**
-- **Other changes**: Running the `change-reviewer` agent is **recommended**
-- For thorough or higher-stakes review, use `deep-review` (Opus) or `codex-review` (external Codex / gpt-5.5)
+- **Other changes**: Do a main-session self-review by default. Run `change-reviewer` only for broad, risky, or PR-bound changes, or when the user explicitly asks for a review agent.
+- For thorough or higher-stakes review, use `deep-review` (Opus) or `codex-review` (external Codex / gpt-5.5), but do not run them while an Agent Team is active.
 - If any Critical/High findings are reported, fix them before committing
+
+Claude Code v2.1.198+ runs subagents in the background by default and makes them inherit more session configuration. Treat every subagent launch as an explicit cost decision: give it a bounded task, forbid further delegation unless necessary, and wait for its result before claiming the work is done.
 
 ---
 

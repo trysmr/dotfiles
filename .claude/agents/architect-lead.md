@@ -7,7 +7,6 @@ allowed-tools:
   - Grep
   - Glob
   - WebFetch
-  - Agent
 ---
 
 # Architect Lead
@@ -47,4 +46,4 @@ allowed-tools:
 
 ## チームでの利用想定
 
-調査が必要な場面では`Agent` toolで`repo-explorer`を呼び、構造を把握してから判断する。Agent Teamsの設計フェーズではplan modeで動作する想定。
+調査が必要な場面では、必要な確認事項をleadへ返す。`repo-explorer`が必要かどうかはleadが判断する。Agent Teamsの設計フェーズではplan modeで動作する想定。

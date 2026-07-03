@@ -7,7 +7,6 @@ allowed-tools:
   - Grep
   - Glob
   - Bash
-  - Agent
 ---
 
 # Team Manager
@@ -43,4 +42,4 @@ allowed-tools:
 
 ## チームでの利用想定
 
-Agent Teamsのleadから「team-manager」teammateとして起動される場合は、上記責務を保ちつつ、shared task listへのタスク登録と他teammateへの依頼メッセージ送信を主な動作とする。
+Agent Teamsのleadから「team-manager」teammateとして起動される場合は、上記責務を保ちつつ、shared task listへのタスク整理とleadへの判断依頼を主な動作とする。teammate内から追加subagentを起動しない。

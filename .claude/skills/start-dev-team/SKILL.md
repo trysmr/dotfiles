@@ -1,7 +1,7 @@
 ---
 name: start-dev-team
 description: >
-  Claude Code Agent Teamsで開発チームを起動。フェーズごとに7ロールから3-5人を選んでleadに編成プロンプトを発火する。
+  Claude Code Agent Teamsで開発チームを起動。フェーズごとに必要最小限のロールを選んでleadに編成プロンプトを発火する。
   「開発チーム起動」「Agent Team作って」「フェーズ別チーム」と言われた時、または `/start-dev-team --phase requirements|design|implementation|review|release` 形式で呼ばれた時に使用
 argument-hint: "--phase requirements|design|implementation|review|release"
 allowed-tools:
@@ -19,6 +19,7 @@ Claude Code Agent Teams機能を使い、開発フェーズに応じた専門チ
 1. `~/.claude/settings.json` の `env` に `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS: "1"` が設定済み
 2. Claude Code v2.1.32以上(`claude --version` で確認)
 3. **先行チームが存在する場合は事前にcleanupを実行**: leadに「Clean up the team」と指示してから本skillを呼ぶ
+4. Claude Code v2.1.198以降はsubagentがbackgroundで動くため、必要最小人数で起動し、各teammateに完了条件と追加委譲禁止を明示する
 
 ## ロール一覧(参照先 `.claude/agents/`)
 
@@ -51,6 +52,13 @@ Claude Code Agent Teams機能を使い、開発フェーズに応じた専門チ
 
 leadに以下の自然言語プロンプトを発火する(または、人間がコピペしてleadに渡す)。
 
+全フェーズ共通で、leadプロンプトには次を含める:
+
+- Use the minimum teammates listed here; do not spawn extra teammates unless I explicitly approve.
+- Teammates must not invoke skills or spawn nested subagents. Escalate blockers to the lead.
+- Give each teammate a bounded deliverable and wait for their result before marking the phase complete.
+- Keep background work visible; summarize pending teammates before moving to the next step.
+
 #### requirementsフェーズ(最終判断:人間 / plan mode強制)
 
 ```text
@@ -65,37 +73,33 @@ Create an agent team for requirements gathering. Spawn 2 teammates and require p
 #### designフェーズ(最終判断:人間 / plan mode強制)
 
 ```text
-Create an agent team for design. Spawn 3 teammates and require plan approval for the first two:
+Create an agent team for design. Spawn 2 teammates and require plan approval for both:
 - architect-lead (use plan mode): 全体構造・技術選定の判断
 - team-designer (use plan mode): 詳細設計
-- repo-explorer: 既存構造の調査(補助)
 
 architect-leadとteam-designerはplan modeで設計案を出す。
-repo-explorerは構造把握のみで判断はしない。
+既存構造の調査が広範で、別担当に切り出す価値が明確な場合だけ、leadがrepo-explorer追加を人間に確認する。
 最終承認は人間が行う。
 ```
 
 #### implementationフェーズ(最終判断:自律)
 
 ```text
-Create an agent team for implementation. Spawn 3 teammates with explicit file-ownership boundaries:
+Create an agent team for implementation. Spawn 1 teammate initially:
 - software-engineer: 機能実装と単体テスト。担当領域はソースコード(src/, lib/, app/, test/, spec/ 等)とコードコメントのみ
-- change-reviewer: 変更差分の品質レビュー。書き込みは行わずレポートのみ
-- tech-writer: ドキュメント追従更新。担当領域はdocs/, doc/, README.md, CHANGELOG.md等のドキュメントファイルのみ
 
-ファイル衝突を避けるため、software-engineerとtech-writerは同一ファイルを編集しない。
 software-engineerは自律的に進めて構わないが、設計から逸脱する判断はleadへエスカレーション。
-詰まった場合は`Agent` tool経由で`codex:codex-rescue`を呼ぶ。
+詰まった場合はleadへ状況、試したこと、次の選択肢を返す。追加subagentやskillは呼ばない。
+実装完了後、leadが必要性を判断してからchange-reviewerやtech-writerの追加起動を人間に確認する。
 ```
 
 #### reviewフェーズ(最終判断:人間)
 
 ```text
-Create an agent team for code review. Spawn 2 teammates:
+Create an agent team for code review. Spawn 1 teammate initially:
 - change-reviewer: 品質/保守性/QA観点のレビュー
-- security-reviewer: セキュリティ観点のレビュー
 
-両者は並列で観点を分けて検証する。
+認証、認可、入力処理、API、権限、機密情報を含む変更では、leadがsecurity-reviewer追加を人間に確認する。
 最終的なPR可否判断は人間が行う。
 ```
 
@@ -127,6 +131,7 @@ Create an agent team for release preparation. Spawn 2 teammates:
 - **session resumption**: `/resume`/`/rewind` はin-process teammateを復元しない
 - **lead固定**: 途中でleadを変更できない
 - **permission継承**: teammateはspawn時のlead permissionを継承
+- **background既定**: v2.1.198以降、subagentは既定でbackground実行される。完了待ちとcleanupを明示しないと未回収の作業が残りやすい
 
 ## 使用例
 
@@ -142,4 +147,4 @@ Create an agent team for release preparation. Spawn 2 teammates:
 
 - 公式ドキュメント: https://code.claude.com/docs/en/agent-teams
 - ロール定義: `.claude/agents/`
-- フェーズ運用ルール: プロジェクトに`CLAUDE.local.md`があればその`Typical Team`セクションを参照（存在しないプロジェクトでは本skillの記述が全て）
+- フェーズ運用ルール: プロジェクトに`CLAUDE.local.md`があればその`Typical Team`セクションを参照。存在しないプロジェクトでも、本skillの共通制限とbackground既定の注意を優先する

@@ -6,7 +6,7 @@
 - Early visualization: For non-trivial tasks, make your thinking visible with diagrams/pseudocode/sketches early
 - Diagrams are effective for explaining system architecture, data flows, or component interactions (Mermaid, PlantUML, draw.io). Use them when visualization actually clarifies — not as a checkbox
 - Treat ideas as guesses to test: Update instantly based on facts
-- Parallel exploration: For complex challenges, attempt multiple ideas at the same time
+- Parallel exploration: For complex challenges, compare multiple ideas. Prefer batched reads/searches in the main session; do not launch subagents only to create parallelism.
 - Shift perspectives: Move appropriately between system-level and component-level views
 - Use unclear points to get feedback: Highlight them and invite early input
 
@@ -26,7 +26,8 @@
 
 - Analyze all parallelization opportunities at the start of task planning
 - Batch I/O operations (searches, API calls, reads) where safe
-- Execute independent tasks concurrently (e.g., frontend/backend, multiple file searches)
+- Execute independent local tool calls concurrently where safe
+- Use subagents only when the work is broad, specialized, or explicitly requested. Give each subagent a stop condition and do not let subagents spawn more agents without explicit lead approval.
 
 ### Parallelism Decision Flow
 
