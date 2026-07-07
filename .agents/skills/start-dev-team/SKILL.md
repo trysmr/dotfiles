@@ -30,6 +30,8 @@ Claude Agent Teamsの自動チーム生成とは違い、Codexでは必要なsub
 ## Guardrails
 
 - 最終判断はメインスレッドで行う。subagentの提案をそのまま採用しない。
+- 必要最小限のsubagentだけを起動する。subagentに追加のsubagent起動や再委譲をさせず、追加調査が必要かはメインスレッドで判断する。
+- 各subagentには完了条件を明示して渡し、結果を受け取ってからフェーズ完了を宣言する。
 - 実装やファイル編集は`software-engineer`かメインスレッドに限定し、reviewer系subagentには編集させない。
 - `security-reviewer`はセキュリティ関連変更で必須、通常変更では`change-reviewer`を優先する。
 - `tech-writer`が文書を更新する場合は、実装と同じファイルを同時に編集しない。
