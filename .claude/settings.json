@@ -171,8 +171,36 @@
     "defaultMode": "auto",
     "disableBypassPermissionsMode": "disable"
   },
-  "model": "claude-opus-4-6[1m]",
+  "model": "opus[1m]",
   "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/json_validate.sh",
+            "timeout": 5
+          },
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/doc_freshness_check.sh",
+            "timeout": 5
+          },
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/contract_check.sh",
+            "timeout": 5
+          },
+          {
+            "type": "prompt",
+            "prompt": "書き込んだファイルの日本語（コメント、テスト名、エラーメッセージ）が自然か確認し、結果を{ok: bool, reason: string}のJSONで返してください。声に出して読んで不自然な表現があればok: falseとし、具体的な箇所と言い換え案をreasonに含めてください。注意点: 漢語接頭辞の造語（未〜/非〜で名詞と合成した語）、助詞の省略（次エッジ->次のエッジ）、既存の語彙にない業務用語の造語。プロジェクトで確立済みのドメイン用語は造語として指摘しないでください。日本語を含まないファイルはok: trueにしてください。$ARGUMENTS",
+            "timeout": 15,
+            "continueOnBlock": true
+          }
+        ]
+      }
+    ],
     "PreToolUse": [
       {
         "matcher": "",
@@ -214,30 +242,13 @@
         ]
       }
     ],
-    "PostToolUse": [
+    "SessionStart": [
       {
-        "matcher": "Edit|Write",
+        "matcher": "resume|clear|compact",
         "hooks": [
           {
             "type": "command",
-            "command": "~/.claude/hooks/json_validate.sh",
-            "timeout": 5
-          },
-          {
-            "type": "command",
-            "command": "~/.claude/hooks/doc_freshness_check.sh",
-            "timeout": 5
-          },
-          {
-            "type": "command",
-            "command": "~/.claude/hooks/contract_check.sh",
-            "timeout": 5
-          },
-          {
-            "type": "prompt",
-            "prompt": "書き込んだファイルの日本語（コメント、テスト名、エラーメッセージ）が自然か確認し、結果を{ok: bool, reason: string}のJSONで返してください。声に出して読んで不自然な表現があればok: falseとし、具体的な箇所と言い換え案をreasonに含めてください。注意点: 漢語接頭辞の造語（未〜/非〜で名詞と合成した語）、助詞の省略（次エッジ->次のエッジ）、既存の語彙にない業務用語の造語。プロジェクトで確立済みのドメイン用語は造語として指摘しないでください。日本語を含まないファイルはok: trueにしてください。$ARGUMENTS",
-            "timeout": 15,
-            "continueOnBlock": true
+            "command": "~/.claude/hooks/load_context.sh --force"
           }
         ]
       }
@@ -254,18 +265,10 @@
           }
         ]
       }
-    ],
-    "SessionStart": [
-      {
-        "matcher": "resume|clear|compact",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "~/.claude/hooks/load_context.sh --force"
-          }
-        ]
-      }
     ]
+  },
+  "worktree": {
+    "baseRef": "fresh"
   },
   "statusLine": {
     "type": "command",
@@ -273,12 +276,12 @@
     "padding": 0
   },
   "enabledPlugins": {
-    "ruby-lsp@claude-plugins-official": true,
     "codex@openai-codex": true,
-    "swift-lsp@claude-plugins-official": true,
     "frontend-design@claude-plugins-official": true,
+    "ruby-lsp@claude-plugins-official": true,
+    "security-guidance@claude-plugins-official": true,
     "skill-creator@claude-plugins-official": true,
-    "security-guidance@claude-plugins-official": true
+    "swift-lsp@claude-plugins-official": true
   },
   "extraKnownMarketplaces": {
     "openai-codex": {
@@ -320,9 +323,12 @@
     }
   },
   "effortLevel": "high",
+  "askUserQuestionTimeout": "never",
   "tui": "fullscreen",
   "autoMemoryEnabled": true,
   "verbose": true,
+  "autoCompactEnabled": true,
+  "teammateMode": "auto",
   "remoteControlAtStartup": false,
   "inputNeededNotifEnabled": true,
   "agentPushNotifEnabled": true
