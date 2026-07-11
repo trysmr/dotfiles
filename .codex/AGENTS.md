@@ -86,7 +86,7 @@ Escalate from quick mode to planning mode when any of these are true:
 - Prefer ports/adapters, facades for complex integrations, and strategy/polymorphism where they reduce branching or coupling.
 - Explain why important architectural choices improve maintainability or changeability.
 - For implementation, bug fixes, behavior changes, tests, and TDD decisions, use `test-workflow`.
-- For security-sensitive changes, use `security-reviewer`; for broader quality checks, use `change-reviewer`, `codex-review`, or `deep-review` as appropriate.
+- For security-sensitive changes, use `security-reviewer`; for broader quality checks, use `change-reviewer` or `deep-review` as appropriate.
 
 ## Testing And Quality Assurance
 
