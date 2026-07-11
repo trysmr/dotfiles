@@ -1,0 +1,4 @@
+interface:
+  display_name: "プルリクエスト"
+  short_description: "変更と検証結果を確認し、レビューしやすいGitHub PRを作成"
+  default_prompt: "$prで、現在のコミットからレビューしやすいPRを作成して。"

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Draw.io図作成"
+  short_description: "編集可能なDraw.io形式で図やフローチャートを作成・出力"
+  default_prompt: "$drawioで、この内容を編集可能なDraw.io図として作成して。"

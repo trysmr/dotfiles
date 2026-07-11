@@ -1,0 +1,4 @@
+interface:
+  display_name: "ディープレビュー"
+  short_description: "重要な変更を深く調査し、動作・安全性・保守性のリスクを特定"
+  default_prompt: "$deep-reviewで、この変更を高い精度で詳しくレビューして。"

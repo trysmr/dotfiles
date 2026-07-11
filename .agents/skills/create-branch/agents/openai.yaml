@@ -1,0 +1,4 @@
+interface:
+  display_name: "ブランチ作成"
+  short_description: "作業内容とリポジトリ規約に合うGitブランチを安全に作成"
+  default_prompt: "$create-branchで、この作業に適したGitブランチを作成して。"

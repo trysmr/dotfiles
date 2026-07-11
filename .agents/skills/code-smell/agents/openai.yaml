@@ -1,0 +1,4 @@
+interface:
+  display_name: "コードスメル検出"
+  short_description: "保守性を損なう設計上の臭いと対応するリファクタリングを特定"
+  default_prompt: "$code-smellで、対象コードの保守性と設計上の問題を分析して。"

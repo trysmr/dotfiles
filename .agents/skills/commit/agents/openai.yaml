@@ -1,0 +1,4 @@
+interface:
+  display_name: "コミット"
+  short_description: "変更範囲を確認し、意図が伝わる日本語メッセージでコミット"
+  default_prompt: "$commitで、現在の変更を確認して適切な日本語メッセージでコミットして。"
