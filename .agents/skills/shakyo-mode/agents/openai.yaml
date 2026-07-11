@@ -1,0 +1,4 @@
+interface:
+  display_name: "写経モード"
+  short_description: "一次情報と概念解説を交え、自分でコードを書いて学ぶモード"
+  default_prompt: "$shakyo-modeで、公式情報と概念を教えながら、私がコードを入力できるよう案内して。"
