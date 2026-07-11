@@ -89,12 +89,12 @@ Comments, test names, error messages, and commit/PR prose must read as natural J
 
 Patterns to avoid, with replacements:
 
-- ❌「未〜」coinages (未充足/未永続化) → ✅「〜していない」「〜されていない」
-- ❌「非〜」coinages (非終端) → ✅「終端でない」「〜以外の」
-- ❌ invented compound nouns not in the project vocabulary → ✅ spell out the condition, or use the actual flag/attribute name
-- ❌「高々N」→ ✅「N以下」「最大N」
-- ❌「真実の源泉」(literal translation of "source of truth") → ✅「定義元」「〜で一元管理している」. English identifiers are fine
-- ❌ commit bodies stuffed with backtick identifiers → ✅ plain Japanese, 1-2 sentences on the why; the diff already lists the identifiers
+- ❌「未〜」coinages (未充足/未永続化) -> ✅「〜していない」「〜されていない」
+- ❌「非〜」coinages (非終端) -> ✅「終端でない」「〜以外の」
+- ❌ invented compound nouns not in the project vocabulary -> ✅ spell out the condition, or use the actual flag/attribute name
+- ❌「高々N」-> ✅「N以下」「最大N」
+- ❌「真実の源泉」(literal translation of "source of truth") -> ✅「定義元」「〜で一元管理している」. English identifiers are fine
+- ❌ commit bodies stuffed with backtick identifiers -> ✅ plain Japanese, 1-2 sentences on the why; the diff already lists the identifiers
 
 Established project domain terms do not count as coinages.
 

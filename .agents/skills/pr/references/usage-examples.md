@@ -57,7 +57,7 @@ EOF
 # 通常のPR（feature/*, bugfix/*, chore/* など）
 gh pr merge <PR番号> --merge --delete-branch
 
-# リリースPR（staging → main）など永続ブランチからのPR
+# リリースPR（staging -> main）など永続ブランチからのPR
 gh pr merge <PR番号> --merge
 ```
 

@@ -96,7 +96,7 @@ else
     age="${rest%%:*}"
     threshold="${rest##*:}"
     printf '  ⚠ %s (%d日経過, 閾値: %d日)\n' "$file" "$age" "$threshold"
-    printf '    → レビューを推奨\n'
+    printf '    -> レビューを推奨\n'
     (( warn++ ))
   done
 fi

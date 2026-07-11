@@ -18,10 +18,10 @@ Generate draw.io diagrams as native `.drawio` files. Optionally export to PNG, S
 
 Check the user's request for a format preference. Examples:
 
-- `/drawio create a flowchart` → `flowchart.drawio`
-- `/drawio png flowchart for login` → `login-flow.drawio.png`
-- `/drawio svg: ER diagram` → `er-diagram.drawio.svg`
-- `/drawio pdf architecture overview` → `architecture-overview.drawio.pdf`
+- `/drawio create a flowchart` -> `flowchart.drawio`
+- `/drawio png flowchart for login` -> `login-flow.drawio.png`
+- `/drawio svg: ER diagram` -> `er-diagram.drawio.svg`
+- `/drawio pdf architecture overview` -> `architecture-overview.drawio.pdf`
 
 If no format is mentioned, just write the `.drawio` file and open it in draw.io. The user can always ask to export later.
 

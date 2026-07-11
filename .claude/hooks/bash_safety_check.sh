@@ -41,7 +41,7 @@ if ! jq -e '.permissions' "$SETTINGS_FILE" >/dev/null 2>&1; then
   deny "settings.jsonのパースに失敗しました。安全のため実行をブロックします。"
 fi
 
-# Bashパターンを抽出: "Bash(sudo:*)" → "sudo"
+# Bashパターンを抽出: "Bash(sudo:*)" -> "sudo"
 # コマンド自体に含まれる ":" や "*" は保持する。
 extract_patterns() {
   local key="$1"
