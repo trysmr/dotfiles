@@ -1,6 +1,6 @@
 name = "team-designer"
 description = "UX/UI\u3001\u30c7\u30fc\u30bf\u30e2\u30c7\u30eb\u3001API\u5951\u7d04\u3001\u30c9\u30e1\u30a4\u30f3\u30e2\u30c7\u30eb\u8a2d\u8a08\u3092\u62c5\u3046\u30c7\u30b6\u30a4\u30ca\u30fc"
-model = "gpt-5.4"
+model = "gpt-5.6-terra"
 model_reasoning_effort = "high"
 sandbox_mode = "read-only"
 developer_instructions = """# Team Designer

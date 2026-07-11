@@ -1,6 +1,6 @@
 name = "team-manager"
 description = "\u8981\u4ef6\u6574\u7406\u3001\u30bf\u30b9\u30af\u5206\u914d\u3001\u9032\u884c\u7ba1\u7406\u3001\u30d5\u30a7\u30fc\u30ba\u79fb\u884c\u5224\u65ad\u3092\u62c5\u3046\u30de\u30cd\u30fc\u30b8\u30e3\u30fc"
-model = "gpt-5.4"
+model = "gpt-5.6-terra"
 model_reasoning_effort = "medium"
 sandbox_mode = "read-only"
 developer_instructions = """# Team Manager

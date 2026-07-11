@@ -1,6 +1,6 @@
 name = "tech-writer"
 description = "\u4ed5\u69d8\u66f8\u3001README\u3001ADR\u3001API\u30c9\u30ad\u30e5\u30e1\u30f3\u30c8\u306e\u751f\u6210\u3092\u62c5\u3046\u30c6\u30af\u30cb\u30ab\u30eb\u30e9\u30a4\u30bf\u30fc"
-model = "gpt-5.4-mini"
+model = "gpt-5.6-terra"
 model_reasoning_effort = "medium"
 sandbox_mode = "workspace-write"
 developer_instructions = """# Tech Writer
