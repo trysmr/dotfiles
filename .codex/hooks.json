@@ -33,6 +33,12 @@
             "statusMessage": "Checking local contracts",
             "timeout": 5,
             "type": "command"
+          },
+          {
+            "command": "python3 \"$HOME/.codex/hooks/japanese_write_check.py\"",
+            "statusMessage": "変更ファイルの日本語を確認中",
+            "timeout": 5,
+            "type": "command"
           }
         ],
         "matcher": "Edit|Write|apply_patch"
