@@ -1,0 +1,4 @@
+interface:
+  display_name: "設計原則"
+  short_description: "責務配置と変更容易性を重視して保守しやすい設計判断を支援"
+  default_prompt: "$design-principlesで、この設計の責務配置と変更容易性を検討して。"

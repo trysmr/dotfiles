@@ -30,6 +30,7 @@ description: Use when the user asks for TDD, test design, test quality review, o
 
 ## Test Quality
 
+- テストの追加、変更、品質reviewでは、[references/testing-principles.md](references/testing-principles.md)を読む。
 - 期待値はリテラルで書く。テスト対象の出力を期待値生成に使わない。
 - テストケースは単体で読めるようにし、過度なhelper化で意図を隠さない。
 - 検索や一覧のテストではIDだけでなく、意味のある表示内容や結果集合を検証する。

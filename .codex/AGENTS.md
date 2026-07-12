@@ -85,6 +85,9 @@ Escalate from quick mode to planning mode when any of these are true:
 - Prefer composition over inheritance and avoid deep inheritance chains.
 - Prefer ports/adapters, facades for complex integrations, and strategy/polymorphism where they reduce branching or coupling.
 - Explain why important architectural choices improve maintainability or changeability.
+- For non-trivial responsibility placement, domain behavior, shared abstractions, or branching design, use `design-principles`.
+- For Rails migrations, ActiveRecord, scopes, models, or I18n changes, use `rails-practices`.
+- For JavaScript or TypeScript changes, use `javascript-practices`.
 - For implementation, bug fixes, behavior changes, tests, and TDD decisions, use `test-workflow`.
 - For security-sensitive changes, use `security-reviewer`; for broader quality checks, use `change-reviewer` or `deep-review` as appropriate.
 
@@ -134,6 +137,9 @@ Docs-only edits, config tweaks with no meaningful validation target, and trivial
 - Code identifiers are English.
 - Supporting text is Japanese: comments, commit messages, documentation, PR comments, and UI text unless the repository uses another convention.
 - Keep Japanese comments concise and focused on rationale.
+- Use ASCII `->` instead of the Unicode arrow.
+- Do not add spaces between Japanese and English or numeric text unless the repository convention requires them.
+- Avoid unnatural coined Japanese compounds; spell out the condition in natural Japanese.
 
 ## Codex Local Extensions
 
