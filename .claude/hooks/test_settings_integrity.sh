@@ -40,12 +40,41 @@ commands=$(jq -r '
   .hooks // {} | to_entries[] | .value[] | .hooks[]? | .command // empty
 ' "$SETTINGS_FILE" | sort -u)
 
+# hookのcommandから検証対象のファイルパスを取り出す
+# インタプリタ経由で実行される場合（bash script.sh / python3 script.py等）は、引数のスクリプトパスを検証対象にする
+resolve_hook_path() {
+  local expanded="$1"
+  local first target
+  first="${expanded%% *}"
+  case "$(basename "$first")" in
+    bash|sh|zsh|python|python3|node|ruby)
+      if [ "$expanded" = "$first" ]; then
+        target="$first"
+      else
+        target="${expanded#* }"
+        # 先頭の引用符を除去し、対応する引用符（なければ空白）までの部分をパスとして抽出する
+        case "$target" in
+          \'*) target="${target#\'}"; target="${target%%\'*}" ;;
+          \"*) target="${target#\"}"; target="${target%%\"*}" ;;
+          *) target="${target%% *}" ;;
+        esac
+      fi
+      ;;
+    *)
+      target="$first"
+      ;;
+  esac
+  # パス先頭の ~/ と $HOME/ を展開する
+  target="${target/#\~\//$HOME/}"
+  target="${target/#\$HOME\//$HOME/}"
+  printf '%s' "$target"
+}
+
 while IFS= read -r cmd; do
   [ -z "$cmd" ] && continue
   # ~/ を $HOME/ に展開
   expanded="${cmd/#\~\//$HOME/}"
-  # コマンド引数を除去（最初のスペースまで）
-  cmd_path="${expanded%% *}"
+  cmd_path="$(resolve_hook_path "$expanded")"
   if [ -f "$cmd_path" ]; then
     check "Hook存在: $cmd" "true"
   else

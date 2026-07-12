@@ -1,5 +1,12 @@
 #!/usr/bin/env python3
-"""PreToolUse hook for lightweight Japanese style checks in commit and PR text."""
+# PreToolUse(Bash)フック: git commit と gh pr/issue コマンドの日本語を実行前に軽量チェックする。
+# ニュアンス判定はせず、高精度な定型違反のみを検出する。違反を見つけたら exit 2 でブロックする。
+# 検出対象:
+#   1. 英数字と日本語の間の空白（例: "Rails 8 対応" -> "Rails 8対応"）
+#   2. 漢語接頭辞と英字の混成（例: 非operator, 未push）
+#   3. 既知の造語ブロックリスト（必要に応じて追記する）
+#
+# このファイルの内容は .claude/hooks と .codex/hooks で同一に保つ。どちらかを変更したら、もう一方にも同じ変更を反映すること。
 
 import json
 import re

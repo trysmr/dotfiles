@@ -97,7 +97,7 @@ After implementation is complete, perform the following reviews before committin
 
 - **Security-related changes** (authentication, input handling, APIs, permissions): Running the `security-reviewer` agent is **required**
 - **Other changes**: Do a main-session self-review by default. Run `change-reviewer` only for broad, risky, or PR-bound changes, or when the user explicitly asks for a review agent.
-- For thorough or higher-stakes review, use `deep-review` (Opus) or `codex-review` (external Codex / gpt-5.5), but do not run them while an Agent Team is active.
+- For thorough or higher-stakes review, use `deep-review` (Opus) or `codex-review` (external Codex / gpt-5.6-sol), but do not run them while an Agent Team is active.
 - If any Critical/High findings are reported, fix them before committing
 
 Claude Code v2.1.198+ runs subagents in the background by default and makes them inherit more session configuration. Treat every subagent launch as an explicit cost decision: give it a bounded task, forbid further delegation unless necessary, and wait for its result before claiming the work is done.

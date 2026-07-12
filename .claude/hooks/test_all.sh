@@ -22,6 +22,7 @@ tests=(
   "write_safety:test_write_safety.sh"
   "settings_integrity:test_settings_integrity.sh"
   "load_context:test_load_context.sh"
+  "japanese_commit:test_japanese_commit.sh"
 )
 
 total=0

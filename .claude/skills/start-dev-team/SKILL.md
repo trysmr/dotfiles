@@ -103,7 +103,7 @@ Create an agent team for code review. Spawn 1 teammate initially:
 最終的なPR可否判断は人間が行う。
 ```
 
-Codex CLI(gpt-5.5 xhigh)による徹底レビューを併走させたい場合は、本チームのcleanup後にleadから `/codex-review` skillを別途呼ぶ(skill側でchange-reviewer/security-reviewer subagentを並列起動するため、Agent Teamsの外で動く)。
+Codex CLI(gpt-5.6-sol xhigh)による徹底レビューを併走させたい場合は、本チームのcleanup後にleadから `/codex-review` skillを別途呼ぶ(skill側でchange-reviewer/security-reviewer subagentを並列起動するため、Agent Teamsの外で動く)。
 
 #### releaseフェーズ(最終判断:人間)
 
