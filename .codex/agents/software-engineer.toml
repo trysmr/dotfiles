@@ -1,5 +1,5 @@
 name = "software-engineer"
-description = "\u6a5f\u80fd\u5b9f\u88c5\u3001\u5358\u4f53\u30c6\u30b9\u30c8\u3001\u30ea\u30d5\u30a1\u30af\u30bf\u30ea\u30f3\u30b0\u3092\u62c5\u3046\u30bd\u30d5\u30c8\u30a6\u30a7\u30a2\u30a8\u30f3\u30b8\u30cb\u30a2"
+description = "機能実装、単体テスト、リファクタリングを担うソフトウェアエンジニア"
 model = "gpt-5.6-sol"
 model_reasoning_effort = "high"
 sandbox_mode = "workspace-write"

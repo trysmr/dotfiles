@@ -39,6 +39,7 @@ cat > "$TEMP_SETTINGS" <<'SETTINGS'
       "Bash(curl:*)",
       "Bash(wget:*)",
       "Bash(rm:*)",
+      "Bash(echo:*)",
       "Bash(git commit:*)"
     ]
   }
@@ -132,6 +133,14 @@ test_hook 'op=commit; cat msg | git "$op" -F -' "block" "動的gitサブコマ�
 test_hook 'git "$(printf commit)" -m test' "block" "コマンド置換gitサブコマンド経由のgit commit"
 test_hook "bin/rails db:drop" "block" "ワイルドカード/コロン入りdenyパターン"
 test_hook "git push origin main --force-with-lease" "block" "中間ワイルドカードdenyパターン"
+
+echo ""
+echo "=== echoの確認緩和（リダイレクトなしは通過） ==="
+test_hook "ls && echo done" "pass" "チェーン内のリダイレクトなしechoは通過"
+test_hook "rg foo ; echo '---'" "pass" "セミコロン区切りのリダイレクトなしecho"
+test_hook 'ls && echo x > /tmp/f' "block" "リダイレクト付きechoはチェーン内で確認"
+test_hook 'ls && echo x >> ~/.zshrc' "block" "追記リダイレクト付きechoも確認"
+test_hook 'ls && echo "a > b"' "pass" "クォート内のリダイレクト記号は通過"
 
 echo ""
 echo "=== settings.json異常系 ==="

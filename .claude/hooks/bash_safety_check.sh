@@ -629,6 +629,54 @@ deny_for_match() {
   esac
 }
 
+# クォート外にリダイレクト（> / <）が含まれるか判定する。
+# クォート内の '>' はただの文字列なのでリダイレクトとは見なさない。
+has_unquoted_redirect() {
+  local s="$1"
+  local len=${#s}
+  local i=0
+  local ch
+  local in_single=false
+  local in_double=false
+  local escaped=false
+
+  while (( i < len )); do
+    ch="${s:$i:1}"
+
+    if $escaped; then
+      escaped=false
+      (( i++ ))
+      continue
+    fi
+
+    if [ "$ch" = "\\" ] && ! $in_single; then
+      escaped=true
+      (( i++ ))
+      continue
+    fi
+
+    if [ "$ch" = "'" ] && ! $in_double; then
+      if $in_single; then in_single=false; else in_single=true; fi
+      (( i++ ))
+      continue
+    fi
+
+    if [ "$ch" = '"' ] && ! $in_single; then
+      if $in_double; then in_double=false; else in_double=true; fi
+      (( i++ ))
+      continue
+    fi
+
+    if ! $in_single && ! $in_double && { [ "$ch" = ">" ] || [ "$ch" = "<" ]; }; then
+      return 0
+    fi
+
+    (( i++ ))
+  done
+
+  return 1
+}
+
 enforce_segment() {
   local subcmd="$1"
   local context="$2"
@@ -637,6 +685,13 @@ enforce_segment() {
 
   result=$(check_against_patterns "$subcmd")
   if [ $? -eq 0 ]; then
+    # echoは標準出力に書くだけなら確認不要。リダイレクト（>/<）を含む場合はファイル書き込みの
+    # 抜け道になりうるため従来どおり確認を求める。リダイレクトのないechoだけをask強制から除外する。
+    local kind="${result%%:*}"
+    local pattern="${result##*:}"
+    if [ "$kind" = "ask" ] && [ "$pattern" = "echo" ] && ! has_unquoted_redirect "$subcmd"; then
+      return
+    fi
     deny_for_match "$result" "$context" "$force_ask_block"
   fi
 }
