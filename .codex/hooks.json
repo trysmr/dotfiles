@@ -95,7 +95,7 @@
       {
         "hooks": [
           {
-            "command": "bash '/Users/toru/.codex/herdr-agent-state.sh' session",
+            "command": "/bin/bash \"$HOME/.codex/hooks/herdr-agent-state.sh\" session",
             "timeout": 10,
             "type": "command"
           }

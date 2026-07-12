@@ -2,10 +2,7 @@
 name: security-reviewer
 description: セキュリティ観点でのコードレビュー（機密情報検出、インジェクション、認証不備、情報漏洩）
 model: sonnet
-allowed-tools:
-  - Read
-  - Grep
-  - Glob
+tools: Read, Grep, Glob
 ---
 
 # Security Reviewer

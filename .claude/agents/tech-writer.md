@@ -2,12 +2,7 @@
 name: tech-writer
 description: 仕様書、README、ADR、APIドキュメントの生成を担うテクニカルライター
 model: haiku
-allowed-tools:
-  - Read
-  - Edit
-  - Write
-  - Grep
-  - Glob
+tools: Read, Edit, Write, Grep, Glob
 ---
 
 # Tech Writer

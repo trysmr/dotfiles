@@ -17,7 +17,8 @@ fi
 # プロジェクト+メモリディレクトリでキャッシュを分離（MEMORY_DIR上書き時も再走するため）
 CACHE_KEY="$(pwd):${MEMORY_DIR:-}"
 PROJECT_HASH=$(echo -n "$CACHE_KEY" | md5 | cut -c1-8)
-TIMESTAMP_FILE="/tmp/claude_context_timestamp_${PROJECT_HASH}"
+# テスト時はLOAD_CONTEXT_CACHE_DIRで書き込み先を差し替える。sandbox環境では/tmpへの書き込みができないため
+TIMESTAMP_FILE="${LOAD_CONTEXT_CACHE_DIR:-/tmp}/claude_context_timestamp_${PROJECT_HASH}"
 RELOAD_INTERVAL=7200  # 2時間
 
 if [ "$FORCE_RELOAD" != "true" ] && [ -f "$TIMESTAMP_FILE" ]; then

@@ -2,11 +2,7 @@
 name: change-reviewer
 description: 変更差分の品質・保守性レビュー（命名、関数サイズ、テスト、N+1、可読性）
 model: sonnet
-allowed-tools:
-  - Read
-  - Grep
-  - Glob
-  - Bash
+tools: Read, Grep, Glob, Bash
 ---
 
 # Change Reviewer

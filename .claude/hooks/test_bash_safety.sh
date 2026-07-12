@@ -9,7 +9,8 @@ pass=0
 fail=0
 
 # テスト用settings.jsonを一時作成
-TEMP_SETTINGS=$(mktemp)
+# テンプレートを明示する。macOSのmktempはテンプレート未指定だとTMPDIRを無視してシステムの一時ディレクトリを使うため
+TEMP_SETTINGS=$(mktemp "${TMPDIR:-/tmp}/bash_safety_test.XXXXXX")
 trap 'rm -f "$TEMP_SETTINGS"' EXIT
 
 cat > "$TEMP_SETTINGS" <<'SETTINGS'
@@ -138,7 +139,7 @@ echo "=== settings.json異常系 ==="
 SETTINGS_FILE="/nonexistent/path" test_hook "ls && sudo whoami" "pass" "settings.json不在→通過"
 
 # settings.jsonが壊れている場合
-BROKEN_SETTINGS=$(mktemp)
+BROKEN_SETTINGS=$(mktemp "${TMPDIR:-/tmp}/bash_safety_broken.XXXXXX")
 echo "{ broken json" > "$BROKEN_SETTINGS"
 SETTINGS_FILE="$BROKEN_SETTINGS" test_hook "ls -la" "block" "settings.jsonパース失敗→ブロック"
 rm -f "$BROKEN_SETTINGS"

@@ -2,11 +2,7 @@
 name: team-manager
 description: 要件整理、タスク分配、進行管理、フェーズ移行判断を担うマネージャー
 model: sonnet
-allowed-tools:
-  - Read
-  - Grep
-  - Glob
-  - Bash
+tools: Read, Grep, Glob, Bash
 ---
 
 # Team Manager

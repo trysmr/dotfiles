@@ -5,7 +5,8 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 HOOK="$SCRIPT_DIR/japanese_write_check.py"
-TEST_DIR="$(mktemp -d)"
+# テンプレートを明示する。macOSのmktempはテンプレート未指定だとTMPDIRを無視してシステムの一時ディレクトリを使うため
+TEST_DIR="$(mktemp -d "${TMPDIR:-/tmp}/japanese_write_test.XXXXXX")"
 trap 'rm -rf "$TEST_DIR"' EXIT
 
 pass=0

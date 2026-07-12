@@ -2,13 +2,7 @@
 name: software-engineer
 description: 機能実装、単体テスト、リファクタリングを担うソフトウェアエンジニア
 model: sonnet
-allowed-tools:
-  - Read
-  - Edit
-  - Write
-  - Bash
-  - Grep
-  - Glob
+tools: Read, Edit, Write, Bash, Grep, Glob
 ---
 
 # Software Engineer

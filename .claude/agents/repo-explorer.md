@@ -2,10 +2,7 @@
 name: repo-explorer
 description: リポジトリの構造・パターン・依存関係を調査し、概要を報告
 model: haiku
-allowed-tools:
-  - Read
-  - Grep
-  - Glob
+tools: Read, Grep, Glob
 ---
 
 # Repo Explorer

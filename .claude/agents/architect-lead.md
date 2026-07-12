@@ -2,11 +2,7 @@
 name: architect-lead
 description: 全体アーキテクチャ、技術選定、非機能要件、長期保守性を判断するテックリード
 model: opus
-allowed-tools:
-  - Read
-  - Grep
-  - Glob
-  - WebFetch
+tools: Read, Grep, Glob, WebFetch
 ---
 
 # Architect Lead

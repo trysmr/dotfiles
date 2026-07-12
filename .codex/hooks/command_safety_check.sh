@@ -70,4 +70,18 @@ if [[ "$normalized" =~ (^|[[:space:];|&])(cat|sed|awk|less|more|head|tail|rg|gre
   deny ".env系ファイルの読み取りは禁止されています。"
 fi
 
+# --- settings.jsonポリシーの委譲チェック ---
+# deny/askパターンの照合とチェーン/サブシェル/埋め込みコマンドの解析は
+# .claude側のbash_safety_check.shが実装済みのため、同じエンジンに委譲してポリシーを一元管理する。
+# エンジンが見つからない環境では上記の固定チェックのみで実行される（フェイルオープンだが従来の動作と同等）。
+SAFETY_ENGINE="${COMMAND_SAFETY_ENGINE:-$HOME/.claude/hooks/bash_safety_check.sh}"
+
+if [ -f "$SAFETY_ENGINE" ]; then
+  engine_input=$(jq -nc --arg cmd "$command" '{tool_input: {command: $cmd}}')
+  engine_message=$(printf '%s' "$engine_input" | bash "$SAFETY_ENGINE" 2>&1 >/dev/null)
+  if [ $? -eq 2 ] && [ -n "$engine_message" ]; then
+    deny "$engine_message"
+  fi
+fi
+
 exit 0

@@ -2,11 +2,7 @@
 name: team-designer
 description: UX/UI、データモデル、API契約、ドメインモデル設計を担うデザイナー
 model: sonnet
-allowed-tools:
-  - Read
-  - Grep
-  - Glob
-  - WebFetch
+tools: Read, Grep, Glob, WebFetch
 ---
 
 # Team Designer
