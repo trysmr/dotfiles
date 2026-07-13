@@ -140,6 +140,7 @@ Docs-only edits, config tweaks with no meaningful validation target, and trivial
 - Use ASCII `->` instead of the Unicode arrow.
 - Do not add spaces between Japanese and English or numeric text unless the repository convention requires them.
 - Avoid unnatural coined Japanese compounds; spell out the condition in natural Japanese.
+- In commit and PR prose, do not use「契約」as a literal rendering of "contract" (表示契約/更新契約 など); name the interface or behavior that changed. 設計文書やコード中で確立した「API契約」は対象外.
 
 ## Codex Local Extensions
 
