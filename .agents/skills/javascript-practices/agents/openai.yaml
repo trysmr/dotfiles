@@ -1,4 +1,4 @@
 interface:
-  display_name: "JavaScript実装規則"
+  display_name: "JavaScript Practices"
   short_description: "JavaScriptとTypeScriptの安全な記述規則を適用"
   default_prompt: "$javascript-practicesで、このJavaScript変更を規則に沿って実装して。"

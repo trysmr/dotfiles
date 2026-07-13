@@ -1,4 +1,4 @@
 interface:
-  display_name: "Rails実装規則"
+  display_name: "Rails Practices"
   short_description: "Rails固有のmigrationとActiveRecord規則を適用"
   default_prompt: "$rails-practicesで、このRails変更を既存規則に沿って実装して。"

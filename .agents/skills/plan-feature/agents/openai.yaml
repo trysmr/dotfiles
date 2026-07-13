@@ -1,4 +1,4 @@
 interface:
-  display_name: "実装計画"
+  display_name: "Plan Feature"
   short_description: "既存構造を調査し、設計・影響範囲・リスク・TODOを整理"
   default_prompt: "$plan-featureで、既存コードを調査してこの機能の実装計画を作成して。"

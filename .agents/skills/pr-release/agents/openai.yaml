@@ -1,4 +1,4 @@
 interface:
-  display_name: "リリースPR"
+  display_name: "Release PR"
   short_description: "stagingからmainへの本番リリース用PRを安全に作成"
   default_prompt: "$pr-releaseで、stagingからmainへのリリースPRを作成して。"

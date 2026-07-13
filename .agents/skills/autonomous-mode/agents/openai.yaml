@@ -1,4 +1,4 @@
 interface:
-  display_name: "自律モード"
+  display_name: "Autonomous Mode"
   short_description: "安全境界を守りつつ調査・実装・検証まで自律的に完走するワークフロー"
   default_prompt: "$autonomous-modeでこのタスクを安全境界を守って自律的に完走して。"

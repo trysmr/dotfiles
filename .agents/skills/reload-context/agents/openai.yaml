@@ -1,4 +1,4 @@
 interface:
-  display_name: "コンテキスト再読み込み"
+  display_name: "Reload Context"
   short_description: "CodexのルールやSkill変更を反映するためコンテキストを更新"
   default_prompt: "$reload-contextで、更新したCodex設定とSkillを再読み込みして。"

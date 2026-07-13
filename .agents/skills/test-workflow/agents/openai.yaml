@@ -1,4 +1,4 @@
 interface:
-  display_name: "テストワークフロー"
+  display_name: "Test Workflow"
   short_description: "変更段階に合わせてTDD方針と適切なテスト範囲を決定"
   default_prompt: "$test-workflowで、この変更に適したテスト方針と検証範囲を決めて。"
