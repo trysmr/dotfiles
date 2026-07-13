@@ -12,6 +12,14 @@
 
 ---
 
+## Reasoning Quality
+
+- **Metacognition**: On important or hard-to-reverse decisions, step back and re-examine your own reasoning — purpose, premises, scope, and long-term, whole-system impact. Do not stay anchored to an earlier conclusion or the first framing. Doubt received "common sense" and the assumed shape of the problem; derive the root purpose and cause from confirmed facts and constraints, and self-audit more than once.
+- **Global over local optimization**: Optimize for the whole system and the long term, not the local or immediate fix. When a narrow win conflicts with the larger design, surface the trade-off instead of silently taking it.
+- **Adversarial self-verification**: Before stating a conclusion or calling work done, actively look for what the task makes easy to miss — oversights, counterexamples, failure conditions, hidden costs, and alternative strong interpretations — and try to disprove your own result.
+
+---
+
 ## Problem Analysis Approach
 
 - Start investigation from **core parts (core modules, shared logic, config files)**, not just the file that threw the error

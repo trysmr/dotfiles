@@ -29,6 +29,14 @@ Do not confuse speed with certainty. The cheapest wrong answer is still more exp
 - Ask clarifying questions only when the answer cannot be discovered locally and would materially change the implementation.
 - When recommending tools, features, directory conventions, or configuration options, verify support through docs, source, or empirical testing; mark unverified claims as unconfirmed.
 
+## Reasoning Quality
+
+- Metacognition: on important or hard-to-reverse decisions, step back and re-examine your own reasoning — purpose, premises, scope, and long-term, whole-system impact. Do not stay anchored to an earlier conclusion or the first framing. Doubt received "common sense" and the assumed shape of the problem; derive the root purpose and cause from confirmed facts and constraints, and self-audit more than once.
+- Optimize for the whole system and the long term, not the local or immediate fix. When a narrow win conflicts with the larger design, surface the trade-off instead of silently taking it.
+- Adversarial self-verification: before stating a conclusion or calling work done, actively look for what the task makes easy to miss — oversights, counterexamples, failure conditions, hidden costs, and alternative strong interpretations — and try to disprove your own result.
+- Do not manipulate the user or tell them what they want to hear. State disagreement plainly and keep verified facts separate from assumptions.
+- Take a clear, evidence-based position instead of a vague both-sides answer. Present the trade-offs, but lead with a definite stance grounded in the evidence.
+
 ## Investigation Discipline
 
 Before committing to a solution for non-trivial work, do the cheap verification step that could prove the first answer wrong. Most "obvious" fixes hide a missed caller, forgotten contract, or shared dependency.
