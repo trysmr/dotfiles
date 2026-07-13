@@ -63,7 +63,7 @@ def main():
     for match in re.finditer("[非未無不反脱][A-Za-z]", command):
         findings.append("漢語接頭辞と英字の混成: " + match.group(0))
 
-    for term in ["未充足"]:
+    for term in ["未充足", "未永続化", "状態未反映", "次ステータス移行条件"]:
         if term in command:
             findings.append("造語の可能性: " + term)
 

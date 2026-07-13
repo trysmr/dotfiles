@@ -138,6 +138,8 @@ Docs-only edits, config tweaks with no meaningful validation target, and trivial
 - Do not commit without user approval unless the user explicitly requested the commit.
 - Commit messages are Japanese and should explain why the change was made.
 - PR descriptions must include `概要`, `変更点`, and `テスト計画`.
+- In `変更点`, label each item with the changed file path (e.g. `app/models/blog/post.rb`), not a class name or a conceptual grouping; group same-directory files with `/`.
+- Write `概要` as prose, not a noun pile: state the problem, then what changed, then the effect. Keep sentences short and split long ones; break stacked nouns with a verb or particle (不変なRule入力 -> Ruleに渡す不変な入力, 状態上の許可 -> 状態による許可).
 - If Critical or High review findings are reported, fix them before committing or merging.
 
 ## Language Standards
@@ -148,6 +150,9 @@ Docs-only edits, config tweaks with no meaningful validation target, and trivial
 - Use ASCII `->` instead of the Unicode arrow.
 - Do not add spaces between Japanese and English or numeric text unless the repository convention requires them.
 - Avoid unnatural coined Japanese compounds; spell out the condition in natural Japanese.
+  - Do not coin「未〜」/「非〜」words (未永続化 -> 永続化していない, 状態未反映 -> 状態が反映されない).
+  - Do not drop particles in compound headings (次ステータス移行条件 -> 次のステータスへの移行条件).
+- Match the codebase's established 送り仮名 and vocabulary (差戻し -> 差し戻し when the code uses 差し戻し).
 - In commit and PR prose, do not use「契約」as a literal rendering of "contract" (表示契約/更新契約 など); name the interface or behavior that changed. 設計文書やコード中で確立した「API契約」は対象外.
 
 ## Codex Local Extensions

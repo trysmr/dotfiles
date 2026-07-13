@@ -14,10 +14,13 @@ JAPANESE_RE = re.compile(r"[\u3040-\u30ff\u3400-\u9fff々ー]")
 PREFIX_REWRITES = {
     "未充足": "満たしていない",
     "非終端": "終端でない",
+    "未永続化": "永続化していない",
+    "状態未反映": "状態が反映されない",
 }
 PARTICLE_REWRITES = {
     "次エッジ": "次のエッジ",
     "次要素": "次の要素",
+    "次ステータス": "次のステータス",
 }
 DEDUPLICATION_PREFIX = "codex_japanese_write_check_"
 
