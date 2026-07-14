@@ -26,7 +26,7 @@ Claude Code Agent Teams機能を使い、開発フェーズに応じた専門チ
 | 名前 | model | 主な責務 |
 |---|---|---|
 | `team-manager` | sonnet | 要件整理、タスク分配、進行管理 |
-| `team-designer` | sonnet | UX/UI、データモデル、API契約設計 |
+| `team-designer` | sonnet | UX/UI、データモデル、API仕様設計 |
 | `architect-lead` | opus | 全体構造、技術選定、非機能要件 |
 | `software-engineer` | sonnet | 機能実装、単体テスト、リファクタ |
 | `change-reviewer` | sonnet | 品質/保守性レビュー、QA観点 |

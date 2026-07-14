@@ -42,6 +42,12 @@ assert_rc 2 '{"tool_input":{"command":"git commit -m \"未pushの変更を退避
 assert_rc 2 '{"tool_input":{"command":"git commit -m \"未充足の条件を検証\""}}' \
   "造語ブロックリストの語を検出"
 
+assert_rc 2 '{"tool_input":{"command":"git commit -m \"API契約のテストを追加\""}}' \
+  "APIを含む禁止語を検出"
+
+assert_rc 2 '{"tool_input":{"command":"gh pr create --title \"検索述語を整理\""}}' \
+  "PRタイトルの禁止語を検出"
+
 assert_rc 2 '{"tool_input":{"command":"gh pr create --title \"API 連携を追加\""}}' \
   "gh prコマンドも検査対象"
 
@@ -56,6 +62,9 @@ assert_rc 0 '{"tool_input":{"command":"ls -la 日本語ファイル 名前.txt"}
 
 assert_rc 0 '{"tool_input":{"command":"git commit -m \"fix typo\""}}' \
   "日本語を含まないコマンドは対象外"
+
+assert_rc 0 '{"tool_input":{"command":"git commit -m \"predicate handlingを修正\""}}' \
+  "英語表記は禁止対象外"
 
 assert_rc 0 '{"tool_input":{}}' "commandがない入力は対象外"
 

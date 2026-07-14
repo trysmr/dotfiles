@@ -22,6 +22,7 @@ PARTICLE_REWRITES = {
     "次要素": "次の要素",
     "次ステータス": "次のステータス",
 }
+PROHIBITED_JAPANESE_TERMS = ("契約", "述語")
 DEDUPLICATION_PREFIX = "codex_japanese_write_check_"
 
 
@@ -129,6 +130,12 @@ def findings_for(path: Path, display_path: str, allowed_terms: set[str]) -> list
                 findings.append(
                     f"{display_path}:{line_number}: 「{original}」 -> 「{suggestion}」 "
                     "（助詞の省略の可能性）"
+                )
+        for term in PROHIBITED_JAPANESE_TERMS:
+            if term in line:
+                findings.append(
+                    f"{display_path}:{line_number}: 「{term}」"
+                    "（日本語での使用を禁止している語）"
                 )
     return findings
 

@@ -5,6 +5,7 @@
 #   1. 英数字と日本語の間の空白（例: "Rails 8 対応" -> "Rails 8対応"）
 #   2. 漢語接頭辞と英字の混成（例: 非operator, 未push）
 #   3. 既知の造語ブロックリスト（必要に応じて追記する）
+#   4. 日本語での使用を禁止している語
 #
 # このファイルの内容は .claude/hooks と .codex/hooks で同一に保つ。どちらかを変更したら、もう一方にも同じ変更を反映すること。
 
@@ -66,6 +67,10 @@ def main():
     for term in ["未充足", "未永続化", "状態未反映", "次ステータス移行条件"]:
         if term in command:
             findings.append("造語の可能性: " + term)
+
+    for term in ["契約", "述語"]:
+        if term in command:
+            findings.append("日本語での使用を禁止している語: " + term)
 
     if findings:
         unique_findings = list(dict.fromkeys(findings))

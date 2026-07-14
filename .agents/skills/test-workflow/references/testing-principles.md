@@ -18,10 +18,10 @@
 - prefix除去やtrim後に空になる入力を検証する。
 - 正規化後に空ならunfiltered scopeへ落とさず、空結果を返すことを確認する。
 
-## 公開契約
+## 公開APIの仕様
 
-- method signature、optional argument、branch、nil許容などの新しい公開契約は、定義元のunit testで直接検証する。
-- thin wrapper経由のtestだけで契約を保証したことにしない。
+- method signature、optional argument、branch、nil許容などの新しい公開仕様は、定義元のunit testで直接検証する。
+- thin wrapper経由のtestだけで仕様を保証したことにしない。
 - optional argumentやnil許容は各branchを直接testする。
 
 ## Blast Radius

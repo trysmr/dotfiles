@@ -21,7 +21,7 @@ description: Use when the user asks for TDD, test design, test quality review, o
 
 `Stabilize`または振る舞い変更を伴う`Maintain`では、原則として次の順で進める。
 
-1. 期待する契約や失敗ケースをテストで表す。
+1. 期待する振る舞いや失敗ケースをテストで表す。
 2. そのテストが意図した理由で失敗することを確認する。
 3. 最小の実装で通す。
 4. 影響範囲に合う既存テストを実行する。
@@ -34,7 +34,7 @@ description: Use when the user asks for TDD, test design, test quality review, o
 - 期待値はリテラルで書く。テスト対象の出力を期待値生成に使わない。
 - テストケースは単体で読めるようにし、過度なhelper化で意図を隠さない。
 - 検索や一覧のテストではIDだけでなく、意味のある表示内容や結果集合を検証する。
-- 公開API契約を増やす場合は、その契約を直接テストする。
+- 公開APIの仕様を増やす場合は、その仕様を直接テストする。
 
 ## Report
 

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# 契約検証（PostToolUseフック）
+# ファイル構成の整合性検証（PostToolUseフック）
 # 特定ファイル変更時に追加アクションを促す
 
 input=$(cat)

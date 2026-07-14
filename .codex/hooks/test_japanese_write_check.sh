@@ -63,10 +63,19 @@ check '助詞省略を示す' "$(printf '%s' "$context" | grep -c '次エッジ'
 check '助詞省略の言い換え案を示す' "$(printf '%s' "$context" | grep -c '次のエッジ')" '1'
 check 'ファイルと行番号を示す' "$(printf '%s' "$context" | grep -c 'fixture.rb:')" '2'
 
+output=$(run_hook $'# API契約を検証する\nraise "検索述語が不正です"' 'prohibited.rb')
+context=$(printf '%s' "$output" | jq -r '.hookSpecificOutput.additionalContext')
+check 'APIを含む禁止語を示す' "$(printf '%s' "$context" | grep -c '「契約」')" '1'
+check 'もう一つの禁止語を示す' "$(printf '%s' "$context" | grep -c '「述語」')" '1'
+check '禁止語の検出箇所をすべて示す' "$(printf '%s' "$context" | grep -c 'prohibited.rb:')" '2'
+
 echo ''
 echo '=== 日本語なし ==='
 output=$(run_hook $'# Validate configuration\nraise "Invalid input"')
 check '日本語を含まないファイルは成功扱い' "$output" ''
+
+output=$(run_hook $'# Validate predicate behavior\nraise "contract violation"')
+check '英語表記は禁止対象外' "$output" ''
 
 echo ''
 echo '=== プロジェクト用語 ==='
@@ -77,6 +86,11 @@ mkdir -p "$TEST_DIR/.codex"
 printf '%s\n' '未充足' > "$TEST_DIR/.codex/japanese_domain_terms.txt"
 output=$(run_hook '未充足の状態を表示する')
 check '登録済みのドメイン用語は指摘しない' "$output" ''
+
+printf '%s\n' '契約' >> "$TEST_DIR/.codex/japanese_domain_terms.txt"
+output=$(run_hook 'API契約を検証する')
+context=$(printf '%s' "$output" | jq -r '.hookSpecificOutput.additionalContext')
+check '禁止語は登録済みのドメイン用語でも指摘する' "$(printf '%s' "$context" | grep -c '「契約」')" '1'
 
 echo ''
 echo '=== 機密パス ==='

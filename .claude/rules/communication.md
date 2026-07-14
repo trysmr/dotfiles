@@ -96,7 +96,7 @@ Patterns to avoid, with replacements:
 - ❌ invented compound nouns not in the project vocabulary -> ✅ spell out the condition, or use the actual flag/attribute name
 - ❌「高々N」-> ✅「N以下」「最大N」
 - ❌「真実の源泉」(literal translation of "source of truth") -> ✅「定義元」「〜で一元管理している」. English identifiers are fine
-- ❌「契約」as a literal rendering of "contract" in commit/PR prose (表示契約/更新契約 など) -> ✅ name the actual interface or behavior that changed (「表示の前提」「返り値の形」など). 設計文書やコード中で確立した「API契約」は対象外
+- ❌「契約」「述語」in any Japanese supporting text, including comments, test names, error messages, documentation, commit messages, PR titles/bodies/comments, and UI text -> ✅ name the concrete interface, condition, behavior, or requirement. Established domain terminology and「API契約」are not exceptions
 - ❌ commit bodies stuffed with backtick identifiers -> ✅ plain Japanese, 1-2 sentences on the why; the diff already lists the identifiers
 
 Established project domain terms do not count as coinages.

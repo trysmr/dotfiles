@@ -153,7 +153,7 @@ Docs-only edits, config tweaks with no meaningful validation target, and trivial
   - Do not coin「未〜」/「非〜」words (未永続化 -> 永続化していない, 状態未反映 -> 状態が反映されない).
   - Do not drop particles in compound headings (次ステータス移行条件 -> 次のステータスへの移行条件).
 - Match the codebase's established 送り仮名 and vocabulary (差戻し -> 差し戻し when the code uses 差し戻し).
-- In commit and PR prose, do not use「契約」as a literal rendering of "contract" (表示契約/更新契約 など); name the interface or behavior that changed. 設計文書やコード中で確立した「API契約」は対象外.
+- In any Japanese supporting text, do not use「契約」or「述語」. This includes comments, test names, error messages, documentation, commit messages, PR titles/bodies/comments, and UI text. Established domain terminology and「API契約」are not exceptions; name the concrete interface, condition, behavior, or requirement instead.
 
 ## Codex Local Extensions
 
