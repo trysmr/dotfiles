@@ -629,9 +629,10 @@ deny_for_match() {
   esac
 }
 
-# クォート外にリダイレクト（> / <）が含まれるか判定する。
+# クォート外にファイルへのリダイレクト（> / <）が含まれるか判定する。
 # クォート内の '>' はただの文字列なのでリダイレクトとは見なさない。
-has_unquoted_redirect() {
+# >&2 や 2>&1 のようなfd複製はファイル書き込みではないため対象外とする。
+has_file_redirect() {
   local s="$1"
   local len=${#s}
   local i=0
@@ -668,6 +669,11 @@ has_unquoted_redirect() {
     fi
 
     if ! $in_single && ! $in_double && { [ "$ch" = ">" ] || [ "$ch" = "<" ]; }; then
+      # 直後が & ならfd複製（>&2 / 2>&1 / <&0）なのでスキップ
+      if [ "${s:$((i+1)):1}" = "&" ]; then
+        (( i += 2 ))
+        continue
+      fi
       return 0
     fi
 
@@ -682,16 +688,21 @@ enforce_segment() {
   local context="$2"
   local force_ask_block="$3"
   local result
+  local normalized
+
+  # echoはaskパターンに載せず確認なしで通す方針のため、Write権限を迂回した
+  # ファイル書き込みになるリダイレクト付きechoだけを、settingsのパターンに関係なくここで拒否する
+  normalized=$(normalize_subcmd "$subcmd")
+  case "$normalized" in
+    echo|echo\ *|echo\>*|echo\<*)
+      if has_file_redirect "$subcmd"; then
+        deny "${context}にファイルへのリダイレクトを伴うechoが検出されました。ファイルの書き込みにはWrite/Editツールを使用してください。"
+      fi
+      ;;
+  esac
 
   result=$(check_against_patterns "$subcmd")
   if [ $? -eq 0 ]; then
-    # echoは標準出力に書くだけなら確認不要。リダイレクト（>/<）を含む場合はファイル書き込みの
-    # 抜け道になりうるため従来どおり確認を求める。リダイレクトのないechoだけをask強制から除外する。
-    local kind="${result%%:*}"
-    local pattern="${result##*:}"
-    if [ "$kind" = "ask" ] && [ "$pattern" = "echo" ] && ! has_unquoted_redirect "$subcmd"; then
-      return
-    fi
     deny_for_match "$result" "$context" "$force_ask_block"
   fi
 }

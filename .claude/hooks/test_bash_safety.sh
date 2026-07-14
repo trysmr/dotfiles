@@ -39,7 +39,6 @@ cat > "$TEMP_SETTINGS" <<'SETTINGS'
       "Bash(curl:*)",
       "Bash(wget:*)",
       "Bash(rm:*)",
-      "Bash(echo:*)",
       "Bash(git commit:*)"
     ]
   }
@@ -135,11 +134,16 @@ test_hook "bin/rails db:drop" "block" "ワイルドカード/コロン入りdeny
 test_hook "git push origin main --force-with-lease" "block" "中間ワイルドカードdenyパターン"
 
 echo ""
-echo "=== echoの確認緩和（リダイレクトなしは通過） ==="
+echo "=== echoのリダイレクト検査（settingsのaskパターンに載せず、フック自身で拒否） ==="
 test_hook "ls && echo done" "pass" "チェーン内のリダイレクトなしechoは通過"
 test_hook "rg foo ; echo '---'" "pass" "セミコロン区切りのリダイレクトなしecho"
-test_hook 'ls && echo x > /tmp/f' "block" "リダイレクト付きechoはチェーン内で確認"
-test_hook 'ls && echo x >> ~/.zshrc' "block" "追記リダイレクト付きechoも確認"
+test_hook 'echo x > /tmp/f' "block" "単独でもファイルリダイレクト付きechoは拒否"
+test_hook 'ls && echo x > /tmp/f' "block" "チェーン内のファイルリダイレクト付きecho"
+test_hook 'ls && echo x >> ~/.zshrc' "block" "追記リダイレクト付きechoも拒否"
+test_hook 'echo x>/tmp/f' "block" "空白なしのファイルリダイレクトも拒否"
+test_hook 'echo>f' "block" "コマンド名直後のリダイレクトも拒否"
+test_hook 'echo done >&2' "pass" "標準エラーへのfd複製は通過"
+test_hook 'echo done 2>&1' "pass" "fd複製の2>&1は通過"
 test_hook 'ls && echo "a > b"' "pass" "クォート内のリダイレクト記号は通過"
 
 echo ""

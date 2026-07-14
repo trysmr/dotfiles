@@ -132,7 +132,6 @@
     ],
     "ask": [
       "Bash(git commit:*)",
-      "Bash(echo:*)",
       "Bash(curl:*)",
       "Bash(wget:*)",
       "Bash(rm:*)",
