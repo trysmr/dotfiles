@@ -1,0 +1,4 @@
+interface:
+  display_name: "Japanese Check"
+  short_description: "日本語の定型違反と不自然な表現を検出し、修正まで実施"
+  default_prompt: "$japanese-checkで、この日本語テキストの表現を確認して修正して。"

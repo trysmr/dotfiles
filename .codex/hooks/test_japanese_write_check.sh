@@ -8,6 +8,7 @@ HOOK="$SCRIPT_DIR/japanese_write_check.py"
 # テンプレートを明示する。macOSのmktempはテンプレート未指定だとTMPDIRを無視してシステムの一時ディレクトリを使うため
 TEST_DIR="$(mktemp -d "${TMPDIR:-/tmp}/japanese_write_test.XXXXXX")"
 trap 'rm -rf "$TEST_DIR"' EXIT
+git -C "$TEST_DIR" init --quiet
 
 pass=0
 fail=0
@@ -96,6 +97,14 @@ echo ''
 echo '=== 機密パス ==='
 output=$(run_hook '未充足の設定' '.env')
 check '.envは読み取らず成功扱い' "$output" ''
+
+printf '%s\n' 'ignored.rb' > "$TEST_DIR/.gitignore"
+output=$(run_hook '次エッジを選択してください' 'ignored.rb')
+check 'Gitの無視対象は読み取らず成功扱い' "$output" ''
+
+printf '%s\n' '.codex/japanese_domain_terms.txt' >> "$TEST_DIR/.gitignore"
+output=$(run_hook '未充足の設定を確認する')
+check 'Gitの無視対象にあるプロジェクト用語は適用しない' "$(printf '%s' "$output" | jq -r 'has("hookSpecificOutput")')" 'true'
 
 echo ''
 echo '=== 重複起動 ==='

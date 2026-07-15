@@ -4,6 +4,7 @@
 import hashlib
 import json
 import re
+import subprocess
 import sys
 import tempfile
 import time
@@ -63,6 +64,32 @@ def changed_paths(data: dict) -> list[str]:
     return re.findall(r"^\*\*\* (?:Add|Update) File: (.+)$", command, re.MULTILINE)
 
 
+def git_blocks_read(candidate: Path, root: Path) -> bool:
+    """Gitの無視対象か判定できないファイルを読み取り対象から外す。"""
+    relative_path = candidate.relative_to(root)
+    try:
+        result = subprocess.run(
+            [
+                "git",
+                "check-ignore",
+                "--quiet",
+                "--no-index",
+                "--",
+                str(relative_path),
+            ],
+            cwd=root,
+            stdin=subprocess.DEVNULL,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            check=False,
+            timeout=0.5,
+        )
+    except (OSError, subprocess.TimeoutExpired):
+        return True
+
+    return result.returncode != 1
+
+
 def safe_file(path_text: str, root: Path) -> Path | None:
     """機密パスと作業ディレクトリ外のパスを除外する。"""
     path = Path(path_text)
@@ -87,12 +114,16 @@ def safe_file(path_text: str, root: Path) -> Path | None:
 
     if not candidate.is_file() or candidate.stat().st_size > 1_000_000:
         return None
+    if git_blocks_read(candidate, root):
+        return None
     return candidate
 
 
 def domain_terms(root: Path) -> set[str]:
     """プロジェクトが明示したドメイン用語を読み込む。"""
-    terms_file = root / ".codex" / "japanese_domain_terms.txt"
+    terms_file = safe_file(".codex/japanese_domain_terms.txt", root)
+    if terms_file is None:
+        return set()
     try:
         return {
             line.strip()
