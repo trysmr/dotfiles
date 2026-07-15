@@ -126,7 +126,7 @@
       "Bash(crontab -r:*)",
       "Bash(security:*)",
       "Read(.env.*)",
-      "Write(.env*)",
+      "Edit(.env*)",
       "Read(node_modules)",
       "Read(node_modules/**)"
     ],
