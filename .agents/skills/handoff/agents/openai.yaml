@@ -1,4 +1,4 @@
 interface:
   display_name: "Handoff"
-  short_description: "現在の作業状態を自己完結した引き継ぎプロンプトに整理"
-  default_prompt: "$handoffで、現在の作業状態を次のセッション向けに整理して。"
+  short_description: "再開に必要な情報だけを短い引き継ぎプロンプトに整理"
+  default_prompt: "$handoffで、現在の作業状態を短い引き継ぎプロンプトに整理して。"
