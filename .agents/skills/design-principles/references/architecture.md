@@ -11,6 +11,21 @@
 
 重要な設計判断では、その選択が保守性と変更容易性にどう寄与するかを説明する。
 
+## Actions / Calculations / Data
+
+テスト容易性を判断する分析軸として、処理を次の3種類に分ける。この分類はコード構造を強制せず、責務配置の原則を優先する。
+
+- Data: イベントに関する事実を表し、振る舞いを持たない値。
+- Calculation: 同じ入力から同じ出力を返し、副作用を持たない計算。
+- Action: 実行時刻や実行回数に結果が依存する処理。外部I/O、DB access、時刻の取得、共有状態の変更を含む。
+
+適用時は次を確認する。
+
+- テストしづらい処理ではActionの呼び出しを追う。Actionを呼ぶ処理もActionとして扱う。
+- serviceやorchestration層のActionに分岐や変換が含まれる場合は、Calculationを分離してActionを薄く保つ。
+- 引数や共有状態を変更せず、更新した値を返す。ただし、objectが自身の内部状態を能力method経由で変更することは妨げない。
+- domain object内ではCapability over Plumbingを優先する。純粋化だけを目的にlogicを独立functionへ移し、Anemic Domain Modelを生み出さない。ActiveRecord modelが永続化とdomain logicを持つこと自体は違反とみなさない。
+
 ## Capability over Plumbing
 
 自然な振る舞いは、その状態を所有するdomain objectへ置く。周辺serviceが状態を取り出し、計算して戻すだけのpull-compute-pushになっている場合は、object自身の能力として表現できないか確認する。
