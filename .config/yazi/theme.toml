@@ -96,17 +96,17 @@ rules = [
     { mime = "application/x-sharedlib", fg = "#9ece6a" },
 
     # 特殊ファイル
-    { name = "*.md", fg = "#7aa2f7" },
-    { name = "*.lua", fg = "#7aa2f7" },
-    { name = "*.sh", fg = "#9ece6a" },
-    { name = "*.toml", fg = "#e0af68" },
-    { name = "*.yaml", fg = "#e0af68" },
-    { name = "*.yml", fg = "#e0af68" },
-    { name = "*.json", fg = "#e0af68" },
-    { name = ".gitignore", fg = "#565f89" },
-    { name = ".git*", fg = "#565f89" },
-    { name = "Makefile", fg = "#9ece6a" },
-    { name = "Dockerfile", fg = "#7dcfff" },
+    { url = "*.md", fg = "#7aa2f7" },
+    { url = "*.lua", fg = "#7aa2f7" },
+    { url = "*.sh", fg = "#9ece6a" },
+    { url = "*.toml", fg = "#e0af68" },
+    { url = "*.yaml", fg = "#e0af68" },
+    { url = "*.yml", fg = "#e0af68" },
+    { url = "*.json", fg = "#e0af68" },
+    { url = ".gitignore", fg = "#565f89" },
+    { url = ".git*", fg = "#565f89" },
+    { url = "Makefile", fg = "#9ece6a" },
+    { url = "Dockerfile", fg = "#7dcfff" },
 ]
 
 [icon]

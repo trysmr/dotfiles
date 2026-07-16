@@ -52,14 +52,14 @@ reveal = [
 # ファイルタイプごとのデフォルトオープナー
 rules = [
     # テキスト系ファイル
-    { name = "*.md", use = "edit" },
-    { name = "*.txt", use = "edit" },
-    { name = "*.lua", use = "edit" },
-    { name = "*.sh", use = "edit" },
-    { name = "*.json", use = "edit" },
-    { name = "*.toml", use = "edit" },
-    { name = "*.yaml", use = "edit" },
-    { name = "*.yml", use = "edit" },
+    { url = "*.md", use = "edit" },
+    { url = "*.txt", use = "edit" },
+    { url = "*.lua", use = "edit" },
+    { url = "*.sh", use = "edit" },
+    { url = "*.json", use = "edit" },
+    { url = "*.toml", use = "edit" },
+    { url = "*.yaml", use = "edit" },
+    { url = "*.yml", use = "edit" },
 
     # デフォルト：mimeタイプで判定
     { mime = "text/*", use = "edit" },
