@@ -1,5 +1,24 @@
 # Design Principles
 
+## Actions / Calculations / Data (a classification lens)
+
+A vocabulary for judging testability, from "Grokking Simplicity". This is a **lens for analysis, not a structural mandate** — it does not override the object-oriented placement rules (Capability over Plumbing, Method Extraction Criteria below).
+
+- **Data**: Facts about events. Inert values (e.g., the email address a user gave us, an amount read from an API). Easiest to test and reason about.
+- **Calculations**: Computations from input to output — pure functions. Same input, same output, no side effects (e.g., find the maximum, validate an email format). Testable without setup or mocks.
+- **Actions**: Anything that depends on **when or how many times** it runs — I/O, DB access, sending email, reading the clock, mutating shared state. Hardest to test.
+
+How to apply, and where it yields to other rules:
+
+- **Use the lens when logic is hard to test**: Trace where the Action calls are — a function that calls an Action becomes an Action (contagion). Extract the embedded Calculation so the pure part is testable without mocks.
+- **Keep Actions thin**: When a service/orchestration-layer Action contains branching or transformation logic, extract that logic into Calculations. This aligns with the hexagonal direction in architecture rules: the inside of the ports is Calculations over Data.
+- **Do not mutate arguments or shared state**: Return updated copies instead. Mutating an input makes a Calculation an Action in disguise. This does **not** forbid an object mutating its own encapsulated state via its capability methods.
+- **Precedence inside domain objects**: Capability over Plumbing wins. Do not extract logic out of a domain object into free-standing pure functions just to satisfy this lens — that creates the Anemic Domain Model the architecture rules forbid. ActiveRecord models mixing persistence with domain logic are the accepted Rails idiom, not a violation.
+
+**Rationale**: The three-way classification gives a mechanical way to find the testable core of hard-to-test code, while the placement of that core stays governed by responsibility-based rules.
+
+---
+
 ## Declarative Design
 
 Express complex branching logic (state transitions, rule sets, etc.) as data structures rather than procedural code.
