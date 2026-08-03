@@ -1,0 +1,4 @@
+interface:
+  display_name: "Review Terraform Quality"
+  short_description: "Terraformが支える品質特性と確認範囲・安全上の限界を整理"
+  default_prompt: "$review-terraform-qualityで、このTerraform構成が品質特性をどこまで支えられるか安全に確認して。"

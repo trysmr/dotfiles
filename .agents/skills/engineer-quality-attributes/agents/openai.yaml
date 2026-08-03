@@ -1,0 +1,4 @@
+interface:
+  display_name: "Engineer Quality Attributes"
+  short_description: "品質特性を網羅し、要件・対策・検証・観測・対応へ落とし込む"
+  default_prompt: "$engineer-quality-attributesで、対象システムの品質特性を測定可能な要件と検証方法へ整理して。"
