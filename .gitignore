@@ -1,4 +1,6 @@
 /.config/karabiner/automatic_backups/*
+/.config/herdr/*
+!/.config/herdr/config.toml
 /.claude/settings.local.json
 /.codex/config.toml
 CLAUDE.local.md
