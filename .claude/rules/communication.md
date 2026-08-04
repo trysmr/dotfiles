@@ -94,6 +94,7 @@ Patterns to avoid, with replacements:
 - ❌「未〜」coinages (未充足/未永続化) -> ✅「〜していない」「〜されていない」
 - ❌「非〜」coinages (非終端) -> ✅「終端でない」「〜以外の」
 - ❌ invented compound nouns not in the project vocabulary -> ✅ spell out the condition, or use the actual flag/attribute name
+- ❌ potential verbs derived from godan verbs -> ✅ express possibility analytically with the dictionary form followed by「ことができる」. Judge by meaning in context, not by the ending alone
 - ❌「高々N」-> ✅「N以下」「最大N」
 - ❌「真実の源泉」(literal translation of "source of truth") -> ✅「定義元」「〜で一元管理している」. English identifiers are fine
 - ❌「契約」「述語」in any Japanese supporting text, including comments, test names, error messages, documentation, commit messages, PR titles/bodies/comments, and UI text -> ✅ name the concrete interface, condition, behavior, or requirement. Established domain terminology and「API契約」are not exceptions

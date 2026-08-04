@@ -152,6 +152,7 @@ Docs-only edits, config tweaks with no meaningful validation target, and trivial
 - Avoid unnatural coined Japanese compounds; spell out the condition in natural Japanese.
   - Do not coin「未〜」/「非〜」words (未永続化 -> 永続化していない, 状態未反映 -> 状態が反映されない).
   - Do not drop particles in compound headings (次ステータス移行条件 -> 次のステータスへの移行条件).
+- Avoid potential verbs derived from godan verbs; express possibility analytically with the dictionary form followed by「ことができる」. Judge whether the verb expresses possibility from its meaning in context, not from its ending alone.
 - Match the codebase's established 送り仮名 and vocabulary (差戻し -> 差し戻し when the code uses 差し戻し).
 - In any Japanese supporting text, do not use「契約」or「述語」. This includes comments, test names, error messages, documentation, commit messages, PR titles/bodies/comments, and UI text. Established domain terminology and「API契約」are not exceptions; name the concrete interface, condition, behavior, or requirement instead.
 
