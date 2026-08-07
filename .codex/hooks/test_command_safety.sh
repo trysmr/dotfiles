@@ -30,7 +30,8 @@ cat > "$FIXTURE_SETTINGS" <<'EOF'
       "Bash(*terraform destroy*)"
     ],
     "ask": [
-      "Bash(rm:*)"
+      "Bash(rm:*)",
+      "Bash(gh pr create:*)"
     ]
   }
 }
@@ -87,6 +88,16 @@ assert_eq "deny" "$(printf '%s' "$output" | decision_of)" "チェーン内のask
 
 output=$(run_hook "PreToolUse" "rm foo.txt")
 assert_eq "" "$output" "単独のaskコマンドは通過（Codex側の承認フローに委ねる）"
+
+output=$(run_hook "PreToolUse" 'gh pr create --base staging --title "title" --body "$(cat <<'"'"'EOF'"'"'
+## 概要
+本文
+EOF
+)"')
+assert_eq "" "$output" "PR本文をヒアドキュメントで渡す単独gh pr createは通過"
+
+output=$(run_hook "PreToolUse" $'ls\ngh pr create --base staging --title title --body body')
+assert_eq "deny" "$(printf '%s' "$output" | decision_of)" "引用外改行後のgh pr createをdeny"
 
 output=$(run_hook "PreToolUse" 'ls $(terraform destroy)')
 assert_eq "deny" "$(printf '%s' "$output" | decision_of)" "埋め込みコマンド内のdenyパターンをdeny"

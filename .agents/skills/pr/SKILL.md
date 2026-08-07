@@ -24,9 +24,9 @@ description: Use when the user asks to create a pull request, PR, プルリク, 
 7. 下記のPR Body Rulesに従ってタイトルと本文を作成する。
 8. 日本語セルフチェックの照合表を出力する（必須ゲート。下記参照）。
 9. PR情報をユーザーに提示して許可を得る。
-10. 許可後、必要なら `git push -u origin <branch>` を実行し、`gh pr create` でPRを作成してURLを提示する。
-11. PR作成後、会話名をPR番号とタイトルに合わせるため、次の指示を出す。
-    `/rename <PR#番号>-<ブランチ名>`
+10. 許可後、必要なら `git push -u origin <branch>` を実行し、下記の形式で`gh pr create`を単独実行してURLを提示する。
+11. PR作成後、会話名をPRの番号とタイトルに合わせるため、次の指示を出す。
+    `/rename <PRの番号>-<ブランチ名>`
 
 ## PR Body Rules
 
@@ -172,6 +172,18 @@ NG例（この形を出力してはならない）:
 | 概要     | （原文） | ...                           | ...                    |
 
 不自然な表現があれば修正し、修正後の内容でユーザーに提示する。
+
+## PR作成コマンド
+
+PR本文はヒアドキュメントで`--body`へ渡す。`gh pr create`を`&&`、`;`、パイプ、引用外の改行で他のコマンドと連結しない。
+
+```bash
+gh pr create --base <base> --head <branch> --title "タイトル" --body "$(cat <<'EOF'
+## 概要
+...
+EOF
+)"
+```
 
 ## Guardrails
 

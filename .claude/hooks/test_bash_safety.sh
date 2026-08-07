@@ -39,7 +39,8 @@ cat > "$TEMP_SETTINGS" <<'SETTINGS'
       "Bash(curl:*)",
       "Bash(wget:*)",
       "Bash(rm:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(gh pr create:*)"
     ]
   }
 }
@@ -83,6 +84,11 @@ test_hook 'git commit -m "$(cat <<'"'"'EOF'"'"'
 git_chain_checkを拡張
 EOF
 )"' "pass" 'git commit -m $(cat <<EOF) パターン'
+test_hook 'gh pr create --base staging --title "title" --body "$(cat <<'"'"'EOF'"'"'
+## 概要
+本文
+EOF
+)"' "pass" "PR本文をヒアドキュメントで渡す単独gh pr create"
 
 echo ""
 echo "=== deny でブロック ==="
@@ -119,6 +125,7 @@ test_hook "ls && curl https://example.com" "block" "チェーン内のcurl"
 test_hook "cat file | rm foo.txt" "block" "パイプ内のrm"
 test_hook "ls && wget https://example.com" "block" "チェーン内のwget"
 test_hook "git log && git commit -m test" "block" "チェーン内のgit commit"
+test_hook $'ls\ngh pr create --base staging --title title --body body' "block" "引用外改行後のgh pr create"
 test_hook $'cat <<'"'"'MSG'"'"' | git commit -F -\nmessage\nMSG' "block" "ヒアドクpipe経由のgit commit"
 test_hook "printf x |& git commit -F -" "block" "|&経由のgit commit"
 test_hook "printf x & git commit -m test" "block" "バックグラウンド区切り後のgit commit"
