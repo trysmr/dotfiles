@@ -202,6 +202,9 @@ safe_symlink "$dir/.codex/rules/default.rules" "$HOME/.codex/rules/default.rules
 safe_symlink "$dir/.codex/hooks.json" "$HOME/.codex/hooks.json"
 safe_symlink "$dir/.codex/hooks" "$HOME/.codex/hooks"
 
+# Herdr公式integrationの検出先からdotfiles管理のhookを参照する
+safe_symlink "$dir/.codex/hooks/herdr-agent-state.sh" "$HOME/.codex/herdr-agent-state.sh"
+
 # .copilotディレクトリを作成
 mkdir -p "$HOME/.copilot"
 
