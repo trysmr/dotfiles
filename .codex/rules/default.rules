@@ -1,0 +1,237 @@
+# 読み取り中心のコマンド
+prefix_rule(
+    pattern=[["rg", "grep", "find", "cat", "ls"]],
+    decision="allow",
+)
+
+prefix_rule(
+    pattern=["git", ["branch", "checkout", "log", "show", "diff", "status", "add"]],
+    decision="allow",
+    match=["git status --short"],
+)
+
+prefix_rule(
+    pattern=["gh", "pr", ["list", "status", "checks", "diff", "view"]],
+    decision="allow",
+)
+
+prefix_rule(
+    pattern=["terraform", "fmt"],
+    decision="allow",
+)
+
+prefix_rule(
+    pattern=["docker", "compose", ["ps", "logs", "ls"]],
+    decision="allow",
+)
+
+prefix_rule(
+    pattern=[["bin/rubocop", "rubocop", "bin/rspec", "rspec", "brakeman"]],
+    decision="allow",
+)
+
+prefix_rule(
+    pattern=["bundle", "list"],
+    decision="allow",
+)
+
+prefix_rule(
+    pattern=["bundle", "exec", ["rubocop", "rspec", "brakeman"]],
+    decision="allow",
+)
+
+prefix_rule(
+    pattern=["bundle", "exec", ["bin/rails", "rails"], ["test", "spec"]],
+    decision="allow",
+)
+
+# 実行前に確認するコマンド
+prefix_rule(
+    pattern=[["curl", "wget", "rm", "kill", "killall", "chmod", "pkill", "chown"]],
+    decision="prompt",
+    justification="ホストや外部サービスへ影響する可能性があるため確認する",
+)
+
+prefix_rule(
+    pattern=["git", ["commit", "stash", "cherry-pick", "merge", "push"]],
+    decision="prompt",
+    justification="Gitの履歴またはリモートを変更するため確認する",
+    match=["git push origin main"],
+)
+
+prefix_rule(
+    pattern=["gh", "pr", ["create", "merge", "close", "comment", "edit", "review", "reopen"]],
+    decision="prompt",
+    justification="GitHub上のPull Requestを変更するため確認する",
+)
+
+prefix_rule(
+    pattern=[["psql", "mysql", "sqlite3"]],
+    decision="prompt",
+    justification="データベースを変更する可能性があるため確認する",
+)
+
+prefix_rule(
+    pattern=["docker", "compose", "down"],
+    decision="prompt",
+    justification="実行中のコンテナを停止するため確認する",
+)
+
+prefix_rule(
+    pattern=["docker", "volume", "rm"],
+    decision="prompt",
+    justification="Dockerボリュームを削除するため確認する",
+)
+
+prefix_rule(
+    pattern=["terraform", ["apply", "taint"]],
+    decision="prompt",
+    justification="インフラストラクチャの状態を変更するため確認する",
+)
+
+prefix_rule(
+    pattern=[["launchctl", "osascript"]],
+    decision="prompt",
+    justification="macOSの状態またはアプリを操作するため確認する",
+)
+
+prefix_rule(
+    pattern=["defaults", "delete"],
+    decision="prompt",
+    justification="macOSの設定を削除するため確認する",
+)
+
+# RailsとDBタスクはbundle、bin/rails、railsの各起動形式を対象にする
+prefix_rule(
+    pattern=[["bundle", "bin/rails", "rails"], ["db:migrate", "db:rollback", "db:up", "db:down", "db:fixtures:load", "runner", "console"]],
+    decision="prompt",
+    justification="データベースまたはアプリケーション状態を変更する可能性があるため確認する",
+)
+
+prefix_rule(
+    pattern=[["bin/rake", "rake"], ["db:migrate", "db:rollback", "db:up", "db:down", "db:fixtures:load"]],
+    decision="prompt",
+    justification="データベースの状態を変更するため確認する",
+)
+
+prefix_rule(
+    pattern=["bundle", "exec", ["bin/rails", "rails"], ["db:migrate", "db:rollback", "db:up", "db:down", "db:fixtures:load", "runner", "console"]],
+    decision="prompt",
+    justification="データベースまたはアプリケーション状態を変更する可能性があるため確認する",
+)
+
+prefix_rule(
+    pattern=["bundle", "exec", ["bin/rake", "rake"], ["db:migrate", "db:rollback", "db:up", "db:down", "db:fixtures:load"]],
+    decision="prompt",
+    justification="データベースの状態を変更するため確認する",
+)
+
+# 実行を禁止するコマンド
+prefix_rule(
+    pattern=[["sudo", "eval", "source", "exec", "truncate", "dd", "shred", "mkfs", "diskutil", "security"]],
+    decision="forbidden",
+    justification="安全性または機密情報を損なう可能性があるため実行しない",
+)
+
+prefix_rule(
+    pattern=[["sh", "bash", "zsh"], ["-c", "-lc"]],
+    decision="forbidden",
+    justification="シェルラッパーは個別コマンドの判定を回避する可能性があるため使用しない",
+)
+
+prefix_rule(
+    pattern=["rm", ["-rf", "-fr", "-r", "-R", "-Rf", "-fR", "--recursive"]],
+    decision="forbidden",
+    justification="対象を再帰的に削除するため実行しない",
+    match=["rm -rf build"],
+)
+
+prefix_rule(
+    pattern=["git", ["reset", "rebase", "clean", "filter-branch", "update-ref", "--git-dir", "--work-tree", "-C"]],
+    decision="forbidden",
+    justification="作業ツリーやGit履歴を意図せず変更する可能性があるため実行しない",
+)
+
+prefix_rule(
+    pattern=["git", "add", [".", "-A", "--all"]],
+    decision="forbidden",
+    justification="無関係な変更を含める可能性があるため対象ファイルを明示する",
+)
+
+prefix_rule(
+    pattern=["git", "branch", "-D"],
+    decision="forbidden",
+    justification="未マージの変更を失う可能性があるため実行しない",
+)
+
+prefix_rule(
+    pattern=["git", "push", ["--force", "-f", "--force-with-lease", "--delete"]],
+    decision="forbidden",
+    justification="リモートの履歴または参照を破壊する可能性があるため実行しない",
+)
+
+prefix_rule(
+    pattern=["crontab", "-r"],
+    decision="forbidden",
+    justification="登録済みのcron設定をすべて削除するため実行しない",
+)
+
+prefix_rule(
+    pattern=["docker", ["system", "image", "container", "volume", "network", "builder"], "prune"],
+    decision="forbidden",
+    justification="Dockerリソースを広範囲に削除するため実行しない",
+)
+
+prefix_rule(
+    pattern=["terraform", "destroy"],
+    decision="forbidden",
+    justification="インフラストラクチャを削除するため実行しない",
+)
+
+prefix_rule(
+    pattern=["terraform", "state", "rm"],
+    decision="forbidden",
+    justification="Terraformの管理対象からリソースを外すため実行しない",
+)
+
+prefix_rule(
+    pattern=["gh", ["repo", "release"], "delete"],
+    decision="forbidden",
+    justification="GitHub上のリソースを削除するため実行しない",
+)
+
+prefix_rule(
+    pattern=["gem", ["push", "yank"]],
+    decision="forbidden",
+    justification="パッケージレジストリを変更するため実行しない",
+)
+
+prefix_rule(
+    pattern=[["npm", "yarn", "pnpm"], ["publish", "unpublish"]],
+    decision="forbidden",
+    justification="パッケージレジストリを変更するため実行しない",
+)
+
+prefix_rule(
+    pattern=[["bundle", "bin/rails", "rails"], ["db:reset", "db:drop", "db:schema:load", "db:setup", "credentials:diff", "credentials:edit", "credentials:show"]],
+    decision="forbidden",
+    justification="データまたは認証情報へ危険な変更やアクセスを行うため実行しない",
+)
+
+prefix_rule(
+    pattern=[["bin/rake", "rake"], ["db:reset", "db:drop", "db:schema:load", "db:setup"]],
+    decision="forbidden",
+    justification="データを破壊する可能性があるため実行しない",
+)
+
+prefix_rule(
+    pattern=["bundle", "exec", ["bin/rails", "rails"], ["db:reset", "db:drop", "db:schema:load", "db:setup", "credentials:diff", "credentials:edit", "credentials:show"]],
+    decision="forbidden",
+    justification="データまたは認証情報へ危険な変更やアクセスを行うため実行しない",
+)
+
+prefix_rule(
+    pattern=["bundle", "exec", ["bin/rake", "rake"], ["db:reset", "db:drop", "db:schema:load", "db:setup"]],
+    decision="forbidden",
+    justification="データを破壊する可能性があるため実行しない",
+)

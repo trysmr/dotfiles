@@ -194,6 +194,10 @@ safe_symlink "$dir/.codex/AGENTS.md" "$HOME/.codex/AGENTS.md"
 # config.tomlのシンボリックリンクを作成する
 safe_symlink "$dir/.codex/config.toml" "$HOME/.codex/config.toml"
 
+# コマンド実行ルールのシンボリックリンクを作成する
+mkdir -p "$HOME/.codex/rules"
+safe_symlink "$dir/.codex/rules/default.rules" "$HOME/.codex/rules/default.rules"
+
 # hooks設定とhooksディレクトリのシンボリックリンクを作成する
 safe_symlink "$dir/.codex/hooks.json" "$HOME/.codex/hooks.json"
 safe_symlink "$dir/.codex/hooks" "$HOME/.codex/hooks"

@@ -1,41 +1,17 @@
 #!/bin/bash
 
-# command_safety_check.sh のテストスクリプト
-# 固定チェック（.git/.env/sudo等）と、bash_safety_check.shエンジンへの
-# settings.jsonポリシー委譲の両方を検証する。
+# command_safety_check.shのテストスクリプト
+# 絶対禁止と承認フローの迂回防止を検証する。
 
 HOOK="$(cd "$(dirname "$0")" && pwd)/command_safety_check.sh"
-ENGINE="$(cd "$(dirname "$0")" && pwd)/../../.claude/hooks/bash_safety_check.sh"
 pass=0
 fail=0
 
 # テンプレートを明示する。macOSのmktempはテンプレート未指定だとTMPDIRを無視してシステムの一時ディレクトリを使うため
 TMPDIR_TEST=$(mktemp -d "${TMPDIR:-/tmp}/command_safety_test.XXXXXX") || { echo "mktemp失敗: 一時ディレクトリを作成できません" >&2; exit 1; }
 trap 'rm -rf "$TMPDIR_TEST"' EXIT
-
-if [ ! -f "$ENGINE" ]; then
-  ENGINE="$HOME/.claude/hooks/bash_safety_check.sh"
-fi
-if [ ! -f "$ENGINE" ]; then
-  echo "bash_safety_check.shが見つかりません: $ENGINE" >&2
-  exit 1
-fi
-
-# テスト用のポリシー定義（実運用のsettings.jsonには依存しない）
-FIXTURE_SETTINGS="$TMPDIR_TEST/settings.json"
-cat > "$FIXTURE_SETTINGS" <<'EOF'
-{
-  "permissions": {
-    "deny": [
-      "Bash(*terraform destroy*)"
-    ],
-    "ask": [
-      "Bash(rm:*)",
-      "Bash(gh pr create:*)"
-    ]
-  }
-}
-EOF
+TEST_HOME="$TMPDIR_TEST/home"
+mkdir -p "$TEST_HOME"
 
 assert_eq() {
   local expected="$1"
@@ -54,7 +30,7 @@ assert_eq() {
 run_hook() {
   local event="$1" cmd="$2"
   jq -nc --arg evt "$event" --arg cmd "$cmd" '{hook_event_name: $evt, tool_input: {command: $cmd}}' | \
-    SETTINGS_FILE="$FIXTURE_SETTINGS" COMMAND_SAFETY_ENGINE="$ENGINE" bash "$HOOK"
+    HOME="$TEST_HOME" bash "$HOOK"
 }
 
 decision_of() {
@@ -76,17 +52,36 @@ output=$(run_hook "PreToolUse" "ls .git")
 assert_eq "deny" "$(printf '%s' "$output" | decision_of)" ".git直接参照をdeny"
 
 echo ""
-echo "=== settings.jsonポリシー委譲 ==="
+echo "=== 絶対禁止 ==="
 
 output=$(run_hook "PreToolUse" "terraform destroy")
-assert_eq "deny" "$(printf '%s' "$output" | decision_of)" "settings.jsonのdenyパターンをdeny"
-printf '%s' "$output" | jq -r '.hookSpecificOutput.permissionDecisionReason' | grep -q "禁止コマンド"
-assert_eq "0" "$?" "denyの理由にエンジンのメッセージが入る"
+assert_eq "deny" "$(printf '%s' "$output" | decision_of)" "terraform destroyをdeny"
 
-output=$(run_hook "PreToolUse" "ls && rm foo.txt")
+output=$(run_hook "PreToolUse" "git push origin main --force")
+assert_eq "deny" "$(printf '%s' "$output" | decision_of)" "引数途中のforce pushをdeny"
+
+output=$(run_hook "PreToolUse" "rm target -r")
+assert_eq "deny" "$(printf '%s' "$output" | decision_of)" "引数途中の再帰削除をdeny"
+
+output=$(run_hook "PreToolUse" "bundle exec rails db:drop")
+assert_eq "deny" "$(printf '%s' "$output" | decision_of)" "破壊的なRails DBタスクをdeny"
+
+output=$(run_hook "PreToolUse" "bundle exec rake db:drop")
+assert_eq "deny" "$(printf '%s' "$output" | decision_of)" "破壊的なRake DBタスクをdeny"
+
+output=$(run_hook "PreToolUse" "npm publish")
+assert_eq "deny" "$(printf '%s' "$output" | decision_of)" "パッケージ公開をdeny"
+
+output=$(run_hook "PreToolUse" 'ls $(terraform destroy)')
+assert_eq "deny" "$(printf '%s' "$output" | decision_of)" "埋め込みコマンド内の禁止操作をdeny"
+
+echo ""
+echo "=== 承認フローの迂回防止 ==="
+
+output=$(run_hook "PreToolUse" "ls && git push origin main")
 assert_eq "deny" "$(printf '%s' "$output" | decision_of)" "チェーン内のaskコマンドをdeny（権限確認の迂回防止）"
 
-output=$(run_hook "PreToolUse" "rm foo.txt")
+output=$(run_hook "PreToolUse" "git push origin main")
 assert_eq "" "$output" "単独のaskコマンドは通過（Codex側の承認フローに委ねる）"
 
 output=$(run_hook "PreToolUse" 'gh pr create --base staging --title "title" --body "$(cat <<'"'"'EOF'"'"'
@@ -96,11 +91,11 @@ EOF
 )"')
 assert_eq "" "$output" "PR本文をヒアドキュメントで渡す単独gh pr createは通過"
 
+output=$(run_hook "PreToolUse" 'gh pr create --base staging --title "title" --body "before | after"')
+assert_eq "" "$output" "引用符内のパイプをコマンド列と誤判定しない"
+
 output=$(run_hook "PreToolUse" $'ls\ngh pr create --base staging --title title --body body')
 assert_eq "deny" "$(printf '%s' "$output" | decision_of)" "引用外改行後のgh pr createをdeny"
-
-output=$(run_hook "PreToolUse" 'ls $(terraform destroy)')
-assert_eq "deny" "$(printf '%s' "$output" | decision_of)" "埋め込みコマンド内のdenyパターンをdeny"
 
 echo ""
 echo "=== イベント別の出力形式 ==="
@@ -113,19 +108,8 @@ echo ""
 echo "=== 入力形式の互換性 ==="
 
 output=$(jq -nc '{hook_event_name: "PreToolUse", toolArgs: "{\"command\":\"sudo ls\"}"}' | \
-  SETTINGS_FILE="$FIXTURE_SETTINGS" COMMAND_SAFETY_ENGINE="$ENGINE" bash "$HOOK")
+  HOME="$TEST_HOME" bash "$HOOK")
 assert_eq "deny" "$(printf '%s' "$output" | decision_of)" "toolArgs文字列形式の入力でもdeny"
-
-echo ""
-echo "=== エンジン不在時のフォールバック ==="
-
-output=$(jq -nc '{hook_event_name: "PreToolUse", tool_input: {command: "sudo ls"}}' | \
-  SETTINGS_FILE="$FIXTURE_SETTINGS" COMMAND_SAFETY_ENGINE="$TMPDIR_TEST/nonexistent.sh" bash "$HOOK")
-assert_eq "deny" "$(printf '%s' "$output" | decision_of)" "エンジン不在でも固定チェックは機能する"
-
-output=$(jq -nc '{hook_event_name: "PreToolUse", tool_input: {command: "terraform destroy"}}' | \
-  SETTINGS_FILE="$FIXTURE_SETTINGS" COMMAND_SAFETY_ENGINE="$TMPDIR_TEST/nonexistent.sh" bash "$HOOK")
-assert_eq "" "$output" "エンジン不在時はsettings.jsonポリシーが効かない（フォールバック仕様の明文化）"
 
 echo ""
 echo "=========================================="
