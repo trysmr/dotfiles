@@ -45,6 +45,47 @@ prefix_rule(
     decision="allow",
 )
 
+# Herdrの状態確認と画面構成の操作
+prefix_rule(
+    pattern=["herdr", "status"],
+    decision="allow",
+)
+
+prefix_rule(
+    pattern=["herdr", "agent", ["list", "get", "read", "wait", "explain", "focus"]],
+    decision="allow",
+)
+
+prefix_rule(
+    pattern=["herdr", "pane", ["list", "current", "get", "layout", "process-info", "neighbor", "edges", "focus", "resize", "zoom", "rename", "read", "split", "swap", "move", "wait-output"]],
+    decision="allow",
+)
+
+prefix_rule(
+    pattern=["herdr", "workspace", ["list", "get", "focus", "rename", "create"]],
+    decision="allow",
+)
+
+prefix_rule(
+    pattern=["herdr", "tab", ["list", "get", "focus", "rename", "create"]],
+    decision="allow",
+)
+
+prefix_rule(
+    pattern=["herdr", "integration", "status"],
+    decision="allow",
+)
+
+prefix_rule(
+    pattern=["herdr", "session", "list"],
+    decision="allow",
+)
+
+prefix_rule(
+    pattern=["herdr", "notification", "show"],
+    decision="allow",
+)
+
 # 実行前に確認するコマンド
 prefix_rule(
     pattern=[["curl", "wget", "rm", "kill", "killall", "chmod", "pkill", "chown"]],
@@ -93,6 +134,36 @@ prefix_rule(
     pattern=[["launchctl", "osascript"]],
     decision="prompt",
     justification="macOSの状態またはアプリを操作するため確認する",
+)
+
+prefix_rule(
+    pattern=["herdr", "pane", ["close", "send-text", "send-keys", "run", "release-agent"]],
+    decision="prompt",
+    justification="別のPaneで任意の入力やコマンドを実行するか、実行中のプロセスを終了する可能性があるため確認する",
+)
+
+prefix_rule(
+    pattern=["herdr", "agent", ["send-keys", "prompt", "attach", "start"]],
+    decision="prompt",
+    justification="別のAgentへ入力を送るか、新しいAgentを起動するため確認する",
+)
+
+prefix_rule(
+    pattern=["herdr", ["workspace", "tab"], "close"],
+    decision="prompt",
+    justification="Pane内で実行中のプロセスを終了する可能性があるため確認する",
+)
+
+prefix_rule(
+    pattern=["herdr", "session", ["stop", "delete"]],
+    decision="prompt",
+    justification="Session内で実行中のプロセスを終了するため確認する",
+)
+
+prefix_rule(
+    pattern=["herdr", "server", "stop"],
+    decision="prompt",
+    justification="Herdr内のすべてのPaneとプロセスを終了するため確認する",
 )
 
 prefix_rule(
