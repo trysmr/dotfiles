@@ -52,7 +52,7 @@ prefix_rule(
 )
 
 prefix_rule(
-    pattern=["herdr", "agent", ["list", "get", "read", "wait", "explain", "focus"]],
+    pattern=["herdr", "agent", ["list", "get", "read", "wait", "explain", "focus", "rename"]],
     decision="allow",
 )
 
