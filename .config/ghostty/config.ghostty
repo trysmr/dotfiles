@@ -7,6 +7,9 @@ theme = tokyonight
 # Ghostty固有の端末機能を利用する。
 term = xterm-ghostty
 
+# 日本語とNerd Fontアイコンを含めて等幅で表示する。
+font-family = PlemolJP NF
+
 # 高解像度ディスプレイで読みやすい文字サイズと余白にする。
 font-size = 13
 window-padding-x = 8
