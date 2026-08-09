@@ -1,0 +1,31 @@
+id = "trysmr.pane-auto-name"
+name = "Agent Auto Name"
+version = "0.2.0"
+min_herdr_version = "0.8.0"
+description = "Agentへ指示用の名前を付け、Paneの境界にも表示する"
+platforms = ["macos"]
+
+[[actions]]
+id = "refresh"
+title = "Agent名とPane名を再評価"
+contexts = ["workspace"]
+command = ["python3", "auto_name.py"]
+
+[[startup]]
+command = ["python3", "auto_name.py"]
+
+[[events]]
+on = "pane.created"
+command = ["python3", "auto_name.py"]
+
+[[events]]
+on = "pane.agent_detected"
+command = ["python3", "auto_name.py"]
+
+[[events]]
+on = "pane.agent_status_changed"
+command = ["python3", "auto_name.py"]
+
+[[events]]
+on = "pane.exited"
+command = ["python3", "auto_name.py"]

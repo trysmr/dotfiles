@@ -256,6 +256,7 @@ for f in "$dir"/.??*; do
   [[ "$filename" = ".claude" ]] && continue
   [[ "$filename" = ".codex" ]] && continue
   [[ "$filename" = ".copilot" ]] && continue
+  [[ "$filename" = ".agents" ]] && continue
 
   # .configの場合はディレクトリを対象にする
   if [[ "$filename" = ".config" ]]; then
@@ -269,6 +270,15 @@ for f in "$dir"/.??*; do
 
   safe_symlink "$dir/$filename" "$HOME/$filename"
 done
+
+# Herdrがインストール済みの場合はdotfiles管理のPluginを登録する
+if command -v herdr &> /dev/null; then
+  for plugin_manifest in "$dir"/.config/herdr/plugins/*/herdr-plugin.toml; do
+    [[ -f "$plugin_manifest" ]] || continue
+    plugin_dir="${plugin_manifest%/herdr-plugin.toml}"
+    herdr plugin link "$plugin_dir" > /dev/null
+  done
+fi
 
 # Git補完ファイルのダウンロード（インストール済みGitのバージョンに合わせる）
 # 補完は任意機能のため、失敗しても続行
