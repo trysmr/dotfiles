@@ -1,0 +1,35 @@
+# Ghostty
+# 設定の一覧: https://ghostty.org/docs/config/reference
+
+# Neovimと同じ配色にする。
+theme = tokyonight
+
+# Ghostty固有の端末機能を利用する。
+term = xterm-ghostty
+
+# 高解像度ディスプレイで読みやすい文字サイズと余白にする。
+font-size = 13
+window-padding-x = 8
+window-padding-y = 6
+
+# 新しいウィンドウを横140文字、縦42行で開く。
+window-width = 140
+window-height = 42
+
+# マウスでリサイズしたとき、文字セルの境界に揃える。
+window-step-resize = true
+
+# ウィンドウ、タブ、分割で現在の作業ディレクトリを引き継ぐ。
+working-directory = inherit
+window-inherit-working-directory = true
+tab-inherit-working-directory = true
+split-inherit-working-directory = true
+
+# ビルドログなどをさかのぼれるよう、ターミナルごとに10MBを保持する。
+scrollback-limit = 10000000
+
+# Cmdを押してリンクを選ぶ前に、遷移先を確認できるようにする。
+link-previews = true
+
+# 選択した文字列をmacOSのクリップボードへコピーする。
+copy-on-select = clipboard
