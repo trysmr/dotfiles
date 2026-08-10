@@ -16,7 +16,7 @@ prefix_rule(
 )
 
 prefix_rule(
-    pattern=["terraform", "fmt"],
+    pattern=["terraform", "fmt", "validate", "test"],
     decision="allow",
 )
 
@@ -306,3 +306,4 @@ prefix_rule(
     decision="forbidden",
     justification="データを破壊する可能性があるため実行しない",
 )
+prefix_rule(pattern=["git", "push"], decision="allow")
