@@ -21,11 +21,6 @@ prefix_rule(
 )
 
 prefix_rule(
-    pattern=["docker", "compose", ["ps", "logs", "ls"]],
-    decision="allow",
-)
-
-prefix_rule(
     pattern=[["bin/rubocop", "rubocop", "bin/rspec", "rspec", "brakeman"]],
     decision="allow",
 )
@@ -42,6 +37,41 @@ prefix_rule(
 
 prefix_rule(
     pattern=["bundle", "exec", ["bin/rails", "rails"], ["test", "spec"]],
+    decision="allow",
+)
+
+prefix_rule(
+    pattern=["docker", "compose", ["ps", "logs", "ls"]],
+    decision="allow",
+)
+
+prefix_rule(
+    pattern=["docker", "compose", "exec", "app", "bundle", "list"],
+    decision="allow",
+)
+
+prefix_rule(
+    pattern=["docker", "compose", "exec", "app", ["bin/rubocop", "rubocop", "bin/rspec", "rspec", "brakeman"]],
+    decision="allow",
+)
+
+prefix_rule(
+    pattern=["docker", "compose", "exec", "app", "bundle", "exec", ["rubocop", "rspec", "brakeman"]],
+    decision="allow",
+)
+
+prefix_rule(
+    pattern=["docker", "compose", "exec", "app", "bundle", "exec", ["bin/rails", "rails"], ["test", "spec"]],
+    decision="allow",
+)
+
+prefix_rule(
+    pattern=["docker", "compose", "exec", "app", ["bin/rails", "rails"], ["test", "spec"]],
+    decision="allow",
+)
+
+prefix_rule(
+    pattern=["docker", "compose", "exec", "app", "npm", "run", ["lint", "lint:css", "test:js"]],
     decision="allow",
 )
 
