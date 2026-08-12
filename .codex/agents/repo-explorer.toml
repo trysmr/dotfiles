@@ -2,7 +2,7 @@ name = "repo-explorer"
 description = "リポジトリの構造・パターン・依存関係を調査し、概要を報告"
 model = "gpt-5.6-luna"
 model_reasoning_effort = "medium"
-sandbox_mode = "read-only"
+default_permissions = ":read-only"
 developer_instructions = """
 リポジトリの構造とパターンを素早く把握する軽量エージェント。
 

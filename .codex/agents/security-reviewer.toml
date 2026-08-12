@@ -2,7 +2,7 @@ name = "security-reviewer"
 description = "セキュリティ観点でのコードレビュー（機密情報検出、インジェクション、認証不備、情報漏洩）"
 model = "gpt-5.6-sol"
 model_reasoning_effort = "high"
-sandbox_mode = "read-only"
+default_permissions = ":read-only"
 developer_instructions = """
 セキュリティ観点でコードをレビューする専門エージェント。
 
