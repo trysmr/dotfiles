@@ -160,44 +160,57 @@ safe_symlink() {
   ln -snf "$src" "$dest"
 }
 
-# 内容が一致する既存ディレクトリを退避する
+# 既存の実体を退避先へ移動する（退避先が埋まっている場合は上書きせず1を返す）
+# 退避の成否は呼び出し側が判断するため、失敗してもスクリプト全体は中断しない
+move_aside() {
+  local dest="$1"
+  local backup_dest="$2"
+  local label="$3"
+
+  if [[ -e "$backup_dest" || -L "$backup_dest" ]]; then
+    echo "Warning: $backup_dest already exists, skipping... Move it before running install.sh again." >&2
+    return 1
+  fi
+
+  mkdir -p "$(dirname "$backup_dest")" || return 1
+  mv "$dest" "$backup_dest" || return 1
+  echo "Moved existing $label to $backup_dest"
+}
+
+# 内容が一致する既存ディレクトリだけを退避する（内容が異なる場合は保持して1を返す）
 backup_matching_directory() {
   local src="$1"
   local dest="$2"
-  local backup_root="$3"
-  local backup_dest
+  local backup_dest="$3"
 
-  if [[ -d "$dest" && ! -L "$dest" ]]; then
-    if ! diff -qr "$src" "$dest" > /dev/null; then
-      echo "Warning: $dest differs from $src, skipping..."
-      return 1
-    fi
+  [[ -d "$dest" && ! -L "$dest" ]] || return 0
 
-    backup_dest="$backup_root/$(basename "$dest")"
-    if [[ -e "$backup_dest" || -L "$backup_dest" ]]; then
-      echo "Error: $backup_dest already exists. Move it before running install.sh again." >&2
-      exit 1
-    fi
-
-    mkdir -p "$backup_root"
-    mv "$dest" "$backup_dest"
-    echo "Moved existing directory to $backup_dest"
+  if ! diff -qr "$src" "$dest" > /dev/null; then
+    echo "Warning: $dest differs from $src, skipping..."
+    return 1
   fi
 
-  return 0
+  move_aside "$dest" "$backup_dest" "directory"
 }
 
 # 内容が一致する既存ディレクトリを退避してシンボリックリンクへ切り替える
 safe_symlink_matching_directory() {
   local src="$1"
   local dest="$2"
-  local backup_root="$3"
+  local backup_dest="$3"
 
-  if ! backup_matching_directory "$src" "$dest" "$backup_root"; then
-    return 0
-  fi
+  backup_matching_directory "$src" "$dest" "$backup_dest" || return 0
 
   safe_symlink "$src" "$dest"
+}
+
+# SKILL.mdを持つスキルディレクトリかどうかを判定する
+is_skill_dir() {
+  local skill_dir="$1"
+
+  [[ -d "$skill_dir" ]] || return 1
+  [[ "$(basename "$skill_dir")" != .* ]] || return 1
+  [[ -f "$skill_dir/SKILL.md" ]]
 }
 
 # .claudeディレクトリを作成（認証情報保護のため700）
@@ -256,14 +269,12 @@ mkdir -p "$HOME/.copilot/skills"
 
 # Claude CodeのスキルをCopilot USERスコープへ連携する
 for skill_dir in "$dir/.claude/skills"/*; do
-  [[ -d "$skill_dir" ]] || continue
+  is_skill_dir "$skill_dir" || continue
   skill_name="$(basename "$skill_dir")"
-  [[ "$skill_name" = .* ]] && continue
-  [[ -f "$skill_dir/SKILL.md" ]] || continue
   safe_symlink_matching_directory \
     "$skill_dir" \
     "$HOME/.copilot/skills/$skill_name" \
-    "$HOME/.copilot/skills.before-dotfiles"
+    "$HOME/.copilot/skills.before-dotfiles/$skill_name"
 done
 
 # Copilot USERスコープのhooksディレクトリを作成
@@ -286,14 +297,13 @@ safe_symlink "$dir/.agents/skills/_shared" "$HOME/.agents/skills/_shared"
 
 # Codex用スキルをUSERスコープへ連携する
 for skill_dir in "$dir/.agents/skills"/*; do
-  [[ -d "$skill_dir" ]] || continue
+  is_skill_dir "$skill_dir" || continue
   skill_name="$(basename "$skill_dir")"
-  [[ "$skill_name" = .* ]] && continue
-  [[ -f "$skill_dir/SKILL.md" ]] || continue
+  # 旧配置の.codex/skillsは退避するだけでリンクは張らず、.agents/skillsへ一本化する
   backup_matching_directory \
     "$skill_dir" \
     "$HOME/.codex/skills/$skill_name" \
-    "$HOME/.codex/skills.before-dotfiles" || true
+    "$HOME/.codex/skills.before-dotfiles/$skill_name" || true
   safe_symlink "$skill_dir" "$HOME/.agents/skills/$skill_name"
 done
 
@@ -313,15 +323,12 @@ for f in "$dir"/.??*; do
       config_name="$(basename "$config")"
       config_dest="$HOME/.config/$config_name"
 
+      # Herdrは実行時データが混ざり内容一致しないため、内容を問わず退避する
       if [[ "$config_name" = "herdr" && -d "$config_dest" && ! -L "$config_dest" ]]; then
-        backup_dest="$config_dest.before-dotfiles"
-        if [[ -e "$backup_dest" || -L "$backup_dest" ]]; then
-          echo "Error: $backup_dest already exists. Move it before running install.sh again." >&2
-          exit 1
+        if move_aside "$config_dest" "$config_dest.before-dotfiles" "Herdr data"; then
+          echo "セッション履歴とdotfiles管理外のPlugin登録は引き継がれません。必要な場合は $config_dest.before-dotfiles から手動で戻してください"
+          echo "稼働中のHerdrはソケットの参照先が変わるため、再起動してください"
         fi
-
-        mv "$config_dest" "$backup_dest"
-        echo "Moved existing Herdr data to $backup_dest"
       fi
 
       safe_symlink "$config" "$config_dest"
@@ -343,7 +350,8 @@ fi
 
 # Git補完ファイルのダウンロード（インストール済みGitのバージョンに合わせる）
 # 補完は任意機能のため、失敗しても続行
-if command -v git &> /dev/null && command -v curl &> /dev/null; then
+# DOTFILES_SKIP_GIT_COMPLETION=1 でスキップ（テストをネットワーク非依存にするため）
+if [[ -z "${DOTFILES_SKIP_GIT_COMPLETION:-}" ]] && command -v git &> /dev/null && command -v curl &> /dev/null; then
   mkdir -p "$HOME/.zsh"
   GIT_VERSION=$(git --version | awk '{print $3}')
   GIT_COMPLETION_URL="https://raw.githubusercontent.com/git/git/v${GIT_VERSION}/contrib/completion"

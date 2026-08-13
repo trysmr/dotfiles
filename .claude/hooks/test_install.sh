@@ -12,13 +12,17 @@ mkdir -p \
   "$fixture_dir/.config/herdr" \
   "$fixture_dir/.claude/skills" \
   "$fixture_dir/.claude/skills/different" \
+  "$fixture_dir/.claude/skills/occupied" \
   "$fixture_dir/.agents/skills/example" \
   "$fixture_dir/.agents/skills/codex-example" \
   "$test_home/.config/herdr" \
   "$test_home/.copilot/skills/example" \
   "$test_home/.copilot/skills/different" \
+  "$test_home/.copilot/skills/occupied" \
+  "$test_home/.copilot/skills.before-dotfiles/occupied" \
   "$test_home/.codex/skills/codex-example"
 cp "$repo_dir/install.sh" "$fixture_dir/install.sh"
+printf 'export EDITOR=nvim\n' > "$fixture_dir/.zshrc"
 printf 'name = "dracula"\n' > "$fixture_dir/.config/herdr/config.toml"
 printf 'local state\n' > "$test_home/.config/herdr/session.json"
 printf 'example skill\n' > "$fixture_dir/.agents/skills/example/SKILL.md"
@@ -33,7 +37,21 @@ cp \
   "$fixture_dir/.agents/skills/codex-example/SKILL.md" \
   "$test_home/.codex/skills/codex-example/SKILL.md"
 
-HOME="$test_home" bash "$fixture_dir/install.sh" --skip-check >/dev/null
+# 退避先が既に埋まっているスキル（退避できなくても処理が続くことを確認する）
+printf 'occupied skill\n' > "$fixture_dir/.claude/skills/occupied/SKILL.md"
+cp \
+  "$fixture_dir/.claude/skills/occupied/SKILL.md" \
+  "$test_home/.copilot/skills/occupied/SKILL.md"
+printf 'previous backup\n' > "$test_home/.copilot/skills.before-dotfiles/occupied/SKILL.md"
+
+install_log="$test_dir/install.log"
+
+if ! HOME="$test_home" DOTFILES_SKIP_GIT_COMPLETION=1 \
+  bash "$fixture_dir/install.sh" --skip-check > "$install_log" 2>&1; then
+  printf 'install.shが異常終了しました\n' >&2
+  cat "$install_log" >&2
+  exit 1
+fi
 
 expected_link="$(cd "$fixture_dir/.config" && pwd -P)/herdr"
 actual_link="$(readlink "$test_home/.config/herdr")"
@@ -86,6 +104,27 @@ fi
 
 if [[ ! -f "$test_home/.codex/skills.before-dotfiles/codex-example/SKILL.md" ]]; then
   printf 'Codexの旧Skillが退避されていません\n' >&2
+  exit 1
+fi
+
+if [[ -L "$test_home/.copilot/skills/occupied" ]]; then
+  printf '退避できていないスキルがリンクに置き換えられました\n' >&2
+  exit 1
+fi
+
+if [[ "$(cat "$test_home/.copilot/skills.before-dotfiles/occupied/SKILL.md")" != "previous backup" ]]; then
+  printf '既存の退避データが上書きされました\n' >&2
+  exit 1
+fi
+
+if ! grep -q "skills.before-dotfiles/occupied already exists" "$install_log"; then
+  printf '退避先が埋まっている場合の警告が出ていません\n' >&2
+  exit 1
+fi
+
+# 退避できないスキルがあっても後続のトップレベルdotfilesまで処理が到達すること
+if [[ ! -L "$test_home/.zshrc" ]]; then
+  printf 'トップレベルのdotfilesがリンクされていません\n' >&2
   exit 1
 fi
 
