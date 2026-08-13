@@ -23,6 +23,8 @@ tests=(
   "settings_integrity:test_settings_integrity.sh"
   "load_context:test_load_context.sh"
   "japanese_commit:test_japanese_commit.sh"
+  "install:test_install.sh"
+  "skill_layout:test_skill_layout.sh"
 )
 
 total=0

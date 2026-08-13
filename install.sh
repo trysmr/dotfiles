@@ -160,6 +160,46 @@ safe_symlink() {
   ln -snf "$src" "$dest"
 }
 
+# 内容が一致する既存ディレクトリを退避する
+backup_matching_directory() {
+  local src="$1"
+  local dest="$2"
+  local backup_root="$3"
+  local backup_dest
+
+  if [[ -d "$dest" && ! -L "$dest" ]]; then
+    if ! diff -qr "$src" "$dest" > /dev/null; then
+      echo "Warning: $dest differs from $src, skipping..."
+      return 1
+    fi
+
+    backup_dest="$backup_root/$(basename "$dest")"
+    if [[ -e "$backup_dest" || -L "$backup_dest" ]]; then
+      echo "Error: $backup_dest already exists. Move it before running install.sh again." >&2
+      exit 1
+    fi
+
+    mkdir -p "$backup_root"
+    mv "$dest" "$backup_dest"
+    echo "Moved existing directory to $backup_dest"
+  fi
+
+  return 0
+}
+
+# 内容が一致する既存ディレクトリを退避してシンボリックリンクへ切り替える
+safe_symlink_matching_directory() {
+  local src="$1"
+  local dest="$2"
+  local backup_root="$3"
+
+  if ! backup_matching_directory "$src" "$dest" "$backup_root"; then
+    return 0
+  fi
+
+  safe_symlink "$src" "$dest"
+}
+
 # .claudeディレクトリを作成（認証情報保護のため700）
 mkdir -p "$HOME/.claude"
 chmod 700 "$HOME/.claude"
@@ -220,7 +260,10 @@ for skill_dir in "$dir/.claude/skills"/*; do
   skill_name="$(basename "$skill_dir")"
   [[ "$skill_name" = .* ]] && continue
   [[ -f "$skill_dir/SKILL.md" ]] || continue
-  safe_symlink "$skill_dir" "$HOME/.copilot/skills/$skill_name"
+  safe_symlink_matching_directory \
+    "$skill_dir" \
+    "$HOME/.copilot/skills/$skill_name" \
+    "$HOME/.copilot/skills.before-dotfiles"
 done
 
 # Copilot USERスコープのhooksディレクトリを作成
@@ -247,6 +290,10 @@ for skill_dir in "$dir/.agents/skills"/*; do
   skill_name="$(basename "$skill_dir")"
   [[ "$skill_name" = .* ]] && continue
   [[ -f "$skill_dir/SKILL.md" ]] || continue
+  backup_matching_directory \
+    "$skill_dir" \
+    "$HOME/.codex/skills/$skill_name" \
+    "$HOME/.codex/skills.before-dotfiles" || true
   safe_symlink "$skill_dir" "$HOME/.agents/skills/$skill_name"
 done
 
@@ -263,7 +310,21 @@ for f in "$dir"/.??*; do
     mkdir -p "$HOME/.config"
 
     for config in "$dir/$filename"/*; do
-      safe_symlink "$config" "$HOME/.config/$(basename "$config")"
+      config_name="$(basename "$config")"
+      config_dest="$HOME/.config/$config_name"
+
+      if [[ "$config_name" = "herdr" && -d "$config_dest" && ! -L "$config_dest" ]]; then
+        backup_dest="$config_dest.before-dotfiles"
+        if [[ -e "$backup_dest" || -L "$backup_dest" ]]; then
+          echo "Error: $backup_dest already exists. Move it before running install.sh again." >&2
+          exit 1
+        fi
+
+        mv "$config_dest" "$backup_dest"
+        echo "Moved existing Herdr data to $backup_dest"
+      fi
+
+      safe_symlink "$config" "$config_dest"
     done
     continue
   fi
