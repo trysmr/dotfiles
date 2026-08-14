@@ -11,6 +11,11 @@ prefix_rule(
 )
 
 prefix_rule(
+    pattern=["git", "push"],
+    decision="allow",
+)
+
+prefix_rule(
     pattern=["gh", "pr", ["list", "status", "checks", "diff", "view"]],
     decision="allow",
 )
@@ -124,10 +129,10 @@ prefix_rule(
 )
 
 prefix_rule(
-    pattern=["git", ["commit", "stash", "cherry-pick", "merge", "push"]],
+    pattern=["git", ["commit", "stash", "cherry-pick", "merge"]],
     decision="prompt",
-    justification="Gitの履歴またはリモートを変更するため確認する",
-    match=["git push origin main"],
+    justification="Gitの履歴を変更するため確認する",
+    match=["git commit -m test"],
 )
 
 prefix_rule(
@@ -225,6 +230,31 @@ prefix_rule(
     pattern=["bundle", "exec", ["bin/rake", "rake"], ["db:migrate", "db:rollback", "db:up", "db:down", "db:fixtures:load"]],
     decision="prompt",
     justification="データベースの状態を変更するため確認する",
+)
+
+# Dockerコンテナ内のRailsとDBタスクも、直接実行時と同じく確認する
+prefix_rule(
+    pattern=["docker", "compose", "exec", "app", ["bin/rails", "rails"], ["db:migrate", "db:rollback", "db:up", "db:down", "db:fixtures:load", "runner", "console"]],
+    decision="prompt",
+    justification="コンテナ内でデータベースまたはアプリケーション状態を変更する可能性があるため確認する",
+)
+
+prefix_rule(
+    pattern=["docker", "compose", "exec", "app", ["bin/rake", "rake"], ["db:migrate", "db:rollback", "db:up", "db:down", "db:fixtures:load"]],
+    decision="prompt",
+    justification="コンテナ内でデータベースの状態を変更するため確認する",
+)
+
+prefix_rule(
+    pattern=["docker", "compose", "exec", "app", "bundle", "exec", ["bin/rails", "rails"], ["db:migrate", "db:rollback", "db:up", "db:down", "db:fixtures:load", "runner", "console"]],
+    decision="prompt",
+    justification="コンテナ内でデータベースまたはアプリケーション状態を変更する可能性があるため確認する",
+)
+
+prefix_rule(
+    pattern=["docker", "compose", "exec", "app", "bundle", "exec", ["bin/rake", "rake"], ["db:migrate", "db:rollback", "db:up", "db:down", "db:fixtures:load"]],
+    decision="prompt",
+    justification="コンテナ内でデータベースの状態を変更するため確認する",
 )
 
 # 実行を禁止するコマンド
@@ -336,4 +366,3 @@ prefix_rule(
     decision="forbidden",
     justification="データを破壊する可能性があるため実行しない",
 )
-prefix_rule(pattern=["git", "push"], decision="allow")

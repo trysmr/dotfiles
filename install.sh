@@ -160,6 +160,23 @@ safe_symlink() {
   ln -snf "$src" "$dest"
 }
 
+# Codexが自動探索するファイルはシンボリックリンクを読み込まないため実ファイルとして配置する
+safe_copy_file() {
+  local src="$1"
+  local dest="$2"
+
+  if [[ -d "$dest" && ! -L "$dest" ]]; then
+    echo "Warning: $dest exists and is a directory, skipping..."
+    return 0
+  fi
+
+  if [[ -L "$dest" ]]; then
+    rm "$dest"
+  fi
+
+  cp "$src" "$dest"
+}
+
 # 既存の実体を退避先へ移動する（退避先が埋まっている場合は上書きせず1を返す）
 # 退避の成否は呼び出し側が判断するため、失敗してもスクリプト全体は中断しない
 move_aside() {
@@ -247,9 +264,9 @@ safe_symlink "$dir/.codex/AGENTS.md" "$HOME/.codex/AGENTS.md"
 # config.tomlのシンボリックリンクを作成する
 safe_symlink "$dir/.codex/config.toml" "$HOME/.codex/config.toml"
 
-# コマンド実行ルールのシンボリックリンクを作成する
+# コマンド実行ルールを実ファイルとして配置する
 mkdir -p "$HOME/.codex/rules"
-safe_symlink "$dir/.codex/rules/default.rules" "$HOME/.codex/rules/default.rules"
+safe_copy_file "$dir/.codex/rules/default.rules" "$HOME/.codex/rules/default.rules"
 
 # hooks設定とhooksディレクトリのシンボリックリンクを作成する
 safe_symlink "$dir/.codex/hooks.json" "$HOME/.codex/hooks.json"
