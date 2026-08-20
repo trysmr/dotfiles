@@ -21,7 +21,6 @@ tests=(
   "bash_safety:test_bash_safety.sh"
   "write_safety:test_write_safety.sh"
   "settings_integrity:test_settings_integrity.sh"
-  "load_context:test_load_context.sh"
   "japanese_commit:test_japanese_commit.sh"
   "install:test_install.sh"
   "skill_layout:test_skill_layout.sh"

@@ -84,17 +84,6 @@
       {
         "hooks": [
           {
-            "command": "/bin/bash \"$HOME/.codex/hooks/load_context.sh\"",
-            "statusMessage": "Loading Codex workspace context",
-            "timeout": 10,
-            "type": "command"
-          }
-        ],
-        "matcher": "startup|resume|clear"
-      },
-      {
-        "hooks": [
-          {
             "command": "/bin/bash \"$HOME/.codex/hooks/herdr-agent-state.sh\" session",
             "timeout": 10,
             "type": "command"

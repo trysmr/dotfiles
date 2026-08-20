@@ -50,7 +50,6 @@
       "Skill(plan-feature)",
       "Skill(pr)",
       "Skill(pr-release)",
-      "Skill(reload-context)",
       "Skill(start-dev-team)",
       "WebFetch(domain:api.github.com)",
       "WebFetch(domain:github.com)",
@@ -204,15 +203,6 @@
     ],
     "PreToolUse": [
       {
-        "matcher": "",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "~/.claude/hooks/load_context.sh"
-          }
-        ]
-      },
-      {
         "matcher": "Bash",
         "hooks": [
           {
@@ -244,15 +234,6 @@
       }
     ],
     "SessionStart": [
-      {
-        "matcher": "resume|clear|compact",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "~/.claude/hooks/load_context.sh --force"
-          }
-        ]
-      },
       {
         "matcher": "*",
         "hooks": [
