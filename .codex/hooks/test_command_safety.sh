@@ -84,12 +84,18 @@ assert_eq "deny" "$(printf '%s' "$output" | decision_of)" "チェーン内のask
 output=$(run_hook "PreToolUse" "git push origin main")
 assert_eq "" "$output" "単独のaskコマンドは通過（Codex側の承認フローに委ねる）"
 
-output=$(run_hook "PreToolUse" 'gh pr create --base staging --title "title" --body "$(cat <<'"'"'EOF'"'"'
+output=$(run_hook "PreToolUse" 'gh pr create --base staging --title "title" --body-file - <<'"'"'EOF'"'"'
 ## 概要
 本文
 EOF
-)"')
-assert_eq "" "$output" "PR本文をヒアドキュメントで渡す単独gh pr createは通過"
+')
+assert_eq "" "$output" "PR本文を標準入力で渡す単独gh pr createは通過"
+
+output=$(run_hook "PreToolUse" 'gh pr edit --body-file - <<'"'"'EOF'"'"'
+複数行の本文
+EOF
+')
+assert_eq "" "$output" "PR本文を標準入力で渡す単独gh pr editは通過"
 
 output=$(run_hook "PreToolUse" 'gh pr create --base staging --title "title" --body "before | after"')
 assert_eq "" "$output" "引用符内のパイプをコマンド列と誤判定しない"

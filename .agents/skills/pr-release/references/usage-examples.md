@@ -25,7 +25,7 @@ gh pr view NNN+1 --json number,title,body
 
 **ステップ5**: 許可後にPR作成
 ```bash
-gh pr create --base main --head staging --title "[Release] staging -> main (YYYY-MM-DD): インフラ移行、ライブラリアップデート" --body "$(cat <<'EOF'
+gh pr create --base main --head staging --title "[Release] staging -> main (YYYY-MM-DD): インフラ移行、ライブラリアップデート" --body-file - <<'EOF'
 ## 概要
 ステージング環境で検証完了した[主要機能の概要]を本番環境にリリースします。
 
@@ -50,13 +50,12 @@ gh pr create --base main --head staging --title "[Release] staging -> main (YYYY
   - [ ] ヘルスチェックエンドポイントが正常に応答することを確認
   - [ ] 主要機能が正常に動作することを確認
 EOF
-)"
 ```
 
 ## 例2: 単一PRのみのリリース（小規模）
 
 ```bash
-gh pr create --base main --head staging --title "[Release] staging -> main (YYYY-MM-DD): 設定値の更新" --body "$(cat <<'EOF'
+gh pr create --base main --head staging --title "[Release] staging -> main (YYYY-MM-DD): 設定値の更新" --body-file - <<'EOF'
 ## 概要
 ステージング環境で検証完了した[変更内容の概要]を本番環境にリリースします。
 
@@ -72,7 +71,6 @@ gh pr create --base main --head staging --title "[Release] staging -> main (YYYY
 - [ ] 本番デプロイ後の確認
   - [ ] [変更箇所]が期待通り動作することを確認
 EOF
-)"
 ```
 
 ## リリースPRのマージ（ユーザーから指示があった場合）

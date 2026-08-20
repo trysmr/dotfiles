@@ -67,14 +67,13 @@ description: Use when the user asks for a release PR, 本番リリース, リリ
 
 ## PR作成コマンド
 
-PR本文はヒアドキュメントで`--body`へ渡す。`gh pr create`を`&&`、`;`、パイプ、引用外の改行で他のコマンドと連結しない。
+PR本文はヒアドキュメントから標準入力へ送り、`--body-file -`で受け取る。コマンド置換を使わない。`gh pr create`を`&&`、`;`、パイプ、引用外の改行で他のコマンドと連結しない。
 
 ```bash
-gh pr create --base main --head staging --title "タイトル" --body "$(cat <<'EOF'
+gh pr create --base main --head staging --title "タイトル" --body-file - <<'EOF'
 ## 概要
 ...
 EOF
-)"
 ```
 
 ## Guardrails
