@@ -8,7 +8,7 @@ theme = tokyonight
 term = xterm-ghostty
 
 # 日本語とNerd Fontアイコンを含めて等幅で表示する。
-font-family = PlemolJP NF
+font-family = PlemolJP Console NF
 
 # 高解像度ディスプレイで読みやすい文字サイズと余白にする。
 font-size = 13
