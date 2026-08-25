@@ -12,7 +12,7 @@ description: Use when the user asks for a deep review, しっかりレビュー,
 1. レビュー対象を決める。指定がなければブランチ差分を対象にする。
 2. ベースブランチ、コミット履歴、差分、関連する呼び出し元とテストを確認する。
 3. 可能なら `change-reviewer` と `security-reviewer` の観点を並列に使う。
-4. Critical/Highは修正必須、Medium以下はPR可否の判断材料として報告する。
+4. `reviewer`はコードを修正しない。Critical/Highの指摘は停止条件とし、根拠・影響・対応案とともにユーザーへ報告し、ユーザーの判断を待つ。Medium以下はPR可否の判断材料として報告する。
 
 ## Focus
 

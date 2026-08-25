@@ -140,7 +140,7 @@ Docs-only edits, config tweaks with no meaningful validation target, and trivial
 - PR descriptions must include `概要`, `変更点`, and `テスト計画`.
 - In `変更点`, label each item with the changed file path (e.g. `app/models/blog/post.rb`), not a class name or a conceptual grouping; group same-directory files with `/`.
 - Write `概要` as prose, not a noun pile: state the problem, then what changed, then the effect. Keep sentences short and split long ones; break stacked nouns with a verb or particle (不変なRule入力 -> Ruleに渡す不変な入力, 状態上の許可 -> 状態による許可).
-- If Critical or High review findings are reported, fix them before committing or merging.
+- For Critical/High findings, present the evidence, impact, and proposed action to the user before making changes; do not edit until the user gives instructions. Do not commit or merge while any finding remains unresolved.
 
 ## Language Standards
 

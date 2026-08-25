@@ -20,7 +20,7 @@ description: Use when the user asks to create a pull request, PR, プルリク, 
 3. ベースブランチを決める。`hotfix/*` は `main`、その他は `staging` があれば `staging`、なければ `main`。
 4. `git diff <base>...HEAD` でPR範囲の差分を確認する。
 5. プロジェクトのテスト/lintコマンドを検出して実行する。`package.json`に`lint:css`や`test:js`がある場合も必ず実行する。失敗した場合はPR作成を止める。実行したことだけを理由にPR本文へ列挙せず、下記「テスト計画（最重要）」に従って変更と直接関係する検証を選ぶ。
-6. 軽微な誤字修正と文書だけの変更を除き、PR案を作る前に別セッションの`change-reviewer`でPre-PRレビューを実行する。`change-reviewer`を利用できない場合は、別セッションの`deep-review`を使う。自分で差分を読み直すだけで代用しない。セキュリティ関連変更では`security-reviewer`も実行する。Critical/Highは先に修正し、Medium以下と残リスクもユーザーへ報告する。
+6. 軽微な誤字修正と文書だけの変更を除き、PR案を作る前に別セッションの`change-reviewer`でPre-PRレビューを実行する。`change-reviewer`を利用できない場合は、別セッションの`deep-review`を使う。自分で差分を読み直すだけで代用しない。セキュリティ関連変更では`security-reviewer`も実行する。すべてのレビュー指摘について、Critical/Highも含めて根拠・影響・対応案をユーザーへ提示する。ユーザーの指示を受けるまでコードを変更せず、指摘が未解決の間はPR作成を止める。Medium以下と残リスクもユーザーへ報告する。
 7. 下記のPR Body Rulesに従ってタイトルと本文を作成する。
 8. 日本語セルフチェックの照合表を出力する（必須ゲート。下記参照）。
 9. PR情報をユーザーに提示して許可を得る。
@@ -189,6 +189,6 @@ EOF
 - ユーザー許可なしにPRを作成しない。
 - test/lint失敗中はPRを作成しない。
 - Pre-PRレビューの内容をユーザーが判断できるように提示する。
-- Critical/Highレビュー指摘がある場合は修正するかどうかの指示をユーザーに仰ぐ。
+- すべてのレビュー指摘について、Critical/Highも含めて根拠・影響・対応案をユーザーへ提示する。ユーザーの指示を受けるまでコードを変更せず、未解決の指摘がある間はPRを作成しない。
 - `gh pr create`がTLS/証明書エラーで失敗した場合は`dangerouslyDisableSandbox: true`を指定して再実行する。
 - PR URLとrename指示を必ず併記する。
