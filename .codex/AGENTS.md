@@ -103,6 +103,7 @@ Escalate from quick mode to planning mode when any of these are true:
 
 - When multiple sessions share the same repository and test database, do not run Rails tests that modify the database or the full test suite in parallel.
 - For behavior changes or bug fixes, define expected behavior before editing.
+- Every assertion must protect a named observable requirement or known regression. Use absence assertions only when absence itself is confirmed behavior, an authorization or security boundary, or a concrete regression condition.
 - Run the most relevant existing tests after changes and explain any gaps.
 - All code must be tested and produce intended output before being considered final.
 - Mark answers as unconfirmed when verification was not possible.
