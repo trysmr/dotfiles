@@ -30,6 +30,8 @@ developer_instructions = """# Team Designer
 
 ## 出力形式
 
+出力は、現在の会話を読めない新規参加者が単独で理解できるよう、対象、確認できた事実、判断根拠、未確認事項を具体的に書く。
+
 - **設計図**: Mermaid/draw.io等で図示
 - **データモデル**: テーブル定義、リレーション図
 - **API仕様**: OpenAPI形式またはMarkdownの表
