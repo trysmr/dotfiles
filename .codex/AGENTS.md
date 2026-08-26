@@ -128,6 +128,7 @@ Docs-only edits, config tweaks with no meaningful validation target, and trivial
 
 ## Documentation And Comments
 
+- Write persistent or shareable artifacts so a new participant can understand them without access to the current conversation. Replace references whose subject exists only in chat, such as "the earlier change" or "this case," with the concrete feature, behavior, decision, or path.
 - Comments should explain why the code exists, not restate what the next line does.
 - Public interfaces should document purpose, inputs, outputs, warnings, and examples when they are not obvious from existing conventions.
 - Prefer clear naming and simple control flow over explanatory comments for internal code.

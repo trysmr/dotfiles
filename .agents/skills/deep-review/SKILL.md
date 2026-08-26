@@ -23,4 +23,4 @@ description: Use when the user asks for a deep review, しっかりレビュー,
 
 ## Output
 
-Findingsを先に、重大度順に書く。該当箇所は `file:line` 形式にする。指摘がない場合は「Critical/Highなし」「残リスク」を明確に分ける。
+Findingsを先に、重大度順に書く。該当箇所は `file:line` 形式にする。各指摘は、会話を読んでいない新規参加者が対象の操作経路、成立条件、現象、影響を理解できる形にする。「前述の問題」「このケース」など、参照先が会話内にしかない表現は具体的な対象へ直す。指摘がない場合は「Critical/Highなし」「残リスク」を明確に分ける。
