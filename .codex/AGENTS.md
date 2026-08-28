@@ -84,6 +84,10 @@ Escalate from quick mode to planning mode when any of these are true:
 - Do not skip or substitute skill steps based on prior work unless the skill defines a literal skip condition or the user explicitly approves the deviation.
 - Verify skip conditions exactly. If a skip condition is ambiguous, ask before skipping.
 - Apply skill-specific formatting and convention rules before presenting output.
+- When operating as a custom subagent, the main thread chooses any additional skills. Do not invoke another skill based only on similar wording in the task; use only the assigned role and skills explicitly named in the request.
+- When the parent provides the required paths, diff, and task context to a custom subagent, the main thread owns the memory lookup and repository-wide discovery. Do not run a memory quick pass, broad file listing, or unrelated documentation search; inspect only the provided paths and directly relevant files.
+- A custom subagent must use the absolute repository path provided by the parent as its working directory. If the path is not provided, do not infer another repository; report the missing context instead.
+- When waiting for a subagent, treat `wait_agent` returning `timed_out` as the end of the wait period, not proof that the agent failed. If the agent is still `running`, do not start a duplicate request; continue waiting and report the remaining task if the session must end.
 
 ## Implementation Quality
 
