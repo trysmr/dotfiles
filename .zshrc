@@ -218,13 +218,16 @@ export PATH="$HOME/.local/bin:$PATH"
 # go
 export PATH="$PATH:$(go env GOPATH)/bin"
 
-# bun completions
+# -----
+# bun
+# completions
 [ -s "/Users/toru/.bun/_bun" ] && source "/Users/toru/.bun/_bun"
 
-# bun
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
 
+# -----
+# mise
 eval "$(mise activate zsh)"
 
 
