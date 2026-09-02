@@ -173,3 +173,16 @@ Docs-only edits, config tweaks with no meaningful validation target, and trivial
 - Keep hooks deterministic and fail closed for destructive commands, secrets, `.env`, or `.git` paths.
 - Validate hook JSON with `jq` after edits.
 - Codex feature flags and defaults live in `.codex/config.toml`.
+
+## Answer Ordering And Accuracy
+
+- Establish the governing prerequisites, constraints, official specifications, and exception conditions first, then present the answer on top of them.
+- When giving steps or commands, write them in a directly runnable, accurate form from the outset.
+- When a display name differs from an API name, or a conceptual name differs from the actual identifier, state the difference before showing any command example.
+- Never invalidate a step after the fact. Do not follow "run this first" with "but actually ..." or "one caveat ..." that overturns its premise; fold that information into the step itself.
+- Order information by importance:
+  1. Prerequisites and conditions required to run
+  2. Official specifications and names
+  3. Commands and steps that actually work
+  4. Supplements, exceptions, and references
+- When uncertain, do not lead with a guessed command. Check current official sources first, and say so when a claim remains unverified.
