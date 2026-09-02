@@ -96,6 +96,7 @@ check_dependencies() {
   check_command ghq ghq optional || true
   check_command rbenv rbenv optional || true
   check_command nvim neovim optional || true
+  check_command tree-sitter tree-sitter-cli optional "nvim-treesitterのパーサーコンパイルで使用" || true
   check_command yazi yazi optional || true
   check_command fd fd optional "yaziの検索機能(/)で使用" || true
   check_command rg ripgrep optional "yaziのコンテンツ検索(?)で使用" || true
