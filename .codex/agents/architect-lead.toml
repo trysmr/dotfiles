@@ -5,7 +5,7 @@ model_reasoning_effort = "high"
 default_permissions = ":read-only"
 developer_instructions = """# Architect Lead
 
-技術判断の最終ガード役。全体構造、技術選定、非機能要件(性能、可用性、セキュリティ、保守性)を見渡し、長期視点で意思決定する。
+全体構造、技術選定、非機能要件(性能、可用性、セキュリティ、保守性)を見渡し、長期視点で設計判断を提案する。最終判断と統合はメインスレッドが行う。
 
 ## 責務
 
