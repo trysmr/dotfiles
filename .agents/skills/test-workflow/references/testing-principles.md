@@ -22,7 +22,7 @@
 
 - fixtureの検索対象fieldへ実dataを入れ、hitとno-hitの両方を検証する。
 - prefix除去やtrim後に空になる入力を検証する。
-- 正規化後に空ならunfiltered scopeへ落とさず、空結果を返すことを確認する。
+- 正規化後に空の場合、検索を解除するのか空結果を返すのかを要件で確認し、その挙動を検証する。権限の絞り込みは入力の正規化で失わないことを確認する。
 
 ## 公開APIの仕様
 
@@ -32,7 +32,7 @@
 
 ## Blast Radius
 
-次の上流変更ではfull suiteを基本とする。
+次の上流変更では、直接の単体テストに加えて利用側まで検証範囲を広げる。依存範囲を限定できない場合やプロジェクトが要求する場合はfull suiteを実行する。
 
 - database schema、migration
 - domain model、shared type、interface、entity

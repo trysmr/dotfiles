@@ -7,6 +7,8 @@ description: Use when the user asks for TDD, test design, test quality review, o
 
 テスト方針が実装判断を変える場合だけ使う。通常の小さな修正では、リポジトリのDefinition of Doneに従って必要な検証を実行すればよい。
 
+テストコードにはWhat、つまり成立すべき観測可能な挙動を書く。実装の手順を写した検査で代用しない。重要な副作用がある修正では、呼び出し元の経路と実行順序も検証する。
+
 ## Phase
 
 作業前に必要なら1つだけ分類する。

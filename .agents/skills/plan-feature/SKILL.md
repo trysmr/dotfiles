@@ -5,7 +5,7 @@ description: Use when the user asks for an implementation plan, architecture pla
 
 # Plan Feature
 
-実装前に調査、設計、リスク、TODOを整理する。コード変更はしない。
+実装前に調査、設計、リスク、TODOを整理する。計画だけの依頼ではコード変更を行わない。実装も依頼されている場合、計画作成を新たな承認待ちにしない。
 
 ## Workflow
 
@@ -37,5 +37,5 @@ description: Use when the user asks for an implementation plan, architecture pla
 
 ## Guardrails
 
-- 計画のみを返し、実装はユーザーの明示的な続行指示後に行う。
+- 計画だけを依頼された場合、実装はユーザーの明示的な続行指示後に行う。実装まで許可された依頼では、その範囲で続ける。
 - 未確認の前提は「未確認」と明記する。

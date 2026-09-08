@@ -67,13 +67,10 @@ description: Use when the user asks for a release PR, 本番リリース, リリ
 
 ## PR作成コマンド
 
-PR本文はヒアドキュメントから標準入力へ送り、`--body-file -`で受け取る。コマンド置換を使わない。`gh pr create`を`&&`、`;`、パイプ、引用外の改行で他のコマンドと連結しない。
+PR本文は一時ファイルへ書き、`--body-file`で渡す。本文をシェルのコードへ埋め込まず、`gh pr create`は単独で実行する。
 
 ```bash
-gh pr create --base main --head staging --title "タイトル" --body-file - <<'EOF'
-## 概要
-...
-EOF
+gh pr create --base main --head staging --title 'タイトル' --body-file <本文ファイルの絶対パス>
 ```
 
 ## Guardrails
@@ -84,4 +81,4 @@ EOF
 - 実行していないテストや確認できない検証を完了扱いにしない。
 - 参考PRを確認する前に、その形式を推測して下書きを修正しない。
 - `main`と`staging`は永続ブランチとして扱い、削除やforce pushをしない。
-- `gh pr create`がTLS/証明書エラーで失敗した場合は`dangerouslyDisableSandbox: true`を指定して再実行する。
+- 接続や証明書のエラーでは原因を確認する。サンドボックス制限が原因なら、実行環境の正式な権限昇格手順で再実行する。TLS検証や安全機構を無効化しない。
