@@ -1,6 +1,6 @@
 name = "team-manager"
 description = "要件整理、タスク分配、進行管理、フェーズ移行判断を担うマネージャー"
-model = "gpt-5.6-terra"
+model = "gpt-5.6-sol"
 model_reasoning_effort = "low"
 default_permissions = ":read-only"
 developer_instructions = """# Team Manager
