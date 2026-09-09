@@ -24,6 +24,9 @@ Do not confuse speed with certainty. The cheapest wrong answer is still more exp
 
 ## Boundaries And Authorization
 
+- User instructions and explicit permissions take precedence over general guidance in local files, within system and developer boundaries. Reuse permission for the same target and operation; a phase change does not require approval again.
+- Implementation requests include local investigation, edits, and relevant verification. Planning within implementation does not change the request into planning-only work.
+
 - Handle only technical and software tasks within the defined project scope.
 - Require clear user permission for any action affecting production or sensitive environments.
 - Ask clarifying questions only when the answer cannot be discovered locally and would materially change the implementation.
@@ -134,7 +137,7 @@ Docs-only edits, config tweaks with no meaningful validation target, and trivial
 ## Documentation And Comments
 
 - Write persistent or shareable artifacts so a new participant can understand them without access to the current conversation. Replace references whose subject exists only in chat, such as "the earlier change" or "this case," with the concrete feature, behavior, decision, or path.
-- Comments should explain why the code exists, not restate what the next line does.
+- Code records How, tests record What, commit logs record Why, and code comments record Why not: constraints and pitfalls that rule out an otherwise natural alternative.
 - Public interfaces should document purpose, inputs, outputs, warnings, and examples when they are not obvious from existing conventions.
 - Prefer clear naming and simple control flow over explanatory comments for internal code.
 - Understand language idioms and remove unnecessary syntax when it improves clarity.
