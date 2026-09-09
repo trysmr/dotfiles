@@ -53,6 +53,7 @@ extract_patch_paths() {
     /^\*\*\* Add File: / { sub(/^\*\*\* Add File: /, ""); print; next }
     /^\*\*\* Update File: / { sub(/^\*\*\* Update File: /, ""); print; next }
     /^\*\*\* Delete File: / { sub(/^\*\*\* Delete File: /, ""); print; next }
+    /^\*\*\* Move to: / { sub(/^\*\*\* Move to: /, ""); print; next }
   '
 }
 

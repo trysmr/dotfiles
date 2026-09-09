@@ -6,6 +6,12 @@ source "$(dirname "$0")/_common.sh"
 
 input=$(cat)
 event=$(printf '%s' "$input" | hook_event_name)
+
+# 引用符の連結を正規表現だけで扱うと、実際の引数と検査対象がずれる。
+if ! token_error=$(printf '%s' "$input" | python3 "$(dirname "$0")/shell_token_check.py"); then
+  deny_current_event "${token_error:-コマンドの安全検査に失敗しました。}" "$event"
+fi
+
 command=$(printf '%s' "$input" | extract_field "command")
 
 [ -z "$command" ] && exit 0

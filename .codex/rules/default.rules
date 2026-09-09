@@ -1,18 +1,31 @@
 # 読み取り中心のコマンド
 prefix_rule(
-    pattern=[["rg", "grep", "find", "cat", "ls"]],
+    pattern=[["rg", "grep", "cat", "ls"]],
     decision="allow",
 )
 
 prefix_rule(
-    pattern=["git", ["branch", "checkout", "log", "show", "diff", "status", "add"]],
+    pattern=["git", ["branch", "log", "show", "diff", "status", "add"]],
     decision="allow",
     match=["git status --short"],
 )
 
 prefix_rule(
     pattern=["git", "push"],
-    decision="allow",
+    decision="prompt",
+    justification="リモート参照を変更するため確認する",
+)
+
+prefix_rule(
+    pattern=["find"],
+    decision="prompt",
+    justification="検索に加えて削除やコマンド実行の機能があるため引数を確認する",
+)
+
+prefix_rule(
+    pattern=["git", "checkout"],
+    decision="prompt",
+    justification="ブランチ切り替えと作業ファイルの上書きを区別して確認する",
 )
 
 prefix_rule(

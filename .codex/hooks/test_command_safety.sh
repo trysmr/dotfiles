@@ -89,13 +89,16 @@ output=$(run_hook "PreToolUse" 'gh pr create --base staging --title "title" --bo
 本文
 EOF
 ')
-assert_eq "" "$output" "PR本文を標準入力で渡す単独gh pr createは通過"
+assert_eq "deny" "$(printf '%s' "$output" | decision_of)" "HEREDOCを拒否し、本文ファイルの利用を求める"
 
 output=$(run_hook "PreToolUse" 'gh pr edit --body-file - <<'"'"'EOF'"'"'
 複数行の本文
 EOF
 ')
-assert_eq "" "$output" "PR本文を標準入力で渡す単独gh pr editは通過"
+assert_eq "deny" "$(printf '%s' "$output" | decision_of)" "PR編集でもHEREDOCを拒否する"
+
+output=$(run_hook "PreToolUse" 'gh pr create --base staging --title "title" --body-file /tmp/pr-body.md')
+assert_eq "" "$output" "本文ファイルを指定したPR作成は承認フローへ渡す"
 
 output=$(run_hook "PreToolUse" 'gh pr create --base staging --title "title" --body "before | after"')
 assert_eq "" "$output" "引用符内のパイプをコマンド列と誤判定しない"
