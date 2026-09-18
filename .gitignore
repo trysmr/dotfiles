@@ -5,6 +5,7 @@
 !/.config/herdr/plugins/**
 /.config/herdr/plugins/**/__pycache__/
 /.claude/settings.local.json
+/.claude/skills/synced/
 /.codex/config.toml
 CLAUDE.local.md
 /.zsh/git-completion.bash
