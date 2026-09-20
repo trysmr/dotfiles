@@ -15,6 +15,8 @@ For each architectural decision, briefly explain **why this approach contributes
 
 ## Capability over Plumbing
 
+For testability, distinguish data, deterministic calculations, and actions whose results depend on time, shared state, or external I/O. Keep orchestration thin by separating branching and transformations from actions where practical. Do not move natural domain behavior into standalone functions merely to make it pure; an ActiveRecord model owning persistence and domain behavior is not itself a violation.
+
 Keep behavior on the domain object that owns it. Do not push that object's natural responsibilities into surrounding service / orchestration code that merely pipes data in and out ("plumbing").
 
 **Principle**: A domain object's public API should read as a coherent set of capabilities it can perform on itself. When external code repeatedly extracts the object's state, computes a result, and writes it back, that pull-compute-push pattern signals the capability belongs **on the object** instead.
@@ -34,9 +36,9 @@ Keep behavior on the domain object that owns it. Do not push that object's natur
 
 ## Code Documentation and Clarity
 
-### Explain "Why", Not Just "What"
+### Explain "Why not"
 
-**Principle**: Comments should explain the reasoning behind the code, not just describe what it does.
+**Principle**: Code records How; comments explain constraints and pitfalls that rule out an otherwise natural alternative. Do not repeat the implementation or use comments instead of clear naming.
 
 **Example:**
 ```ruby

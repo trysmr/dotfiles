@@ -24,6 +24,7 @@ tests=(
   "japanese_commit:test_japanese_commit.sh"
   "install:test_install.sh"
   "skill_layout:test_skill_layout.sh"
+  "security_boundaries:test_security_boundaries.py"
 )
 
 total=0
@@ -49,7 +50,10 @@ for entry in "${tests[@]}"; do
   fi
 
   rc=0
-  bash "$SCRIPT_DIR/$script" || rc=$?
+  case "$script" in
+    *.py) python3 "$SCRIPT_DIR/$script" || rc=$? ;;
+    *) bash "$SCRIPT_DIR/$script" || rc=$? ;;
+  esac
 
   (( total++ ))
   if [ $rc -eq 0 ]; then

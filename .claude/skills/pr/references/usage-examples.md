@@ -1,66 +1,35 @@
-# PR作成 使用例
+# PR作成の使用例
 
-## 例1: 新機能追加の場合（stagingあり）
+ブランチ戦略、差分、必要な検証とレビューを確認し、タイトル・本文・日本語セルフチェックを提示して許可を得る。本文はWriteで一時ファイルへ書く。
 
-**ステップ1**: ブランチ確認
-```bash
-git branch -a
-# staging が存在することを確認
-```
-
-**ステップ2**: Test・Linter実行
-```bash
-# プロジェクトに合わせたコマンドを実行
-# 全てのテストが成功したことを確認
-```
-
-**ステップ3**: PR情報をユーザーに提示し、許可を待つ
-
-**ステップ4**: 許可後にPR作成
-```bash
-gh pr create --base staging --title "タイトル" --body "$(cat <<'EOF'
+```markdown
 ## 概要
-[変更の目的と背景を丁寧語で1-3文]
+
+[確認できた動機と変更後の挙動を丁寧語で記述する。理由を推測で補わない]
 
 ## 変更点
-- `XxxController`: 一覧画面を追加
-- `xxx_table`: `yyy`カラムにDBインデックスを追加
+
+- `app/controllers/example_controller.rb`: 一覧の表示項目を追加
+- `test/controllers/example_controller_test.rb`: 一覧の表示内容を検証
 
 ## テスト計画
+
 - [x] RuboCop静的解析パス
-- [x] 全テストN件パス(0 failures, 0 errors)
-EOF
-)"
+- [x] 対象テストN件パス(0 failures, 0 errors)
 ```
 
-## 例2: hotfixの場合（mainへ直接）
+チェック済みとするのは実行して成功した項目だけ。Nは実測値に置き換える。ユーザーが項目・順序・文言を指定した場合はそれに従う。
 
 ```bash
-gh pr create --base main --title "タイトル" --body "$(cat <<'EOF'
-## 概要
-[原因]のため、[問題]が発生していました。[修正内容]で対処します。
-
-## 変更点
-- `XxxModel`の[修正内容]
-
-## テスト計画
-- [x] RuboCop静的解析パス
-- [x] [対象]テストN件パス(0 failures, 0 errors)
-- [x] staging環境で[具体的な確認内容]を確認
-EOF
-)"
+gh pr create --base staging --head feature/example --title 'タイトル' --body-file <本文ファイルの絶対パス>
 ```
 
-## PRのマージ（ユーザーから指示があった場合）
+hotfix、またはstagingがない場合は確認済みのmainをbaseにする。
+
+## マージを別途依頼された場合
+
+プロジェクトのマージ方式と必須チェック・レビューを確認してから実行する。mainやstagingなどの永続ブランチは削除しない。
 
 ```bash
-# 通常のPR（feature/*, bugfix/*, chore/* など）
-gh pr merge <PR番号> --merge --delete-branch
-
-# リリースPR（staging -> main）など永続ブランチからのPR
 gh pr merge <PR番号> --merge
 ```
-
-**注意**:
-- プロジェクトでは**Merge commit**を使用します（Squash mergeは使用しない）
-- `staging`や`main`などの永続ブランチがソースの場合は`--delete-branch`を**つけない**こと

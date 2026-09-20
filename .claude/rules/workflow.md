@@ -97,10 +97,14 @@ After implementation is complete, perform the following reviews before committin
 
 - **Security-related changes** (authentication, input handling, APIs, permissions): Running the `security-reviewer` agent is **required**
 - **Other changes**: Do a main-session self-review by default. Run `change-reviewer` only for broad, risky, or PR-bound changes, or when the user explicitly asks for a review agent.
-- For thorough or higher-stakes review, use `deep-review` (Opus) or `codex-review` (external Codex / gpt-5.6-sol), but do not run them while an Agent Team is active.
-- If any Critical/High findings are reported, fix them before committing
+- For thorough or higher-stakes review, use `deep-review` or `codex-review`, but do not duplicate an active review of the same scope.
+- Reuse a review only when it covers the current diff after the last code change. Show findings, evidence, impact, and proposed actions to the user. Do not fix findings until instructed, or commit while findings remain unresolved.
 
-Claude Code v2.1.198+ runs subagents in the background by default and makes them inherit more session configuration. Treat every subagent launch as an explicit cost decision: give it a bounded task, forbid further delegation unless necessary, and wait for its result before claiming the work is done.
+Treat every subagent launch as an explicit cost decision. The main session owns decisions and integration. Give each agent the absolute repository path, confirmed requirements, relevant execution paths, target files or diff, constraints, and completion criteria. Separate hypotheses from requirements. Forbid additional delegation and unassigned skills or checks. When the required context is supplied, do not ask agents to repeat memory lookup or repository-wide discovery. Read-only reviewers inspect code and supplied test results; the main session owns test execution.
+
+Wait for an active agent's result before declaring completion. A wait timeout alone is not failure: check the same agent's status rather than launching a duplicate. Do not run Rails tests against a shared database in parallel across agents or sessions.
+
+Planning inside an authorized implementation request does not create a new approval gate. Respect explicit user phase stop points and ask when scope or authority must expand.
 
 ---
 

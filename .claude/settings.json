@@ -8,11 +8,12 @@
     "allow": [
       "Bash(rg:*)",
       "Bash(grep:*)",
-      "Bash(find:*)",
       "Bash(cat:*)",
       "Bash(ls:*)",
-      "Bash(git branch:*)",
-      "Bash(git checkout:*)",
+      "Bash(git branch --show-current:*)",
+      "Bash(git branch -a:*)",
+      "Bash(git branch --all:*)",
+      "Bash(git branch --list:*)",
       "Bash(git log:*)",
       "Bash(git show:*)",
       "Bash(git diff:*)",
@@ -24,9 +25,6 @@
       "Bash(gh pr diff:*)",
       "Bash(gh pr view:*)",
       "Bash(terraform fmt:*)",
-      "Bash(docker compose ps:*)",
-      "Bash(docker compose logs:*)",
-      "Bash(docker compose ls:*)",
       "Bash(*bundle list*)",
       "Bash(*rails test*)",
       "Bash(*rails spec*)",
@@ -124,23 +122,28 @@
       "Bash(*diskutil*)",
       "Bash(crontab -r:*)",
       "Bash(security:*)",
-      "Read(.env.*)",
+      "Read(.env)",
+      "Read(**/.env)",
       "Edit(.env*)",
       "Read(node_modules)",
       "Read(node_modules/**)"
     ],
     "ask": [
+      "Bash(find:*)",
+      "Bash(git checkout:*)",
+      "Bash(git branch -m:*)",
+      "Bash(git fetch:*)",
       "Bash(git commit:*)",
+      "Bash(git stash:*)",
+      "Bash(git cherry-pick:*)",
+      "Bash(git merge:*)",
+      "Bash(git push:*)",
       "Bash(curl:*)",
       "Bash(wget:*)",
       "Bash(rm:*)",
       "Bash(kill:*)",
       "Bash(killall:*)",
       "Bash(chmod:*)",
-      "Bash(git stash:*)",
-      "Bash(git cherry-pick:*)",
-      "Bash(git merge:*)",
-      "Bash(git push:*)",
       "Bash(gh pr create:*)",
       "Bash(gh pr merge:*)",
       "Bash(gh pr close:*)",
@@ -168,7 +171,7 @@
       "Bash(pkill:*)",
       "Bash(chown:*)"
     ],
-    "defaultMode": "auto",
+    "defaultMode": "default",
     "disableBypassPermissionsMode": "disable"
   },
   "model": "opus",
@@ -194,7 +197,7 @@
           },
           {
             "type": "prompt",
-            "prompt": "書き込んだファイルの日本語（コメント、テスト名、エラーメッセージ）を確認し、結果を{ok: bool, reason: string}のJSONで返してください。指摘してよいのは次の明確な違反だけです: (1)漢語接頭辞の造語（未〜/非〜を名詞と合成した語。例: 未充足、非終端）、(2)助詞の省略（例: 次エッジ->次のエッジ）、(3)プロジェクトの語彙にない業務用語の造語、(4)禁止語の「契約」「述語」。文体の好み、同義語への言い換え、語順や構成の改善案は指摘しないでください。英数字と日本語の間に空白を入れる提案は禁止です（このプロジェクトは英日間スペースなしが規約）。禁止語はプロジェクトで確立済みのドメイン用語や「API契約」であっても必ず指摘してください。それ以外のプロジェクトで確立済みのドメイン用語と、今回の書き込みより前からファイルにある表現は指摘対象外です。~/.claude/projects/配下のメモリファイルと日本語を含まないファイルはok: trueにしてください。違反かどうか判断に迷う場合もok: trueにしてください。$ARGUMENTS",
+            "prompt": "書き込んだファイルの日本語（コメント、テスト名、エラーメッセージ）を確認し、結果を{ok: bool, reason: string}のJSONで返してください。指摘してよいのは次の明確な違反だけです: (1)漢語接頭辞と名詞を組み合わせた造語、(2)助詞の省略、(3)プロジェクトの語彙にない業務用語の造語、(4)禁止語の「\u5951\u7d04」「\u8ff0\u8a9e」。文体の好み、同義語への言い換え、語順や構成の改善案は指摘しないでください。英数字と日本語の間に空白を入れる提案は禁止です（このプロジェクトは英日間スペースなしが規約）。禁止語はプロジェクトで確立済みのドメイン用語や「API\u5951\u7d04」であっても必ず指摘してください。それ以外のプロジェクトで確立済みのドメイン用語と、今回の書き込みより前からファイルにある表現は指摘対象外です。~/.claude/projects/配下のメモリファイルと日本語を含まないファイルはok: trueにしてください。違反かどうか判断に迷う場合もok: trueにしてください。$ARGUMENTS",
             "timeout": 15,
             "continueOnBlock": true
           }
@@ -223,7 +226,7 @@
         ]
       },
       {
-        "matcher": "Edit|Write",
+        "matcher": "Read|Edit|Write",
         "hooks": [
           {
             "type": "command",
@@ -288,8 +291,40 @@
   "language": "japanese",
   "sandbox": {
     "enabled": true,
-    "autoAllowBashIfSandboxed": true,
-    "allowUnsandboxedCommands": true,
+    "failIfUnavailable": true,
+    "autoAllowBashIfSandboxed": false,
+    "allowUnsandboxedCommands": false,
+    "credentials": {
+      "files": [
+        { "path": "~/.ssh", "mode": "deny" },
+        { "path": "~/.aws", "mode": "deny" },
+        { "path": "~/.config/gh/hosts.yml", "mode": "deny" },
+        { "path": "~/.config/gcloud", "mode": "deny" },
+        { "path": "~/.config/git/credentials", "mode": "deny" },
+        { "path": "~/.docker/config.json", "mode": "deny" },
+        { "path": "~/.git-credentials", "mode": "deny" },
+        { "path": "~/.kube/config", "mode": "deny" },
+        { "path": "~/.netrc", "mode": "deny" },
+        { "path": "~/.npmrc", "mode": "deny" },
+        { "path": "~/.pypirc", "mode": "deny" }
+      ],
+      "envVars": [
+        { "name": "ANTHROPIC_API_KEY", "mode": "deny" },
+        { "name": "ANTHROPIC_AUTH_TOKEN", "mode": "deny" },
+        { "name": "AWS_ACCESS_KEY_ID", "mode": "deny" },
+        { "name": "AWS_SECRET_ACCESS_KEY", "mode": "deny" },
+        { "name": "AWS_SESSION_TOKEN", "mode": "deny" },
+        { "name": "CLAUDE_CODE_OAUTH_TOKEN", "mode": "deny" },
+        { "name": "GH_TOKEN", "mode": "deny" },
+        { "name": "GH_ENTERPRISE_TOKEN", "mode": "deny" },
+        { "name": "GITHUB_TOKEN", "mode": "deny" },
+        { "name": "GITHUB_ENTERPRISE_TOKEN", "mode": "deny" },
+        { "name": "GOOGLE_APPLICATION_CREDENTIALS", "mode": "deny" },
+        { "name": "NPM_TOKEN", "mode": "deny" },
+        { "name": "NODE_AUTH_TOKEN", "mode": "deny" },
+        { "name": "OPENAI_API_KEY", "mode": "deny" }
+      ]
+    },
     "network": {
       "allowedDomains": [
         "api.github.com",
@@ -304,19 +339,33 @@
         "packages.debian.org",
         "railsdiff.org",
         "rubygems.org"
-      ],
-      "allowUnixSockets": [
-        "~/.docker/run/docker.sock"
       ]
     },
     "filesystem": {
+      "denyWrite": [
+        "/**/.env",
+        "/**/.env.*"
+      ],
+      "denyRead": [
+        "/**/.env",
+        "/**/.env.*"
+      ],
       "allowRead": [
-        ".env.sample"
+        "/**/.env.example",
+        "/**/.env.sample",
+        "/**/.env.template"
       ]
     }
   },
   "effortLevel": "medium",
   "askUserQuestionTimeout": "never",
+  "pluginConfigs": {
+    "agents-md@builtin": {
+      "options": {
+        "instructionFiles": "claude-md-or-agents-md"
+      }
+    }
+  },
   "tui": "fullscreen",
   "autoMemoryEnabled": true,
   "verbose": true,

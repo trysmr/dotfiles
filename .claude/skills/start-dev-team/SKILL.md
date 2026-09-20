@@ -54,7 +54,12 @@ leadに以下の自然言語プロンプトを発火する(または、人間が
 
 全フェーズ共通で、leadプロンプトには次を含める:
 
-- Use the minimum teammates listed here; do not spawn extra teammates unless I explicitly approve.
+- 以下のロールは候補であり固定人数ではない。依頼された役割と独立した成果物に応じて必要最小限を選ぶ。ユーザー指定がなければ原則1人から始める。判断と結果の統合はleadが行う。
+- 対象リポジトリの絶対パス、確認済みの要件、維持する操作経路、制約、対象ファイルまたは差分、完了条件を渡す。仮説や検討案は要件と分ける。
+- 必要な文脈が渡された場合、メモリ検索、全体ルールの再読、対象外の一覧取得、依頼していないスキルや検証を繰り返させない。担当ファイルを分け、他担当の編集を巻き戻させない。
+- レビュー担当は読み取りだけとし、テスト実行はleadが担当する。共有DBを使うRailsテストは並行実行しない。
+- 待機時間の経過だけで失敗と判断せず、同じteammateの状態と結果を確認する。重複起動しない。
+- Treat the listed roles as candidates, not a required headcount. Start with the minimum roles needed for independent deliverables, and add a role only when the authorized scope requires its distinct responsibility.
 - Teammates must not invoke skills or spawn nested subagents. Escalate blockers to the lead.
 - Give each teammate a bounded deliverable and wait for their result before marking the phase complete.
 - Keep background work visible; summarize pending teammates before moving to the next step.
@@ -62,7 +67,7 @@ leadに以下の自然言語プロンプトを発火する(または、人間が
 #### requirementsフェーズ(最終判断:人間 / plan mode強制)
 
 ```text
-Create an agent team for requirements gathering. Spawn 2 teammates and require plan approval for each:
+Create an agent team for requirements gathering. Select the necessary roles and require plan approval:
 - team-manager (use plan mode): 要件整理とタスク分解
 - team-designer (use plan mode): UX/データモデルの初期スケッチ
 
@@ -73,12 +78,12 @@ Create an agent team for requirements gathering. Spawn 2 teammates and require p
 #### designフェーズ(最終判断:人間 / plan mode強制)
 
 ```text
-Create an agent team for design. Spawn 2 teammates and require plan approval for both:
+Create an agent team for design. Select the necessary roles and require plan approval:
 - architect-lead (use plan mode): 全体構造・技術選定の判断
 - team-designer (use plan mode): 詳細設計
 
 architect-leadとteam-designerはplan modeで設計案を出す。
-既存構造の調査が広範で、別担当に切り出す価値が明確な場合だけ、leadがrepo-explorer追加を人間に確認する。
+既存構造の調査が広範で、別担当に切り出す価値が明確な場合は、許可されたdesignフェーズの範囲でleadがrepo-explorerを追加する。調査が依頼範囲を広げる場合だけ人間に確認する。
 最終承認は人間が行う。
 ```
 
@@ -90,7 +95,7 @@ Create an agent team for implementation. Spawn 1 teammate initially:
 
 software-engineerは自律的に進めて構わないが、設計から逸脱する判断はleadへエスカレーション。
 詰まった場合はleadへ状況、試したこと、次の選択肢を返す。追加subagentやskillは呼ばない。
-実装完了後、leadが必要性を判断してからchange-reviewerやtech-writerの追加起動を人間に確認する。
+実装完了後、依頼された範囲にレビューや文書更新まで含まれる場合は、leadが必要性を判断してchange-reviewerやtech-writerを追加する。依頼範囲が実装までの場合は追加せず、次の作業として報告する。
 ```
 
 #### reviewフェーズ(最終判断:人間)
@@ -99,7 +104,7 @@ software-engineerは自律的に進めて構わないが、設計から逸脱す
 Create an agent team for code review. Spawn 1 teammate initially:
 - change-reviewer: 品質/保守性/QA観点のレビュー
 
-認証、認可、入力処理、API、権限、機密情報を含む変更では、leadがsecurity-reviewer追加を人間に確認する。
+認証、認可、入力処理、API、権限、機密情報を含む変更では、reviewフェーズの範囲内でleadがsecurity-reviewerを追加する。
 最終的なPR可否判断は人間が行う。
 ```
 
@@ -108,7 +113,7 @@ Codex CLI(gpt-5.6-sol xhigh)による徹底レビューを併走させたい場�
 #### releaseフェーズ(最終判断:人間)
 
 ```text
-Create an agent team for release preparation. Spawn 2 teammates:
+Create an agent team for release preparation. Select the necessary roles:
 - team-manager: リリースタスク整理と承認窓口
 - tech-writer: README/CHANGELOG/リリースノート更新
 
@@ -118,7 +123,7 @@ Create an agent team for release preparation. Spawn 2 teammates:
 
 ### 3. フェーズ遷移ガイド
 
-各フェーズ完了後、人間が次フェーズへの遷移を承認したら以下の手順:
+各フェーズ完了後、次フェーズまで許可されていればその範囲で進める。計画だけの依頼や明示的な停止点では人間の承認を待つ。次フェーズへ進む場合の手順:
 
 1. lead側で「Clean up the team」を指示してチームを終了
 2. `~/.claude/teams/` 配下が整理されたことを確認

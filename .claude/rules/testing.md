@@ -1,5 +1,9 @@
 # Testing Principles
 
+Tests record What: the observable behavior that must hold, not a copy of implementation steps. Each assertion must protect a confirmed requirement or known regression. Assert absence only when absence itself is required behavior, an authorization/security boundary, or a concrete regression condition. Do not invent negative requirements from alternatives mentioned in conversation.
+
+Do not run database-mutating Rails tests concurrently when agents or sessions share a test database.
+
 ## Expected Values Must Be Literals
 
 Never use the method under test to produce expected values. Always write expectations as literal strings or numbers.
@@ -33,7 +37,7 @@ In search/query tests, verify the actual text content of matched records, not ju
 ### Search/Filter Test Rigor
 
 - **Fixtures must hold real data in the searched fields**: a test that only asserts "no hit" cannot catch a broken partial-match. Populate the searched field and verify both hit and no-hit cases.
-- **Test inputs that normalize to empty**: when a query method normalizes its input (prefix stripping, trimming), add a case where the normalized value becomes empty. The method must return an empty result (`scope.none`), not fall through to the unfiltered scope — falling through silently returns all records.
+- **Test inputs that normalize to empty**: verify whether requirements call for clearing the search or returning no results. Test that confirmed behavior, and ensure normalization never removes authorization filters.
 
 ---
 
@@ -51,7 +55,7 @@ When adding a new contract to a public API (method signature, optional argument,
 
 Changes propagate through the dependency graph. Pick scope by how deep your change sits:
 
-**Run the full suite** when you touch upstream code that many things depend on:
+**Verify affected callers as well as units** when you touch upstream code that many things depend on. Run the full suite when required by the project or when the dependency scope cannot be bounded:
 - Database schema, migrations
 - Domain models, shared types, interfaces, domain entities
 - Libraries, shared utilities (`lib/`, `packages/shared/`, etc.)
@@ -73,7 +77,7 @@ When unsure, run more rather than less. Don't narrow scope unless you can name w
 
 ### Phase Classification (declare before editing code)
 
-State which phase you are in at task start. This prevents silently skipping tests.
+State the phase when it changes the testing approach. Routine documentation, configuration without behavior changes, and trivial edits may omit classification with a brief reason.
 
 - **Spike (exploratory)**: Shape is unknown. Goal is learning, not shipping. Tests **not required**.
   - Output: working prototype + a written summary of what was learned.
@@ -88,6 +92,6 @@ State which phase you are in at task start. This prevents silently skipping test
 
 ### Stabilize / Maintain Rules
 
-- Tests are required for behavioral changes. The order (before, during, or after implementation) is your choice
+- For non-trivial Stabilize work and behavior-changing Maintain work, write the expected behavior or regression test, confirm it fails for the intended reason, then implement and run checks for the affected callers. If test-first is impractical, state the reason and alternative verification.
 - Define expected behaviors clearly through tests, including failure cases and edge cases that matter for the change
 - The end state must satisfy the workflow Definition of Done: tests passing for the blast radius

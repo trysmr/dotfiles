@@ -15,6 +15,7 @@ mkdir -p \
   "$fixture_dir/.claude/skills/occupied" \
   "$fixture_dir/.agents/skills/example" \
   "$fixture_dir/.agents/skills/codex-example" \
+  "$fixture_dir/.codex/rules" \
   "$test_home/.config/herdr" \
   "$test_home/.copilot/skills/example" \
   "$test_home/.copilot/skills/different" \
@@ -22,6 +23,7 @@ mkdir -p \
   "$test_home/.copilot/skills.before-dotfiles/occupied" \
   "$test_home/.codex/skills/codex-example"
 cp "$repo_dir/install.sh" "$fixture_dir/install.sh"
+printf '# fixture rule\n' > "$fixture_dir/.codex/rules/default.rules"
 printf 'export EDITOR=nvim\n' > "$fixture_dir/.zshrc"
 printf 'name = "dracula"\n' > "$fixture_dir/.config/herdr/config.toml"
 printf 'local state\n' > "$test_home/.config/herdr/session.json"

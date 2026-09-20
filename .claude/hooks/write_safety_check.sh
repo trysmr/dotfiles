@@ -1,26 +1,22 @@
 #!/bin/bash
 
-# Edit/Writeの対象ファイル安全性チェック（PreToolUseフック）
+# Read/Edit/Writeの対象ファイル安全性チェック（PreToolUseフック）
 # 機密ファイルや危険パスへの書き込みをdeterministicにブロック
 # permissions.denyを補完し、Edit経由のバイパスを防ぐ
 
-source "$(dirname "$0")/_common.sh"
+source "$(dirname "$0")/_common.sh" || exit 2
 
 input=$(cat)
 is_copilot=$(printf '%s' "$input" | detect_copilot)
 file_path=$(printf '%s' "$input" | extract_field "file_path")
 
-[ -z "$file_path" ] && exit 0
-
 deny() { deny_action "$1" "$is_copilot"; }
 
-basename_lower=$(basename "$file_path" | tr '[:upper:]' '[:lower:]')
+if ! result=$(printf '%s' "$input" | python3 "$(dirname "$0")/argument_safety_check.py" --write 2>/dev/null); then
+  deny "${result:-書き込み先の安全性を確認できないため拒否しました。}"
+fi
 
-# .envファイルへの書き込みブロック
-case "$basename_lower" in
-  .env|.env.*)
-    deny "環境変数ファイルへの書き込みはブロックされています: $file_path" ;;
-esac
+basename_lower=$(basename "$file_path" | tr '[:upper:]' '[:lower:]')
 
 # 秘密鍵・認証情報ファイルへの書き込みブロック
 case "$basename_lower" in

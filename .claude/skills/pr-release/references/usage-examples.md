@@ -1,88 +1,23 @@
-# リリースPR作成 使用例
+# リリースPR作成の使用例
 
-## 例1: 複数PR集約のリリース（典型的）
+1. `git fetch origin`と`git branch -a`で対象ブランチを確認する。
+2. `git log origin/main..origin/staging --oneline`と各PRの情報から対象を特定する。PR番号のない変更も漏らさない。
+3. ユーザー指定の参考PR、または直近のリリースPRを読み、形式を確認する。
+4. `gh pr list --base main --head staging --state open --json number,title,url`で重複を確認する。
+5. 確認済みの実績だけを使って本文を作り、日本語セルフチェックとともに提示して許可を得る。
 
-**ステップ1**: ブランチ確認
+本文はWriteで一時ファイルへ書き、単独コマンドで渡す:
+
 ```bash
-git fetch origin
-git branch -a
-# mainとstagingの両方が存在することを確認
+gh pr create --base main --head staging --title '[Release] staging -> main (YYYY-MM-DD): 主要変更の要約' --body-file <本文ファイルの絶対パス>
 ```
 
-**ステップ2**: 含まれるPR番号を抽出
-```bash
-git log origin/main..origin/staging --oneline | grep -oE '#[0-9]+' | sort -u
-# 例: #NNN, #NNN+1, #NNN+2
-```
+作成後は`gh pr view <番号> --json number,title,body,url,baseRefName,headRefName`で確認する。レビュー・テスト・staging検証の実績が不明なら、完了扱いでPRを作成しない。本番デプロイ後の項目は実際に検証するまでチェックを付けない。
 
-**ステップ3**: 各PRの内容を確認
-```bash
-gh pr view NNN --json number,title,body
-gh pr view NNN+1 --json number,title,body
-```
+## マージを別途依頼された場合
 
-**ステップ4**: PR情報をユーザーに提示し、許可を待つ
-
-**ステップ5**: 許可後にPR作成
-```bash
-gh pr create --base main --head staging --title "[Release] staging -> main (YYYY-MM-DD): インフラ移行、ライブラリアップデート" --body "$(cat <<'EOF'
-## 概要
-ステージング環境で検証完了した[主要機能の概要]を本番環境にリリースします。
-
-## 変更点
-### [PR1のタイトル]（#NNN）
-- [変更内容の要約1]
-- [変更内容の要約2]
-
-### [PR2のタイトル]（#NNN+1）
-- [変更内容の要約1]
-
-### [PR3のタイトル]（#NNN+2）
-- [変更内容の要約1]
-- [変更内容の要約2]
-
-## テスト計画
-- [x] RuboCop静的解析パス
-- [x] 全テストN件パス(0 failures, 0 errors)
-- [x] staging環境で動作確認
-- [ ] 本番デプロイ後の確認
-  - [ ] アプリケーションが正常に起動することを確認
-  - [ ] ヘルスチェックエンドポイントが正常に応答することを確認
-  - [ ] 主要機能が正常に動作することを確認
-EOF
-)"
-```
-
-## 例2: 単一PRのみのリリース（小規模）
+必須チェックとレビュー、ユーザーの許可を確認し、プロジェクトの方式に従う。永続ブランチのstagingは削除しない。
 
 ```bash
-gh pr create --base main --head staging --title "[Release] staging -> main (YYYY-MM-DD): 設定値の更新" --body "$(cat <<'EOF'
-## 概要
-ステージング環境で検証完了した[変更内容の概要]を本番環境にリリースします。
-
-## 変更点
-### [PRのタイトル]（#NNN）
-- [変更内容の要約1]
-- [変更内容の要約2]
-
-## テスト計画
-- [x] RuboCop静的解析パス
-- [x] 全テストN件パス(0 failures, 0 errors)
-- [x] staging環境で動作確認
-- [ ] 本番デプロイ後の確認
-  - [ ] [変更箇所]が期待通り動作することを確認
-EOF
-)"
-```
-
-## リリースPRのマージ（ユーザーから指示があった場合）
-
-```bash
-# stagingがソースの永続ブランチPRなので--delete-branchをつけない
 gh pr merge <PR番号> --merge
 ```
-
-**注意**:
-- プロジェクトでは**Merge commit**を使用します（Squash mergeは使用しない）
-- `staging`がソースのリリースPRは`--delete-branch`を**つけない**こと
-- マージ後、本番デプロイの完了を待ってから「本番デプロイ後の確認」項目を`[x]`に更新する

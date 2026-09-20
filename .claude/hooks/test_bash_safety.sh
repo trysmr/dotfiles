@@ -76,7 +76,7 @@ test_hook "ls && cat file.txt" "pass" "allow同士のチェーン"
 test_hook 'echo "hello && world"' "pass" "クォート内の&&"
 test_hook "git log --oneline | head -5" "pass" "allowのgit log | head"
 test_hook "ls 2>&1" "pass" "リダイレクトの&"
-test_hook "" "pass" "空コマンド"
+test_hook "" "block" "空コマンドは安全性を確認できないため拒否"
 test_hook 'echo "git -C/tmp status"' "pass" "クォート内のgit -C文字列"
 test_hook 'sudo=1 ls' "pass" "環境変数代入はsudo実行ではない"
 test_hook 'git commit -m ""' "pass" "直接git commitの空メッセージ"
@@ -156,7 +156,7 @@ test_hook 'ls && echo "a > b"' "pass" "クォート内のリダイレクト記�
 echo ""
 echo "=== settings.json異常系 ==="
 # settings.jsonが存在しない場合
-SETTINGS_FILE="/nonexistent/path" test_hook "ls && sudo whoami" "pass" "settings.json不在→通過"
+SETTINGS_FILE="/nonexistent/path" test_hook "ls && sudo whoami" "block" "settings.jsonがない場合は拒否"
 
 # settings.jsonが壊れている場合
 BROKEN_SETTINGS=$(mktemp "${TMPDIR:-/tmp}/bash_safety_broken.XXXXXX")

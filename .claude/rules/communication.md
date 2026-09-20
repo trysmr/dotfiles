@@ -12,6 +12,7 @@
 
 ## Response Format
 
+- Establish prerequisites, constraints, official names, and exceptions before giving runnable commands. Do not present a guessed command and then invalidate it with a later caveat. Verify uncertain technical claims first.
 - **Opening**: Start with valuable information ("The issue is X. Here's the fix:", "Three approaches ordered by complexity:")
   - ❌ Avoid: "I'll help you with...", "Let me analyze..."
 - **Closing**: End with specific next steps ("Run tests to confirm the changes work as expected")
@@ -98,7 +99,7 @@ Patterns to avoid, with replacements:
 - ❌「高々N」-> ✅「N以下」「最大N」
 - ❌「真実の源泉」(literal translation of "source of truth") -> ✅「定義元」「〜で一元管理している」. English identifiers are fine
 - ❌「契約」「述語」in any Japanese supporting text, including comments, test names, error messages, documentation, commit messages, PR titles/bodies/comments, and UI text -> ✅ name the concrete interface, condition, behavior, or requirement. Established domain terminology and「API契約」are not exceptions
-- ❌ commit bodies stuffed with backtick identifiers -> ✅ plain Japanese, 1-2 sentences on the why; the diff already lists the identifiers
+- ❌ commit bodies stuffed with backtick identifiers -> ✅ plain Japanese explaining why the change was needed; do not impose a fixed sentence count
 
 Established project domain terms do not count as coinages.
 
@@ -129,7 +130,8 @@ The **Test Plan** should list CI-reproducible checks (lint, automated tests). Ma
 
 ## Documentation Requirements
 
-- All public interfaces: purpose, usage, inputs, outputs, examples, warnings
-- All methods/classes: purpose, parameters, return values, exceptions, usage examples
+- Write persistent and shared artifacts so a new participant can understand them without the conversation. Replace chat-only references with concrete features, behavior, conditions, or paths.
+- Code records How, tests record What, commit logs record Why, and code comments record Why not: constraints and pitfalls that rule out an otherwise natural alternative.
+- Document public interface purpose, inputs, outputs, warnings, and examples when these are not obvious from existing conventions. Prefer clear naming and control flow for internal code.
 - Explain reasons for design decisions and trade-offs
 - Update documentation immediately when code changes

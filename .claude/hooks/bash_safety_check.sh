@@ -4,16 +4,31 @@
 # チェーン実行（&&, ||, ;, |, 改行）でdeny/askパターンがバイパスされることを防ぐ
 # 動的コマンド名は解決できないためfail-closedでブロックする
 
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+
+if ! command -v jq >/dev/null 2>&1; then
+  printf '%s\n' 'jqがないため安全性を確認できません。' >&2
+  exit 2
+fi
+
 input=$(cat)
+if ! printf '%s' "$input" | jq -e '
+  if type != "object" then false
+  else
+    ((.toolArgs? | if type == "string" then fromjson? else . end) // .toolInput? // .tool_input?) as $arguments
+    | ($arguments | type == "object")
+      and ($arguments.command | type == "string" and length > 0)
+  end
+' >/dev/null 2>&1; then
+  printf '%s\n' 'hookのJSON入力を確認できません。' >&2
+  exit 2
+fi
 is_copilot=$(printf '%s' "$input" | jq -r 'has("toolName")')
 command=$(printf '%s' "$input" | jq -r '
   (
-    .toolArgs? | fromjson? | .command?
+    .toolArgs? | if type == "string" then fromjson? else . end | .command?
   ) // .toolInput.command? // .tool_input.command? // ""
 ')
-
-# 空コマンドは早期終了
-[ -z "$command" ] && exit 0
 
 deny() {
   local message="$1"
@@ -33,7 +48,7 @@ deny() {
 SETTINGS_FILE="${SETTINGS_FILE:-$HOME/.claude/settings.json}"
 
 if [ ! -f "$SETTINGS_FILE" ]; then
-  exit 0
+  deny "settings.jsonがないため、安全性を確認できません。"
 fi
 
 # パースチェックを抽出より先に実行（fail-closed）
@@ -60,10 +75,8 @@ extract_patterns() {
 deny_patterns=$(extract_patterns "deny")
 ask_patterns=$(extract_patterns "ask")
 
-# deny/askパターンが両方空なら早期終了
-if [ -z "$deny_patterns" ] && [ -z "$ask_patterns" ]; then
-  exit 0
-fi
+hook_cwd=$(printf '%s' "$input" | jq -r '.cwd // empty')
+hook_cwd="${hook_cwd:-$PWD}"
 
 # --- サブコマンド正規化 ---
 
@@ -634,6 +647,7 @@ deny_for_match() {
 # >&2 や 2>&1 のようなfd複製はファイル書き込みではないため対象外とする。
 has_file_redirect() {
   local s="$1"
+  local allow_heredoc="${2:-false}"
   local len=${#s}
   local i=0
   local ch
@@ -669,6 +683,10 @@ has_file_redirect() {
     fi
 
     if ! $in_single && ! $in_double && { [ "$ch" = ">" ] || [ "$ch" = "<" ]; }; then
+      if [ "$allow_heredoc" = "true" ] && [ "$ch" = "<" ] && [ "${s:$((i+1)):1}" = "<" ]; then
+        (( i += 2 ))
+        continue
+      fi
       # 直後が & ならfd複製（>&2 / 2>&1 / <&0）なのでスキップ
       if [ "${s:$((i+1)):1}" = "&" ]; then
         (( i += 2 ))
@@ -690,17 +708,24 @@ enforce_segment() {
   local result
   local normalized
 
-  # echoはaskパターンに載せず確認なしで通す方針のため、Write権限を迂回した
-  # ファイル書き込みになるリダイレクト付きechoだけを、settingsのパターンに関係なくここで拒否する
-  normalized=$(normalize_subcmd "$subcmd")
-  case "$normalized" in
-    echo|echo\ *|echo\>*|echo\<*)
-      if has_file_redirect "$subcmd"; then
-        deny "${context}にファイルへのリダイレクトを伴うechoが検出されました。ファイルの書き込みにはWrite/Editツールを使用してください。"
-      fi
-      ;;
-  esac
+  parse_words "$(first_command_line "$subcmd")"
+  if ! result=$(python3 "$SCRIPT_DIR/argument_safety_check.py" --words "$hook_cwd" "$subcmd" "${WORDS[@]}" 2>/dev/null); then
+    deny "${result:-引数の安全性を確認できないため拒否しました。}"
+  fi
 
+  # 検査後に参照先が変わる列は、静的なパス検査だけでは保証しない。
+  normalized=$(normalize_subcmd "$subcmd")
+  if [ "$force_ask_block" = "true" ]; then
+    case "$normalized" in
+      ls|ls\ *|cat|cat\ *|head|head\ *|tail|tail\ *|rg|rg\ *|grep|grep\ *|find|find\ *|echo|echo\ *|printf|printf\ *|pwd|git\ status*|git\ log*|git\ diff*|git\ show*|'('*|'{'*|'}'|')') ;;
+      *)
+        deny "コマンド列では参照先の変化を確認できないため、状態を変える可能性がある操作は個別に実行してください。"
+        ;;
+    esac
+  fi
+  if has_file_redirect "$subcmd" true; then
+    deny "ファイルへのリダイレクトは個別の読み書きとして確認してください。"
+  fi
   result=$(check_against_patterns "$subcmd")
   if [ $? -eq 0 ]; then
     deny_for_match "$result" "$context" "$force_ask_block"

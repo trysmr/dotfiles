@@ -52,7 +52,7 @@ for i in "${!mermaid_blocks[@]}"; do
 
   printf '%s' "${mermaid_blocks[$i]}" > "$input_file"
 
-  if mmdc -i "$input_file" -o "$output_file" -b transparent -t neutral --quiet 2>/dev/null; then
+  if mmdc -i "$input_file" -o "$output_file" -b transparent -t neutral -s 2 --quiet 2>/dev/null; then
     if command -v open &>/dev/null && [ -z "${SSH_CONNECTION:-}" ]; then
       open "$output_file" 2>/dev/null
     fi
