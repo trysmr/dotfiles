@@ -179,11 +179,11 @@ move_aside() {
 for f in "$dir"/.??*; do
   filename="$(basename "$f")"
   [[ "$filename" = ".git" ]] && continue
-    # AI coding tool settings are installed from ~/Codes/agent-config.
-    [[ "$filename" = ".claude" ]] && continue
-    [[ "$filename" = ".codex" ]] && continue
-    [[ "$filename" = ".copilot" ]] && continue
-    [[ "$filename" = ".agents" ]] && continue
+  # AI coding toolの設定は~/Codes/agent-configから配置する
+  [[ "$filename" = ".claude" ]] && continue
+  [[ "$filename" = ".codex" ]] && continue
+  [[ "$filename" = ".copilot" ]] && continue
+  [[ "$filename" = ".agents" ]] && continue
 
   # .configの場合はディレクトリを対象にする
   if [[ "$filename" = ".config" ]]; then
