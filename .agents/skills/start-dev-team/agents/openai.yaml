@@ -1,4 +1,0 @@
-interface:
-  display_name: "Start Dev Team"
-  short_description: "開発フェーズに応じたCodexサブエージェントを編成して進行"
-  default_prompt: "$start-dev-teamで、この開発作業に適したエージェントチームを起動して。"

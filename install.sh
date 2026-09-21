@@ -83,8 +83,6 @@ check_dependencies() {
   check_command fzf fzf recommended || true
   check_command zoxide zoxide recommended || true
   check_command delta git-delta recommended "未インストール時、git diff/logでエラーになります" || true
-  check_command jq jq recommended "Claude Code/Codex hookで使用" || true
-  check_command mmdc mermaid-cli recommended "Mermaid自動レンダリングhookで使用" || true
   check_file zsh-autosuggestions zsh-autosuggestions \
     "$BREW_PREFIX/share/zsh-autosuggestions/zsh-autosuggestions.zsh" recommended || true
   check_file zsh-syntax-highlighting zsh-syntax-highlighting \
@@ -161,23 +159,6 @@ safe_symlink() {
   ln -snf "$src" "$dest"
 }
 
-# Codexが自動探索するファイルはシンボリックリンクを読み込まないため実ファイルとして配置する
-safe_copy_file() {
-  local src="$1"
-  local dest="$2"
-
-  if [[ -d "$dest" && ! -L "$dest" ]]; then
-    echo "Warning: $dest exists and is a directory, skipping..."
-    return 0
-  fi
-
-  if [[ -L "$dest" ]]; then
-    rm "$dest"
-  fi
-
-  cp "$src" "$dest"
-}
-
 # 既存の実体を退避先へ移動する（退避先が埋まっている場合は上書きせず1を返す）
 # 退避の成否は呼び出し側が判断するため、失敗してもスクリプト全体は中断しない
 move_aside() {
@@ -195,143 +176,14 @@ move_aside() {
   echo "Moved existing $label to $backup_dest"
 }
 
-# 内容が一致する既存ディレクトリだけを退避する（内容が異なる場合は保持して1を返す）
-backup_matching_directory() {
-  local src="$1"
-  local dest="$2"
-  local backup_dest="$3"
-
-  [[ -d "$dest" && ! -L "$dest" ]] || return 0
-
-  if ! diff -qr "$src" "$dest" > /dev/null; then
-    echo "Warning: $dest differs from $src, skipping..."
-    return 1
-  fi
-
-  move_aside "$dest" "$backup_dest" "directory"
-}
-
-# 内容が一致する既存ディレクトリを退避してシンボリックリンクへ切り替える
-safe_symlink_matching_directory() {
-  local src="$1"
-  local dest="$2"
-  local backup_dest="$3"
-
-  backup_matching_directory "$src" "$dest" "$backup_dest" || return 0
-
-  safe_symlink "$src" "$dest"
-}
-
-# SKILL.mdを持つスキルディレクトリかどうかを判定する
-is_skill_dir() {
-  local skill_dir="$1"
-
-  [[ -d "$skill_dir" ]] || return 1
-  [[ "$(basename "$skill_dir")" != .* ]] || return 1
-  [[ -f "$skill_dir/SKILL.md" ]]
-}
-
-# .claudeディレクトリを作成（認証情報保護のため700）
-mkdir -p "$HOME/.claude"
-chmod 700 "$HOME/.claude"
-
-# CLAUDE.mdのシンボリックリンクを作成する
-safe_symlink "$dir/.claude/CLAUDE.md" "$HOME/.claude/CLAUDE.md"
-
-# settings.jsonのシンボリックリンクを作成する
-safe_symlink "$dir/.claude/settings.json" "$HOME/.claude/settings.json"
-
-# hooksディレクトリのシンボリックリンクを作成する
-safe_symlink "$dir/.claude/hooks" "$HOME/.claude/hooks"
-
-# skillsディレクトリのシンボリックリンクを作成する
-safe_symlink "$dir/.claude/skills" "$HOME/.claude/skills"
-
-# statusline.shのシンボリックリンクを作成する
-safe_symlink "$dir/.claude/statusline.sh" "$HOME/.claude/statusline.sh"
-
-# rulesディレクトリのシンボリックリンクを作成する
-safe_symlink "$dir/.claude/rules" "$HOME/.claude/rules"
-
-# agentsディレクトリのシンボリックリンクを作成する
-safe_symlink "$dir/.claude/agents" "$HOME/.claude/agents"
-
-# .codexディレクトリを作成
-mkdir -p "$HOME/.codex"
-
-# AGENTS.mdのシンボリックリンクを作成する
-safe_symlink "$dir/.codex/AGENTS.md" "$HOME/.codex/AGENTS.md"
-
-# config.tomlのシンボリックリンクを作成する
-safe_symlink "$dir/.codex/config.toml" "$HOME/.codex/config.toml"
-
-# コマンド実行ルールを実ファイルとして配置する
-mkdir -p "$HOME/.codex/rules"
-safe_copy_file "$dir/.codex/rules/default.rules" "$HOME/.codex/rules/default.rules"
-
-# hooks設定とhooksディレクトリのシンボリックリンクを作成する
-safe_symlink "$dir/.codex/hooks.json" "$HOME/.codex/hooks.json"
-safe_symlink "$dir/.codex/hooks" "$HOME/.codex/hooks"
-
-# Herdr公式integrationの検出先からdotfiles管理のhookを参照する
-safe_symlink "$dir/.codex/hooks/herdr-agent-state.sh" "$HOME/.codex/herdr-agent-state.sh"
-
-# .copilotディレクトリを作成
-mkdir -p "$HOME/.copilot"
-
-# copilot-instructions.mdのシンボリックリンクを作成する
-safe_symlink "$dir/.codex/AGENTS.md" "$HOME/.copilot/copilot-instructions.md"
-
-# Copilot USERスコープのskillsディレクトリを作成
-mkdir -p "$HOME/.copilot/skills"
-
-# Claude CodeのスキルをCopilot USERスコープへ連携する
-for skill_dir in "$dir/.claude/skills"/*; do
-  is_skill_dir "$skill_dir" || continue
-  skill_name="$(basename "$skill_dir")"
-  safe_symlink_matching_directory \
-    "$skill_dir" \
-    "$HOME/.copilot/skills/$skill_name" \
-    "$HOME/.copilot/skills.before-dotfiles/$skill_name"
-done
-
-# Copilot USERスコープのhooksディレクトリを作成
-mkdir -p "$HOME/.copilot/hooks"
-
-# Claude CodeのhooksをCopilot USERスコープへ連携する
-for hook_script in "$dir/.claude/hooks"/*; do
-  [[ -f "$hook_script" ]] || continue
-  safe_symlink "$hook_script" "$HOME/.copilot/hooks/$(basename "$hook_script")"
-done
-
-# Copilot用hooks設定ファイルを配置する（各プロジェクトの .github/hooks から参照可能）
-safe_symlink "$dir/.github/hooks/claude-compatible.json" "$HOME/.copilot/hooks/claude-compatible.json"
-
-# Codex USERスコープのskillsディレクトリを作成
-mkdir -p "$HOME/.agents/skills"
-
-# Codexスキルの共通リファレンスを連携する
-safe_symlink "$dir/.agents/skills/_shared" "$HOME/.agents/skills/_shared"
-
-# Codex用スキルをUSERスコープへ連携する
-for skill_dir in "$dir/.agents/skills"/*; do
-  is_skill_dir "$skill_dir" || continue
-  skill_name="$(basename "$skill_dir")"
-  # 旧配置の.codex/skillsは退避するだけでリンクは張らず、.agents/skillsへ一本化する
-  backup_matching_directory \
-    "$skill_dir" \
-    "$HOME/.codex/skills/$skill_name" \
-    "$HOME/.codex/skills.before-dotfiles/$skill_name" || true
-  safe_symlink "$skill_dir" "$HOME/.agents/skills/$skill_name"
-done
-
 for f in "$dir"/.??*; do
   filename="$(basename "$f")"
   [[ "$filename" = ".git" ]] && continue
-  [[ "$filename" = ".claude" ]] && continue
-  [[ "$filename" = ".codex" ]] && continue
-  [[ "$filename" = ".copilot" ]] && continue
-  [[ "$filename" = ".agents" ]] && continue
+    # AI coding tool settings are installed from ~/Codes/agent-config.
+    [[ "$filename" = ".claude" ]] && continue
+    [[ "$filename" = ".codex" ]] && continue
+    [[ "$filename" = ".copilot" ]] && continue
+    [[ "$filename" = ".agents" ]] && continue
 
   # .configの場合はディレクトリを対象にする
   if [[ "$filename" = ".config" ]]; then
