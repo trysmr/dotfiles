@@ -228,6 +228,8 @@ export PATH="$BUN_INSTALL/bin:$PATH"
 
 # -----
 # mise
+# Claude CodeのBashのように対話的でないシェルではプロンプトのフックが動かず、rbenvのshimsが先に見つかるのでshimsも入れる
+eval "$(mise activate zsh --shims)"
 eval "$(mise activate zsh)"
 
 
