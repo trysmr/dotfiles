@@ -49,6 +49,14 @@ if [[ -z "$BREW_PREFIX" ]]; then
     export BREW_PREFIX="/opt/homebrew"
 fi
 
+# -----
+# CA証明書
+# macOS標準の/etc/ssl/cert.pemはOSの更新でしか直らず、これを使うツールは失効を確認しないので、Homebrewのca-certificatesを使う
+if [[ -f "$BREW_PREFIX/etc/ca-certificates/cert.pem" ]]; then
+    export CURL_CA_BUNDLE="$BREW_PREFIX/etc/ca-certificates/cert.pem"
+    export SSL_CERT_FILE="$BREW_PREFIX/etc/ca-certificates/cert.pem"
+fi
+
 # 履歴から補完
 # brew install zsh-autosuggestions
 if [[ -f "$BREW_PREFIX/share/zsh-autosuggestions/zsh-autosuggestions.zsh" ]]; then
